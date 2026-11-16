@@ -144,6 +144,7 @@ Ultimo aggiornamento: 16 novembre 2026
 - **T2, testi della spike in italiano** dentro `spike/`: la spike non è l'app, la regola «stringhe solo in `js/i18n/`» vale per l'app.
 - **T2, script di verifica in Chromium:** non è nel repo (Playwright non è una dipendenza del progetto); è stato eseguito dallo scratchpad della sessione.
 - **Dopo T2:** un commit in più (`docs: resoconto per Claude dopo T2`) solo per il blocco «Resoconto per Claude», perché l'hash del commit di T2 non può stare dentro il commit stesso.
+- **T2, `.nojekyll`:** su GitHub Pages la spike non partiva perché Jekyll non pubblica i file che iniziano con `_` (`spike/snowball/_stemmer.js`, importato da `spanish_stemmer.js`), quindi `spike.js` non girava. Il test locale con `python3 -m http.server` non vede il Jekyll di Pages (serve tutti i file), per questo il problema non è emerso. Aggiunto `.nojekyll` vuoto nella radice, con il test `nojekyll exists` (rosso poi verde). Che con `.nojekyll` la spike parta davvero su Pages è **[Da provare]**: non verificabile dal mio ambiente.
 
 ## Da verificare
 

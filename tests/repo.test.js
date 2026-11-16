@@ -20,6 +20,12 @@ test('required files exist', () => {
   assert.deepEqual(missing, []);
 });
 
+// GitHub Pages passa i file da Jekyll, che non pubblica quelli che iniziano con "_"
+// (es. spike/snowball/_stemmer.js): con .nojekyll nella radice vengono serviti tutti.
+test('nojekyll exists', () => {
+  assert.ok(existsSync(join(root, '.nojekyll')), '.nojekyll manca nella radice');
+});
+
 test('APP_VERSION is semver', async () => {
   const { APP_VERSION } = await import('../js/version.js');
   assert.match(APP_VERSION, /^\d+\.\d+\.\d+$/);
