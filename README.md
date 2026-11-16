@@ -14,7 +14,16 @@ Web app offline per Android (progetto in sviluppo).
 
 ### Stato
 
-Vedi `STATUS.md` (sarà creato con il task T0 del piano).
+Vedi `STATUS.md` (fase, ultimo task chiuso, gate aperti). Regole di lavoro in `CLAUDE.md`.
+
+### Test
+
+```
+npm install
+npm test
+```
+
+Serve Node 22.
 
 ### Licenza
 
