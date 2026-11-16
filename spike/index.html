@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#02061a">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="../assets/icons/icon-192.png">
+  <title>NAY · prova sul telefono</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 16px; background: #02061a; color: #ffffff; font: 16px/1.4 system-ui, sans-serif; }
+    h1 { margin: 0 0 4px; font-size: 1.4rem; }
+    h2 { margin: 0 0 4px; font-size: 1.05rem; color: #26a4c5; }
+    p { margin: 0 0 8px; }
+    .small { color: #b8c4d6; font-size: .9rem; }
+    .check { margin: 16px 0; padding: 12px; background: #080921; border: 1px solid #2381ac; border-radius: 12px; }
+    .hint { color: #b8c4d6; font-size: .9rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+    button { min-height: 48px; padding: 0 16px; font: inherit; color: #ffffff; background: #613bab; border: 0; border-radius: 10px; }
+    button:disabled { opacity: .5; }
+    button.main { background: #2381ac; }
+    pre { margin: 0 0 8px; white-space: pre-wrap; word-break: break-word; font: .85rem/1.35 ui-monospace, monospace; color: #e6eefb; }
+    input[type="text"], textarea { width: 100%; padding: 10px; font: inherit; color: #ffffff; background: #081937; border: 1px solid #495ec6; border-radius: 8px; }
+    textarea { min-height: 220px; font: .8rem/1.3 ui-monospace, monospace; }
+    input[type="file"] { width: 100%; padding: 8px 0; color: #ffffff; }
+  </style>
+</head>
+<body>
+  <h1>NAY · prova sul telefono</h1>
+  <p class="small">Prototipo usa e getta, non è l'app. <span id="sw-status">service worker: in attesa</span></p>
+
+  <section class="check">
+    <h2>Foto e video per le prove</h2>
+    <p class="hint">Scegli dalla galleria alcune foto e video (anche più di uno). Servono ai controlli 2, 3, 4 e 6.</p>
+    <input id="files" type="file" accept="image/*,video/*" multiple>
+    <p class="small" id="files-summary">nessun file scelto</p>
+  </section>
+
+  <div id="checks"></div>
+
+  <div class="actions">
+    <button type="button" id="run-all" class="main">Esegui tutti</button>
+    <button type="button" id="copy" class="main">Copia risultati</button>
+  </div>
+  <p class="small" id="copy-status"></p>
+  <textarea id="out" readonly aria-label="Risultati da incollare in chat"></textarea>
+
+  <script type="module" src="spike.js"></script>
+</body>
+</html>
