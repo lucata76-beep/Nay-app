@@ -1,5 +1,121 @@
 # STATUS
 
+## Resoconto per Claude (dopo T2, 16 novembre 2026)
+
+**Stato.** T0, T1 e T2 chiusi, uno per commit, tutti pubblicati su `main` (verificato: `HEAD` = `origin/main`). Esecuzione ferma prima di T3, come chiesto. Repo `lucata76-beep/Nay-app`, visibilità **public** (verificato con l'elenco dei repo di GitHub).
+
+**Ambiente (verificato).** Node v22.23.4; Python 3.13.18 (`python3` funziona: i comandi `python3` del piano non hanno richiesto modifiche); Pillow 12.3.0; Chromium senza interfaccia con Playwright disponibile (usato per T2). Sul PC Windows di Luca `python3` potrebbe non esistere (`python` o `py -3`): **[Da provare]**, qui non verificabile.
+
+**Commit (tutti su `main`):**
+
+| Hash | Messaggio |
+|---|---|
+| `2760b99` | chore: sposta i file di partenza |
+| `e677681` | chore: repo di partenza (T0) |
+| `62991fa` | feat: icone dal logo (T1) |
+| `fecf011` | feat: prototipo di prova sul Samsung (T2) |
+| ultimo su `main` | docs: resoconto per Claude dopo T2 (questo blocco; il suo hash è in `git log -1`) |
+
+**Output di `npm test`** (eseguito dopo il commit di T2, 6 test):
+
+```
+> nay-app@0.1.0 test
+> node --test "tests/*.test.js"
+
+TAP version 13
+# Subtest: icon sizes
+ok 1 - icon sizes
+  ---
+  duration_ms: 1.603968
+  type: 'test'
+  ...
+# Subtest: required files exist
+ok 2 - required files exist
+  ---
+  duration_ms: 1.385073
+  type: 'test'
+  ...
+# Subtest: APP_VERSION is semver
+ok 3 - APP_VERSION is semver
+  ---
+  duration_ms: 0.79083
+  type: 'test'
+  ...
+# Subtest: formatResults formats one line per result
+ok 4 - formatResults formats one line per result
+  ---
+  duration_ms: 1.001972
+  type: 'test'
+  ...
+# Subtest: formatResults handles missing ms
+ok 5 - formatResults handles missing ms
+  ---
+  duration_ms: 0.169829
+  type: 'test'
+  ...
+# Subtest: formatResults keeps one line per result when details contain newlines
+ok 6 - formatResults keeps one line per result when details contain newlines
+  ---
+  duration_ms: 0.137967
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 70.71949
+```
+
+**Output di `python3 tools/check_icons.py`** (exit 0):
+
+```
+icon-maskable-512.png: pixel piu' lontano dal centro = 184.3 px (36.0% della larghezza); limite 204.8 px (40%) -> OK
+```
+
+Rosso prima del verde (visto): in T0 il primo rosso era per il motivo sbagliato (il comando `node --test tests/` del piano non parte su Node 22); corretto lo script, il test ha fallito per il motivo giusto (file e modulo mancanti) prima dell'implementazione. In T1 e T2 il rosso era per il motivo giusto fin dall'inizio (icone e modulo `spike/format.js` mancanti). `check_icons.py` è stato provato anche in negativo: logo intero ridotto a 512 → 42,3% → KO, exit 1 (conferma il numero 42,3% della spec); icona mancante → KO, exit 1.
+
+**File creati** (oltre ai 4 spostati con `git mv` nel primo commit, e a `README.md` aggiornato senza perdere la riga esistente):
+
+- T0: `package.json`, `package-lock.json` (generato da `npm install`, non nell'elenco del piano), `.gitignore`, `CLAUDE.md`, `STATUS.md`, `index.html`, `js/version.js` (`APP_VERSION = '0.1.0'`), `tests/repo.test.js`.
+- T1: `tools/make_icons.py`, `tools/check_icons.py`, `assets/icons/icon-192.png`, `assets/icons/icon-512.png`, `assets/icons/icon-maskable-512.png`, `tests/icons.test.js`.
+- T2: `spike/index.html`, `spike/spike.js`, `spike/format.js`, `spike/sw.js`, `spike/manifest.webmanifest`, `spike/snowball/_stemmer.js`, `spike/snowball/spanish_stemmer.js`, `spike/snowball/snowball-stem.LICENSE.txt`, `vendor/fflate.js` (copia identica, verificata con `cmp`), `vendor/fflate.LICENSE.txt`, `docs/test-samsung-results.md`, `tests/spike-format.test.js`.
+
+**Scostamenti dal piano** (dettaglio nella sezione «Scostamenti dal piano e scelte fatte» più sotto):
+
+1. `npm test` usa `node --test "tests/*.test.js"`: il comando del piano `node --test tests/` **non funziona su Node 22** (provato).
+2. Per il controllo `similarity` ho copiato lo stemmer spagnolo (non modificato) in `spike/snowball/`, perché i file `vendor/snowball-*.js` sono del task T7 e non andavano anticipati.
+3. File in più: i due testi di licenza delle librerie copiate; riga `device` nei risultati copiati; un test in più su `formatResults` (a-capo).
+4. Sfondo del logo misurato `#fbf6ef`, non `#fdf6ef` come in spec e piano.
+5. Un commit in più dopo T2 (questo resoconto).
+6. Lavoro diretto su `main`, senza worktree; nessun reviewer indipendente (nessun sub-agente avviato): solo una rilettura mia.
+
+**Cosa NON ho verificato.**
+
+- **Tutto ciò che richiede il Samsung** (nessun telefono Android qui): selettore galleria e selezione multipla, condivisione reale verso ChatGPT e Gemini (in Chromium ho solo **simulato** `navigator.share`: ho provato la logica dei tre pulsanti, non Android), versione di Android dallo user agent, installazione dalla schermata Home, icona maskable come la disegna Android, offline in modalità standalone, `persist()` con l'app installata, tempi reali di PBKDF2 a 600.000 ripetizioni, di AES-GCM e dello ZIP su video grandi, memoria.
+- **I numeri che ho misurato qui non valgono per il telefono:** sono di Chromium 153 senza interfaccia su un computer (PBKDF2 600.000 ripetizioni ≈ 99-106 ms; AES-GCM su 20 MB ≈ 37 ms per cifrare e 31 ms per leggere; ZIP a flusso di 20 MB ≈ 91 ms; somiglianza su 1000 testi inventati ≈ 22,6 ms). Non vanno usati come stima del Samsung.
+- **GitHub Pages:** non so se sia già attivo. L'indirizzo `https://lucata76-beep.github.io/Nay-app/` è ricavato dal nome del repo; dal mio ambiente `github.io` non è raggiungibile (proxy 403). HTTPS di GitHub Pages: non verificato **[Da provare]**.
+- **PRF/impronta:** il prototipo vede solo che `PublicKeyCredential` esista; la prova vera non esiste ancora.
+- **Qualità della somiglianza sui 50 post veri:** misurata solo la velocità, su testi inventati in spagnolo.
+- **Menu ⋮ dell'app:** non esiste ancora (task T11).
+- **Installabilità:** non verificato che Chrome su Android offra «Installa app» (o solo «Aggiungi a schermata Home») per `spike/manifest.webmanifest`.
+- Cosa ho verificato in Chromium senza interfaccia (su `http://localhost` e su HTTPS locale con certificato autofirmato): la pagina `/spike/` si apre e crea i 9 controlli; `install`, `gallery`, `storage`, `crypto`, `zip`, `similarity`, `prf`, `icon`, `share` restituiscono un esito; con 2 file scelti `zip` e `crypto` lavorano su dati veri; «Copia risultati» scrive negli appunti righe `id | OK/KO/? | ms | dettagli`; ricaricando con la rete spenta la pagina si apre dal service worker; nessun errore in console. Su HTTPS `install` dà OK, su `http://localhost` dà KO (https=no).
+
+**Come abilitare GitHub Pages (Luca, ramo `main`, cartella radice).**
+
+1. Aprire `https://github.com/lucata76-beep/Nay-app` → **Settings** → **Pages** (menu a sinistra).
+2. In «Build and deployment» → **Source**: «Deploy from a branch».
+3. **Branch**: `main`, cartella `/ (root)` → **Save**.
+4. Attendere la prima pubblicazione (il tempo non è stato verificato); lo stato si vede nella scheda **Actions** («pages build and deployment») e in cima alla pagina Pages compare l'indirizzo del sito.
+5. Verifica G1: aprire `https://lucata76-beep.github.io/Nay-app/` in HTTPS: deve mostrare «NAY-App» e `v0.1.0`.
+
+**Indirizzo della prova da aprire dal Samsung (G2):** `https://lucata76-beep.github.io/Nay-app/spike/` **[Da provare: ricavato dal nome del repo; non aperto]**. Poi: menu ⋮ di Chrome → «Installa app» o «Aggiungi a schermata Home», aprire dall'icona, scegliere foto e video, «Esegui tutti», i tre pulsanti di condivisione con ChatGPT e Gemini, «Copia risultati» e incollare in chat. Istruzioni complete: `docs/test-samsung-results.md`.
+
+---
+
 Ultimo aggiornamento: 16 novembre 2026
 
 ## Dove siamo
