@@ -121,8 +121,8 @@ Ultimo aggiornamento: 16 novembre 2026
 ## Dove siamo
 
 - **Fase:** 2 — Logica (T3-T10), in corso. La fase 1 è completa lato codice; il gate G2 (prova sul Samsung) è stato eseguito da Luca (vedi «Fatti comunicati da Luca» più sotto).
-- **Ultimo task chiuso:** T3 (lingue)
-- **Prossimo task:** T4 (cifratura e vault)
+- **Ultimo task chiuso:** T4 (cifratura e vault)
+- **Prossimo task:** T5 (archivio cifrato)
 
 ## Gate aperti
 
@@ -160,6 +160,15 @@ Ultimo aggiornamento: 16 novembre 2026
 - I dizionari sono oggetti piatti con chiavi a punti (`export const es`, `export const it`). Oltre alle chiavi che il piano nomina ci sono quelle di navigazione, titoli, schermata di sblocco e `error.passwordTooShort`/`error.passwordMismatch`: le altre chiavi arrivano con i task che le usano.
 - Test in più rispetto al piano: stessi segnaposto in es e it, nessun messaggio vuoto, chiavi obbligatorie presenti, ripiego su `es`, lingua non supportata, evento `langchange`, funzionamento senza `dispatchEvent`, `t` segue la lingua corrente.
 - I testi in spagnolo e in italiano sono scritti da Claude e **non ancora rivisti** (spagnolo: da lei; italiano: da Luca) — revisione in T19.
+
+**T4 — cifratura e vault**
+- **Revisione indipendente** (sub-agente su modello Opus, in sola lettura, prima del commit): nessun problema Critical. Applicati con test rosso→verde: busta cifrata malformata (IV non di 12 byte, testo cifrato più corto del tag da 16 byte, base64 non valido, versione diversa) ora dà `TypeError`/`InvalidCharacterError` e non `WrongSecretError`; `unlockWithPassword`/`unlockWithRecoveryCode` sono `async` (errori sempre come promessa rifiutata); `normalizeRecoveryCode` rifiuta i non-stringa; test aggiunti per NFD nel cambio password, lunghezza minima dopo NFC, trattini tipografici e caratteri a larghezza piena nel codice di recupero.
+- **Non applicato:** rifiutare `changePassword` su un vault non confermato. Cambierebbe il comportamento del piano (il test del piano usa il vault appena creato); costo se sbagliato: se T11 salvasse il record sbagliato dopo un cambio password, `setupComplete` resterebbe `false`. Resta una **regola per T11** (sotto).
+- **Forma del record del vault** (il piano non la fissa): `{id: 'vault', v: 1, kdf: {name: 'PBKDF2-SHA256', iterations}, password: {salt, key: Envelope}, recovery: {salt, key: Envelope}, check: Envelope, setupComplete}`. `id: 'vault'` c'è così il record si salva direttamente nell'archivio `meta`. `check` è una costante cifrata con la chiave dei dati: `changePassword` la usa per rifiutare la sessione di un altro vault (`VaultMismatchError`), che altrimenti renderebbe illeggibili i dati.
+- Scelte: password e codice di recupero usano le stesse ripetizioni PBKDF2 (nel record); la lunghezza della password si conta in caratteri dopo NFC (`PasswordTooShortError` con `minLength`); in `passwordStrength` «simbolo» è ogni carattere che non è lettera né cifra (spazio compreso); il codice di recupero in ingresso passa da NFKC, perde spazi, `-` e trattini tipografici, diventa maiuscolo; la chiave dei dati della sessione è estraibile (serve a ricustodirla al cambio password) e `exportSessionKey` è esportata da `crypto.js`: «solo per vault.js» è una convenzione, non è imposta.
+- Test in più rispetto al piano: busta alterata, byte, IV diverso a ogni cifratura, forma del codice di recupero, codice sbagliato, `changePassword` (codice di recupero e stato conservati, password corta, sessione di un altro vault, NFD), accenti/ñ/¿/¡ con NFC e NFD, vault mai confermato dopo il riavvio, record JSON, due vault diversi, input non validi. Controllati con mutazioni temporanee (NFC disattivata, controllo di appartenenza tolto, `isSetupComplete` sempre vero): i test falliscono come devono.
+- **Regole per T11** (dalla revisione): (1) salvare sempre il record restituito da `confirmRecoveryCode`, non quello di `createVault`; (2) una nuova creazione non deve mai sovrascrivere un vault se esistono già dati cifrati; (3) la schermata di sblocco non deve togliere gli spazi (`trim`) dalla password: gli spazi fanno parte della password.
+- **Limite [Da provare sul telefono]:** la busta cifrata è in base64 (come da piano). Misurato in Node dal revisore, non sul Samsung: cifrare un file da 50 MB ≈ 2,5 s e ≈ 530 MB di memoria, 150 MB ≈ 6,5 s e ≈ 1,46 GB; oltre circa 380 MB di file la stringa base64 supera il limite di lunghezza di V8 (`RangeError`). I video molto grandi potrebbero quindi non salvarsi: da misurare sul telefono (il test di Luca, con 42 MB, è andato bene).
 
 ## Da verificare
 
