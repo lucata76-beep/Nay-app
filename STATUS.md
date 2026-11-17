@@ -120,9 +120,9 @@ Ultimo aggiornamento: 16 novembre 2026
 
 ## Dove siamo
 
-- **Fase:** 2 — Logica (T3-T10), in corso. La fase 1 è completa lato codice; il gate G2 (prova sul Samsung) è stato eseguito da Luca (vedi «Fatti comunicati da Luca» più sotto).
-- **Ultimo task chiuso:** T9 (backup cifrato)
-- **Prossimo task:** T10 (statistiche)
+- **Fase:** 2 — Logica (T3-T10) completata. La fase 3 (T11-T16, interfaccia) **non è iniziata**: l'esecuzione si è fermata dopo T10 per istruzione di Luca. Il gate G2 (prova sul Samsung) è stato eseguito da Luca (vedi «Fatti comunicati da Luca» più sotto).
+- **Ultimo task chiuso:** T10 (statistiche)
+- **Prossimo task:** T11 (guscio dell'app, accesso, barre) — non iniziato
 
 ## Gate aperti
 
@@ -211,6 +211,12 @@ Ultimo aggiornamento: 16 novembre 2026
 - Comportamento: `importBackup` legge tutto il file senza toccare il database, controlla intestazione e conteggi, prova `secret` come password e poi come codice di recupero (`WrongSecretError` se nessuno dei due), decifra ogni record (e controlla che l'id dentro coincida con quello in chiaro), e solo allora scrive con `replaceAll`; memoria piena → `StorageFullError`. `imported` conta i record, non il vault. Un file troncato, in più, alterato o non di NAY-App → `BackupFormatError`; versione maggiore → `BackupVersionError` (controllata subito dopo i primi 8 byte, anche se il resto non si legge); versione 0 → formato non valido. Test del piano presenti con i nomi del piano; troncamento provato in ogni punto dell'intestazione e ai confini dei record.
 - **Limiti [Da provare] sul Samsung:** in importazione tutti i record restano in memoria (stringhe base64) e ogni blob viene decifrato una volta per la verifica prima della scrittura: picco circa 2-3 volte la dimensione del backup; in esportazione `db.list` carica ogni archivio per intero. Con centinaia di MB la scheda può chiudersi per mancanza di memoria (i dati attuali restano intatti, perché la transazione non conclusa viene annullata). Con un'intestazione manomessa (iterazioni fino a 10 milioni) lo sblocco può richiedere decine di secondi (prima la password, poi il codice), senza bloccare l'interfaccia.
 - **Per T16 (menu e impostazioni):** (1) dopo `importBackup` la sessione in memoria è quella del vault vecchio: bloccare subito l'app e chiedere di nuovo la password, altrimenti si scriverebbero record non decifrabili; (2) a `exportBackup(db, vault)` passare sempre il vault aggiornato (dopo `changePassword` salvare il nuovo record e usare quello), perché il backup contiene il vault passato, non quello letto dal database.
+
+**T10 — statistiche**
+- Test del piano presenti con i nomi del piano (`zero posts gives zeros and empty arrays`, `posts without views are ignored in view aggregates`, `bestHours averages by publication hour`, `byType counts all posts`) più altri: commenti ignorati se mancano, parità tra orari, somma per giorno e ordine per data, ordine dei commenti, fuso orario, date non valide, valori non numerici o negativi, input non modificato. Cinque mutazioni temporanee (zero visualizzazioni per i post senza dato, orari non ordinati, conteggio dei tipi, fuso ignorato, zero non contato come dato) sono state intercettate.
+- **Scostamento (compatibile):** `computeStats(pubs, { timeZone }?)` ha un secondo parametro facoltativo; senza, giorno e ora seguono il fuso del telefono. Serve a provare giorno e ora in modo deterministico (le date salvate sono istanti ISO in UTC, e un post delle 23:30 UTC è già il giorno dopo a Madrid).
+- Scelte (il piano non le fissa): `viewsOverTime` somma le visualizzazioni per giorno, in ordine di data; `commentsPerPost` è in ordine di pubblicazione (i post con data non valida in fondo); `bestHours` va dalla fascia con più visualizzazioni medie, a parità l'ora più presto (il grafico di T15 può riordinarla per ora); le date non valide contano nei totali ma restano fuori dai grafici nel tempo; contano come dati solo i numeri finiti e non negativi (lo zero è un dato vero); i tipi sconosciuti non compaiono in `byType` ma contano in `totalPosts`; `totalPosts` conta tutti i post.
+- **Per T15:** con 200-260 post all'anno il grafico dei commenti per post va limitato (per esempio agli ultimi N); `computeStats` restituisce tutti i dati.
 
 ## Da verificare
 
