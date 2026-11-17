@@ -1,0 +1,75 @@
+/* Token di stile di NAY-App. Unico file in cui compaiono valori di colore (test: contrast.test.js).
+   Palette: poster «Dashboard Visualization» (spec sezione 8), colori misurati sull'immagine.
+   Regole di nome, lette dal test del contrasto (>= 4,5):
+   --bg-*     fondi su cui sta il testo;  --text, --text-*  colori del testo;
+   --fill-*   fondi dei pulsanti, con il testo --on-<gruppo> (--fill-primary-1 → --on-primary). */
+:root {
+  /* Fondi del poster (misurati) */
+  --bg-0: #000104;
+  --bg-1: #02061a;
+  --bg-2: #080921;
+  --bg-3: #081937;
+  /* Scelta mia, non misurata: tessera sollevata (menu, elemento attivo) */
+  --bg-raised: #0d2347;
+
+  /* Colori del poster per bordi, grafici e sfumature (misurati). Non sono colori di testo:
+     il magenta e il blu-viola non arrivano a 4,5 su tutti i fondi. */
+  --cyan: #26a4c5;
+  --cyan-2: #2381ac;
+  --magenta: #b458bc;
+  --magenta-2: #ad429e;
+  --blue-violet: #495ec6;
+  --violet: #613bab;
+
+  /* Testo. Bianco e ciano sono del poster; gli altri sono varianti più chiare scelte da me
+     (non misurate) per arrivare a 4,5 su ogni fondo. */
+  --text: #ffffff;
+  --text-muted: #aab4d4;
+  --text-cyan: #26a4c5;
+  --text-violet: #b9a8ff;
+  --text-pink: #e58fd8;
+  --text-danger: #ff8f9d;
+  --text-ok: #6fe0a8;
+  --text-warn: #ffc56b;
+
+  /* Pulsanti: sfumatura tra due fondi, testo --on-primary / --on-danger */
+  --fill-primary-1: #613bab;
+  --fill-primary-2: #ad429e;
+  --on-primary: #ffffff;
+  --fill-danger-1: #a8283d;
+  --fill-danger-2: #8f1f4a;
+  --on-danger: #ffffff;
+
+  /* Tessera crema del logo (sfondo del file «cuffia_03_oro.png», pixel 20,20) */
+  --tile-logo: #fbf6ef;
+
+  /* Bordi, bagliori e velature (con trasparenza: non entrano nel test del contrasto) */
+  --line: rgba(38, 164, 197, 0.35);
+  --line-strong: rgba(38, 164, 197, 0.75);
+  --line-violet: rgba(180, 88, 188, 0.5);
+  --line-soft: rgba(185, 168, 255, 0.18);
+  --glow-cyan: 0 0 14px rgba(38, 164, 197, 0.28);
+  --glow-violet: 0 0 18px rgba(97, 59, 171, 0.55);
+  --shadow-pop: 0 10px 30px rgba(0, 1, 4, 0.7);
+  --overlay: rgba(0, 1, 4, 0.72);
+
+  /* Sfumature */
+  --grad-page: radial-gradient(120% 60% at 50% -10%, var(--bg-3) 0%, var(--bg-1) 55%, var(--bg-0) 100%);
+  --grad-card: linear-gradient(160deg, var(--bg-3), var(--bg-2));
+  --grad-primary: linear-gradient(90deg, var(--fill-primary-1), var(--fill-primary-2));
+  --grad-danger: linear-gradient(90deg, var(--fill-danger-1), var(--fill-danger-2));
+  --grad-title: linear-gradient(90deg, var(--text-violet), var(--text-pink));
+  --grad-chart: linear-gradient(180deg, var(--cyan), var(--blue-violet) 55%, var(--magenta-2));
+
+  /* Misure */
+  --radius: 16px;
+  --radius-sm: 12px;
+  --tap: 48px;
+  --topbar-h: 60px;
+  --bottombar-h: 64px;
+  --gutter: 16px;
+
+  /* Caratteri di sistema: nessun servizio esterno, nessun file di font */
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Roboto Mono', monospace;
+}

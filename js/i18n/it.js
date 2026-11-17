@@ -65,4 +65,30 @@ export const it = {
     "Questo file di backup è di una versione più recente dell'app. I tuoi dati attuali non sono stati modificati.",
   'error.passwordTooShort': 'La password deve avere almeno {n} caratteri.',
   'error.passwordMismatch': 'Le password non coincidono.',
+  'error.unexpected': 'Si è verificato un errore imprevisto. Riprova.',
+  'error.dataUnreadable':
+    'Non è stato possibile leggere i dati salvati (forse un record è danneggiato). Non è stato cancellato nulla.',
+  'error.dbUnavailable':
+    "Non si riesce ad aprire l'archivio del telefono. Chiudi le altre schede dell'app o riavvia il browser.",
+  'common.retry': 'Riprova',
+
+  // Schermata di sblocco e primo avvio (T11)
+  'lock.createIntro':
+    'Prima volta: crea una password per proteggere i tuoi dati. Restano cifrati in questo telefono. Se perdi la password e il codice di recupero, e non hai un backup, non si possono recuperare.',
+  'lock.passwordHint': 'Almeno {n} caratteri.',
+  'lock.unlocking': 'Sblocco in corso…',
+  'lock.creating': 'Creazione in corso…',
+  'lock.saving': 'Salvataggio in corso…',
+  'lock.showPassword': 'Mostra la password',
+  'lock.hidePassword': 'Nascondi la password',
+  'lock.backToPassword': 'Usa la password',
+  'lock.recoveryUnlockHint': 'Scrivi il codice di recupero di 32 caratteri. Vanno bene minuscole e spazi.',
+  'lock.orphanData':
+    "In questo telefono ci sono dati cifrati ma manca la configurazione dell'accesso. Non si crea una nuova password per non perdere quei dati.",
+  'lock.loading': 'Caricamento…',
+
+  // Barra in alto e navigazione
+  'topbar.version': 'Versione {v}',
+  'topbar.language': 'Lingua',
+  'nav.label': 'Navigazione principale',
 };

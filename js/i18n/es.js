@@ -65,4 +65,30 @@ export const es = {
     'Este archivo de copia de seguridad es de una versión más reciente de la app. Tus datos actuales no se han modificado.',
   'error.passwordTooShort': 'La contraseña debe tener al menos {n} caracteres.',
   'error.passwordMismatch': 'Las contraseñas no coinciden.',
+  'error.unexpected': 'Ha ocurrido un error inesperado. Inténtalo de nuevo.',
+  'error.dataUnreadable':
+    'No se han podido leer los datos guardados (puede que un registro esté dañado). No se ha borrado nada.',
+  'error.dbUnavailable':
+    'No se puede abrir el almacenamiento del teléfono. Cierra las demás pestañas de la app o reinicia el navegador.',
+  'common.retry': 'Reintentar',
+
+  // Pantalla de desbloqueo y primer arranque (T11)
+  'lock.createIntro':
+    'Primera vez: crea una contraseña para proteger tus datos. Se guardan cifrados en este teléfono. Si pierdes la contraseña y el código de recuperación, y no tienes una copia de seguridad, no se pueden recuperar.',
+  'lock.passwordHint': 'Mínimo {n} caracteres.',
+  'lock.unlocking': 'Desbloqueando…',
+  'lock.creating': 'Creando…',
+  'lock.saving': 'Guardando…',
+  'lock.showPassword': 'Mostrar contraseña',
+  'lock.hidePassword': 'Ocultar contraseña',
+  'lock.backToPassword': 'Usar la contraseña',
+  'lock.recoveryUnlockHint': 'Escribe el código de recuperación de 32 caracteres. Se admiten minúsculas y espacios.',
+  'lock.orphanData':
+    'Hay datos cifrados en este teléfono pero falta la configuración de acceso. No se crea una contraseña nueva para no perder esos datos.',
+  'lock.loading': 'Cargando…',
+
+  // Barra superior y navegación
+  'topbar.version': 'Versión {v}',
+  'topbar.language': 'Idioma',
+  'nav.label': 'Navegación principal',
 };
