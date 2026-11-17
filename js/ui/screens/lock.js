@@ -13,15 +13,10 @@ import { STORES } from '../../core/db.js';
 import { WrongSecretError, normalizeSecret } from '../../core/crypto.js';
 import { StorageFullError } from '../../core/secure-store.js';
 import { MIN_PASSWORD_LENGTH, PasswordTooShortError, passwordStrength } from '../../core/password.js';
-import {
-  confirmRecoveryCode,
-  createVault,
-  isSetupComplete,
-  unlockWithPassword,
-  unlockWithRecoveryCode,
-} from '../../core/vault.js';
+import { confirmRecoveryCode, createVault, isSetupComplete } from '../../core/vault.js';
+import { VaultChangedError, unlockCurrentVault } from '../../features/account.js';
 import { applyI18n, h } from '../dom.js';
-import { icon } from '../icons.js';
+import { clearError, errorBox, field, showError, strengthMeter } from '../fields.js';
 import { renderLangFlags } from '../topbar.js';
 
 function isQuotaError(err) {
@@ -59,40 +54,6 @@ function requestPersistence() {
   }
 }
 
-function field({ id, labelKey, type = 'password', autocomplete = 'off', hintKey, hintParams, toggle = false, mono = false }) {
-  const input = h('input', {
-    id,
-    class: `field__input${mono ? ' field__input--mono' : ''}`,
-    type,
-    autocomplete,
-    autocapitalize: 'off',
-    autocorrect: 'off',
-    spellcheck: 'false',
-    enterkeyhint: 'go',
-  });
-  const row = h('div', { class: 'field__row' }, input);
-  if (toggle) {
-    const eye = h('button', { type: 'button', class: 'icon-btn field__toggle', i18nAria: 'lock.showPassword', 'aria-pressed': 'false' }, icon('eye'));
-    eye.addEventListener('click', () => {
-      const show = input.type === 'password';
-      input.type = show ? 'text' : 'password';
-      eye.setAttribute('aria-pressed', String(show));
-      eye.setAttribute('data-i18n-aria', show ? 'lock.hidePassword' : 'lock.showPassword');
-      eye.setAttribute('aria-label', i18n.t(show ? 'lock.hidePassword' : 'lock.showPassword'));
-      eye.replaceChildren(icon(show ? 'eyeOff' : 'eye'));
-    });
-    row.append(eye);
-  }
-  const wrap = h(
-    'div',
-    { class: 'field' },
-    h('label', { class: 'field__label', for: id, i18n: labelKey }),
-    row,
-    hintKey ? h('p', { class: 'field__hint muted', i18n: hintKey, i18nParams: hintParams }) : null,
-  );
-  return { wrap, input };
-}
-
 function brand() {
   return h(
     'div',
@@ -101,24 +62,6 @@ function brand() {
     h('h1', { class: 'lock__name title-gradient', i18n: 'app.name' }),
     h('p', { class: 'lock__version muted', text: `v${APP_VERSION}` }),
   );
-}
-
-function errorBox() {
-  return h('p', { class: 'banner banner--error', role: 'alert', hidden: true });
-}
-
-function showError(box, key, params) {
-  box.setAttribute('data-i18n', key);
-  if (params) box.dataset.i18nParams = JSON.stringify(params);
-  else delete box.dataset.i18nParams;
-  box.textContent = i18n.t(key, params ?? {});
-  box.hidden = false;
-}
-
-function clearError(box) {
-  box.hidden = true;
-  box.removeAttribute('data-i18n');
-  box.textContent = '';
 }
 
 function setBusy(root, buttons, busy, busyKey, idleKey) {
@@ -133,7 +76,7 @@ function setBusy(root, buttons, busy, busyKey, idleKey) {
 }
 
 export function renderLock(root, ctx) {
-  const { db } = ctx;
+  const { db, notice } = ctx;
   return new Promise((resolveSession) => {
     // Cambiare lingua (bandierina) riscrive i testi sul posto: ciò che è stato digitato nei campi resta.
     const onLangChange = () => applyI18n(root);
@@ -166,7 +109,7 @@ export function renderLock(root, ctx) {
     }
 
     // ---- sblocco ----
-    function unlockView(vault) {
+    function unlockView() {
       let recoveryMode = false;
       const password = field({ id: 'lock-password', labelKey: 'lock.passwordLabel', autocomplete: 'off', toggle: true });
       const recovery = field({ id: 'lock-recovery', labelKey: 'lock.recoveryLabel', type: 'text', hintKey: 'lock.recoveryUnlockHint', mono: true });
@@ -193,12 +136,14 @@ export function renderLock(root, ctx) {
         if (secret === '') return;
         setBusy(root, [submit, switchMode], true, 'lock.unlocking', 'lock.unlock');
         try {
-          const session = recoveryMode ? await unlockWithRecoveryCode(vault, secret) : await unlockWithPassword(vault, secret);
+          // il vault si rilegge dal database a ogni tentativo (un backup importato nel frattempo lo ha sostituito)
+          const session = await unlockCurrentVault(db, secret, { recovery: recoveryMode });
           password.input.value = '';
           recovery.input.value = '';
           resolve(session);
         } catch (err) {
           setBusy(root, [submit, switchMode], false, 'lock.unlocking', 'lock.unlock');
+          if (err instanceof VaultChangedError) return start(); // il vault è cambiato: si riparte dallo stato vero del database
           if (err instanceof WrongSecretError) showError(error, 'error.wrongSecret');
           else {
             console.error(err);
@@ -223,6 +168,7 @@ export function renderLock(root, ctx) {
         h(
           'section',
           { class: 'card lock__card' },
+          notice ? h('p', { class: 'banner banner--ok', role: 'status', i18n: notice }) : null,
           h('h2', { i18n: 'lock.title' }),
           password.wrap,
           recovery.wrap,
@@ -244,29 +190,11 @@ export function renderLock(root, ctx) {
         toggle: true,
       });
       const confirm = field({ id: 'lock-confirm-password', labelKey: 'lock.passwordConfirmLabel', autocomplete: 'off' });
-      const meterFill = h('span', { class: 'meter__fill' });
-      const meterLabel = h('span', { class: 'meter__label' });
-      const meter = h('div', { class: 'meter', 'aria-live': 'polite' }, h('span', { class: 'meter__bar' }, meterFill), meterLabel);
+      const meter = strengthMeter(password.input);
       const error = errorBox();
       const submit = h('button', { type: 'button', class: 'btn btn--primary', i18n: 'lock.create' });
 
-      function refreshMeter() {
-        if (password.input.value === '') {
-          // campo vuoto: nessuna etichetta, e nessuna chiave che un cambio di lingua riscriverebbe
-          meter.dataset.level = '';
-          meterLabel.removeAttribute('data-i18n');
-          meterLabel.textContent = '';
-          return;
-        }
-        const level = passwordStrength(password.input.value);
-        meter.dataset.level = level;
-        meterLabel.setAttribute('data-i18n', `lock.strength.${level}`);
-        meterLabel.textContent = i18n.t(`lock.strength.${level}`);
-      }
-      password.input.addEventListener('input', () => {
-        clearError(error);
-        refreshMeter();
-      });
+      password.input.addEventListener('input', () => clearError(error));
       confirm.input.addEventListener('input', () => clearError(error));
 
       async function attempt() {
@@ -309,7 +237,7 @@ export function renderLock(root, ctx) {
           h('h2', { i18n: 'lock.createTitle' }),
           h('p', { class: 'muted', i18n: 'lock.createIntro' }),
           password.wrap,
-          meter,
+          meter.element,
           confirm.wrap,
           error,
           h('div', { class: 'lock__actions' }, submit),
@@ -388,7 +316,7 @@ export function renderLock(root, ctx) {
         console.error(err);
         return messageView('error.dbUnavailable', { retry: start });
       }
-      if (status === 'exists') return unlockView(vault);
+      if (status === 'exists') return unlockView();
       if (status === 'orphan') return messageView('lock.orphanData', { retry: start });
       return createView();
     }

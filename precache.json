@@ -1,6 +1,6 @@
 {
-  "version": "0.6.0",
-  "hash": "a6b4c8057a1a96bd19f0e9d0570760532152214365cd12eadd6a8ac0cbf56f11",
+  "version": "0.7.0",
+  "hash": "f71c8bf925bf90be9a0647323a740fe6f92c3675fbcd3816acb68779966aee63",
   "files": [
     "./",
     "./assets/flags/es.svg",
@@ -19,6 +19,7 @@
     "./js/core/password.js",
     "./js/core/secure-store.js",
     "./js/core/vault.js",
+    "./js/features/account.js",
     "./js/features/develop.js",
     "./js/features/drafts.js",
     "./js/features/export.js",
@@ -41,6 +42,7 @@
     "./js/ui/charts.js",
     "./js/ui/dialog.js",
     "./js/ui/dom.js",
+    "./js/ui/fields.js",
     "./js/ui/form-draft.js",
     "./js/ui/icons.js",
     "./js/ui/menu.js",
@@ -49,6 +51,7 @@
     "./js/ui/screens/ideas.js",
     "./js/ui/screens/lock.js",
     "./js/ui/screens/publications.js",
+    "./js/ui/screens/settings.js",
     "./js/ui/topbar.js",
     "./js/version.js",
     "./manifest.webmanifest",

@@ -1427,3 +1427,48 @@
 .review-card a.btn {
   text-decoration: none;
 }
+
+/* ---------- Impostazioni, finestre informative, avvisi brevi ---------- */
+.storage {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.storage__bar {
+  height: 10px;
+}
+
+.storage__fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 3px;
+  background: var(--grad-primary);
+}
+
+.dialog--info {
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+}
+
+.dialog__message {
+  font-size: 0.95rem;
+}
+
+.about__list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.toast {
+  position: fixed;
+  right: 12px;
+  bottom: calc(var(--bottombar-h) + 12px + env(safe-area-inset-bottom));
+  left: 12px;
+  z-index: 70;
+  max-width: 536px;
+  margin: 0 auto;
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-pop);
+}

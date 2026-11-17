@@ -13,6 +13,7 @@ import { renderIdeas } from './ui/screens/ideas.js';
 import { renderDevelop } from './ui/screens/develop.js';
 import { renderPublications } from './ui/screens/publications.js';
 import { renderDashboard } from './ui/screens/dashboard.js';
+import { dismissImportPicker, exportBackupFlow, importBackupFlow, renderSettings, showAbout } from './ui/screens/settings.js';
 import { closeDialogs } from './ui/dialog.js';
 import { applyI18n, h } from './ui/dom.js';
 
@@ -31,8 +32,19 @@ const SCREENS = {
   ideare: renderIdeas,
   sviluppare: renderDevelop,
   pubblicazioni: renderPublications,
-  impostazioni: renderPlaceholder,
+  impostazioni: renderSettings,
 };
+
+// Messaggio da mostrare nella prossima schermata di accesso (per esempio dopo aver importato un backup).
+let nextLockNotice = null;
+
+// Avvisa le altre schede dell'app (stessa origine) che i dati sono stati sostituiti da un backup: la loro sessione in
+// memoria è quella del vault vecchio e, se continuassero a scrivere, metterebbero nel database record cifrati con la
+// chiave sbagliata (e ogni backup successivo non si potrebbe più importare).
+const VAULT_CHANNEL = 'nay-vault';
+const DATA_REPLACED = 'data-replaced';
+// (solo nel browser: nei test, in Node, un canale aperto terrebbe vivo il processo)
+const channel = typeof document !== 'undefined' && typeof BroadcastChannel === 'function' ? new BroadcastChannel(VAULT_CHANNEL) : null;
 
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
@@ -89,6 +101,8 @@ function runApp(root, { db, session }) {
     let currentRoute = 'dashboard';
     let renderToken = 0;
     let locked = false;
+    let frozen = false; // i dati si stanno sostituendo: la sessione in memoria non deve scrivere più niente
+    const critical = new Set(); // operazioni che il blocco aspetta prima di mostrare l'accesso (importazione)
     let hiddenAt = null;
     let timer = null;
 
@@ -106,6 +120,7 @@ function runApp(root, { db, session }) {
     }
 
     async function flushAll() {
+      if (frozen) return;
       await Promise.allSettled([...flushers].map((fn) => fn()));
     }
 
@@ -113,20 +128,62 @@ function runApp(root, { db, session }) {
       return Promise.race([flushAll(), new Promise((resolve) => setTimeout(resolve, FLUSH_TIMEOUT_MS))]);
     }
 
-    async function lock() {
+    // noFlush: dopo l'importazione di un backup la sessione in memoria è quella del vault vecchio e non deve più
+    // scrivere nulla (una bozza cifrata con la chiave vecchia finirebbe nel database nuovo).
+    async function lock({ noFlush = false, notice = null } = {}) {
       if (locked) return;
       locked = true;
-      await flushWithTimeout(); // la bozza è già salvata prima del blocco (entro un tempo massimo)
+      if (notice) nextLockNotice = notice;
+      if (!noFlush) await flushWithTimeout(); // la bozza è già salvata prima del blocco (entro un tempo massimo)
       clearTimeout(timer);
       globalThis.removeEventListener('hashchange', renderRoute);
       globalThis.removeEventListener('langchange', onLangChange);
       document.removeEventListener('visibilitychange', onVisibility);
       globalThis.removeEventListener('pagehide', flushAll);
+      channel?.removeEventListener('message', onChannel);
       closeMenu();
       closeDialogs();
+      dismissImportPicker();
       endScope();
       root.replaceChildren(); // via ogni testo in chiaro dallo schermo
+      if (critical.size > 0) {
+        // Un'importazione è ancora in corso: la schermata di accesso deve leggere il vault di DOPO, non quello vecchio
+        // (sbloccare con la chiave vecchia sopra dati nuovi li renderebbe illeggibili). Intanto solo un'attesa.
+        root.replaceChildren(h('main', { class: 'lock' }, h('p', { class: 'muted lock__loading', role: 'status', i18n: 'lock.loading' })));
+        applyI18n(root);
+        await Promise.allSettled([...critical]);
+        root.replaceChildren();
+      }
       resolveLocked();
+    }
+
+    // Esegue `fn`, che sostituisce tutti i dati (importazione di un backup). Finché dura: la sessione in memoria non scrive
+    // nulla (bozze comprese) e un blocco che arrivi nel frattempo aspetta la fine. Se riesce, le altre schede si bloccano
+    // e la prossima schermata di accesso mostra `notice`. Se fallisce, i dati sono com'erano e si riprende a scrivere.
+    async function replaceData(fn, { notice = null } = {}) {
+      if (locked) throw new Error('App bloccata: nessuna sostituzione dei dati');
+      frozen = true;
+      const run = Promise.resolve()
+        .then(fn)
+        .then((result) => {
+          if (notice) nextLockNotice = notice;
+          channel?.postMessage(DATA_REPLACED);
+          return result;
+        });
+      const guard = run.catch(() => {});
+      critical.add(guard);
+      try {
+        return await run;
+      } catch (err) {
+        frozen = false;
+        throw err;
+      } finally {
+        critical.delete(guard);
+      }
+    }
+
+    function onChannel(event) {
+      if (event.data === DATA_REPLACED) lock({ noFlush: true, notice: 'backup.import.done' });
     }
 
     function baseCtx(routeName, params) {
@@ -140,6 +197,9 @@ function runApp(root, { db, session }) {
         session,
         i18n,
         lock,
+        flush: flushWithTimeout,
+        isLocked: () => locked,
+        replaceData,
         navigate: (name, query) => {
           globalThis.location.hash = hashFor(name, query);
         },
@@ -160,7 +220,14 @@ function runApp(root, { db, session }) {
     }
 
     function menuItems() {
-      return [{ label: i18n.t('menu.lockNow'), onSelect: () => lock() }];
+      const app = { db, lock, flush: flushWithTimeout, isLocked: () => locked, replaceData };
+      return [
+        { label: i18n.t('menu.lockNow'), onSelect: () => lock() },
+        { label: i18n.t('menu.exportBackup'), onSelect: () => exportBackupFlow(app) },
+        { label: i18n.t('menu.importBackup'), onSelect: () => importBackupFlow(app) },
+        { label: i18n.t('menu.settings'), onSelect: () => (globalThis.location.hash = hashFor('impostazioni')) },
+        { label: i18n.t('menu.about'), onSelect: () => showAbout() },
+      ];
     }
 
     function reselect(name) {
@@ -235,6 +302,7 @@ function runApp(root, { db, session }) {
     globalThis.addEventListener('langchange', onLangChange);
     document.addEventListener('visibilitychange', onVisibility);
     globalThis.addEventListener('pagehide', flushAll);
+    channel?.addEventListener('message', onChannel);
     // se l'app è già in secondo piano quando lo sblocco finisce (la derivazione della chiave
     // richiede un po'), il blocco automatico deve partire comunque
     if (document.visibilityState === 'hidden') onVisibility();
@@ -258,7 +326,9 @@ async function boot() {
     return;
   }
   for (;;) {
-    const session = await renderLock(root, { db });
+    const notice = nextLockNotice;
+    nextLockNotice = null;
+    const session = await renderLock(root, { db, notice });
     await runApp(root, { db, session });
   }
 }
