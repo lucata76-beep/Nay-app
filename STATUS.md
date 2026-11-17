@@ -1,5 +1,300 @@
 # STATUS
 
+## Resoconto per Claude (dopo T10, 17 novembre 2026)
+
+**Riassunto.**
+1. PASSO 0 (correzione della spec, hash verificato) e T3-T10 sono fatti in ordine, ognuno con i test visti rossi e poi verdi e un commit pubblicato su `main`; la suite ha 203 test, tutti verdi (Node 22.23.4). T11 non è iniziato.
+2. T4 (vault) e T9 (backup) sono stati rivisti prima del commit da un revisore indipendente (sub-agente su modello Opus, sola lettura): nessun Critical; in T9 un problema Important (intestazione del backup non autenticata), corretto con test.
+3. Non verificato: tutto ciò che richiede il Samsung o un browser vero (IndexedDB e quota reali, condivisione, memoria con file grandi), la qualità della somiglianza sui 50 post veri, la revisione dei testi in spagnolo e in italiano.
+
+**Stato.** Fase 2 (logica, T3-T10) completa; la fase 3 (interfaccia, T11-T16) non è iniziata. Nessun file dell'interfaccia esiste ancora: i moduli sono provati solo con i test in Node, quindi la verifica manuale del Review Focus 2 (primo avvio interrotto, T11) e il Review Focus 5 (cache e versione, T11) restano da fare. `spike/` non è stato toccato. Nessun `LICENSE`, nessuna CDN, nessun segreto nel codice.
+
+**Ambiente (verificato).** Node v22.23.4; `fake-indexeddb` 6.2.8, `fflate` 0.8.3, `snowball-stem` 1.1.1 (`npm ls`); WebCrypto, `Blob`, `File`, `Intl` di Node. Nessun browser è stato usato in questa fase.
+
+**Commit (tutti su `main`, tutti pubblicati):**
+
+| Hash | Messaggio |
+|---|---|
+| `806426c` | docs: correzioni alla spec (telefono, Android, sfondo logo) — `sha256sum` = `6b69efebff601db61c4dfd44ef1c7c06dc4aeee16911526e311983d4dc5ed940`, come atteso; ognuna delle 5 sostituzioni ha trovato una sola corrispondenza |
+| `648ced2` | feat: lingue es/it (T3) |
+| `0f6dc00` | feat: vault cifrato (T4) |
+| `97b0e76` | feat: archivio cifrato (T5) |
+| `a1c5d34` | feat: idee, template, prompt (T6) |
+| `6b56a99` | feat: somiglianza e registro (T7) |
+| `1aeebb2` | feat: esportazione (T8) |
+| `77c2a45` | feat: backup cifrato (T9) |
+| `db9b050` | feat: statistiche (T10) |
+| ultimo su `main` | docs: resoconto per Claude dopo T10 (questo blocco; il suo hash è in `git log -1`) |
+
+**Output di `npm test`** (203 test, dopo il commit di T10). Qui sotto c'è la versione compatta: ho tolto di ogni test le righe `# Subtest`, `---`, `duration_ms`, `type` e `...`. L'output **integrale** (1232 righe) è in `docs/npm-test-dopo-T10.txt`.
+
+```
+> nay-app@0.1.0 test
+> node --test "tests/*.test.js"
+TAP version 13
+ok 1 - roundtrip into an empty db restores all stores
+ok 2 - the backup keeps the records encrypted
+ok 3 - import replaces the existing data and the vault
+ok 4 - wrong secret throws WrongSecretError and leaves the db unchanged
+ok 5 - truncated file throws BackupFormatError and leaves the db unchanged
+ok 6 - a file with extra bytes at the end throws BackupFormatError
+ok 7 - a corrupted record throws BackupFormatError and leaves the db unchanged
+ok 8 - a record moved under another id throws BackupFormatError
+ok 9 - future version throws BackupVersionError
+ok 10 - files that are not backups throw BackupFormatError
+ok 11 - errors carry clear names and are Error instances
+ok 12 - recovery code opens a backup
+ok 13 - estimateBackupSize is at least the sum of the stored blob sizes
+ok 14 - exporting an app with only the vault gives a backup that imports
+ok 15 - the backup does not list the vault twice and its counts match the records
+ok 16 - import is all-or-nothing when the storage fills up while writing
+ok 17 - import is all-or-nothing when the browser aborts the write transaction
+ok 18 - a rebuilt file without defects imports (so the cases below fail only for their own defect)
+ok 19 - every single flipped bit in the header area is rejected, never imported
+ok 20 - a header altered but with a matching digest is still checked field by field
+ok 21 - PBKDF2 iterations above the cap are refused at once
+ok 22 - the declared counts must match the records in the file
+ok 23 - duplicate ids, an out-of-range store index, and a vault record among the meta records are refused
+ok 24 - records that are not valid records are refused
+ok 25 - a blob whose info belongs to another blob is refused
+ok 26 - the version field is checked on its own: 0 is invalid, 2 is a future version
+ok 27 - a file whose records come from another vault is refused
+ok 28 - exportBackup refuses a vault whose recovery code was never confirmed
+ok 29 - exportBackup rejects a vault that is not a vault record
+ok 30 - zip contains prompt.txt and the files
+ok 31 - duplicate names get a suffix
+ok 32 - a suffix never collides with another name, nor with prompt.txt, nor by case
+ok 33 - file names cannot point outside the archive
+ok 34 - file names with accents and ñ survive in the zip
+ok 35 - zip works with no files, with an empty prompt and with a large file in many chunks
+ok 36 - zip stores media as they are and deflates the text
+ok 37 - fileCountWarning is false at 10 and true at 11
+ok 38 - shareContent returns unsupported without canShare
+ok 39 - shareContent returns unsupported without navigator.share
+ok 40 - shareContent returns cancelled on AbortError
+ok 41 - shareContent returns unsupported on NotAllowedError
+ok 42 - shareContent returns shared and gives text and files to navigator.share
+ok 43 - shareContent shares plain text when there are no files
+ok 44 - shareContent never shares a ZIP, even when canShare says yes
+ok 45 - shareContent rethrows other errors
+ok 46 - shareContent rejects when there is nothing to share
+ok 47 - canShareFiles asks navigator.canShare and is false without it
+ok 48 - copyText calls clipboard.writeText
+ok 49 - copyText rejects when the clipboard is unavailable or refuses
+ok 50 - saveToDevice clicks a download link for the blob and releases the URL later
+ok 51 - saveToDevice cleans the file name
+ok 52 - es and it have the same keys
+ok 53 - es and it use the same placeholders in every key
+ok 54 - no message is empty
+ok 55 - required keys exist
+ok 56 - default language is es
+ok 57 - setLang persists and getLang reads it back
+ok 58 - getLang falls back to es when the stored value is unknown
+ok 59 - setLang rejects an unsupported language
+ok 60 - setLang emits langchange on globalThis when it exists
+ok 61 - setLang works when globalThis has no dispatchEvent
+ok 62 - t uses the current language
+ok 63 - t interpolates {n}
+ok 64 - t returns the key when missing
+ok 65 - icon sizes
+ok 66 - createIdea rejects an idea with no text and no media
+ok 67 - createIdea accepts text only, media only, or both
+ok 68 - default lang is es
+ok 69 - createIdea rejects an unsupported lang
+ok 70 - createIdea fills id, status, dates and copies mediaIds
+ok 71 - status changes follow the rules
+ok 72 - searchIdeas finds words ignoring case and accents
+ok 73 - searchIdeas matches the same word typed as NFC or NFD
+ok 74 - searchIdeas returns everything for an empty query and keeps the order
+ok 75 - draft roundtrip and clear
+ok 76 - drafts are stored encrypted
+ok 77 - MIN_PASSWORD_LENGTH is 10
+ok 78 - passwordStrength is debole under 10 chars
+ok 79 - passwordStrength is buona with 14+ chars and three kinds
+ok 80 - passwordStrength is media from 10 chars or with fewer than three kinds
+ok 81 - passwordStrength counts characters after NFC normalization
+ok 82 - PasswordTooShortError carries the minimum length
+ok 83 - formatHistory keeps similarIds first and respects max
+ok 84 - formatHistory takes the most recent posts first when there are no similar ones
+ok 85 - formatHistory never exceeds max, even with more similar posts than max
+ok 86 - formatHistory returns an empty string without posts or with max 0
+ok 87 - formatHistory skips unknown similarIds and does not repeat a post
+ok 88 - formatHistory writes each post on a single line
+ok 89 - formatHistory does not change the posts it receives
+ok 90 - buildPrompt fills idea, history and language
+ok 91 - buildPrompt writes the language name in the template language
+ok 92 - buildPrompt uses a neutral line when there is no history
+ok 93 - buildPrompt: the idea, history and language come from the idea, not from values
+ok 94 - buildPrompt leaves unfilled form placeholders visible so they can be flagged
+ok 95 - buildPrompt uses the idea text from the form only when the idea has no text
+ok 96 - pairKey is stable, distinguishes its parts and ignores the order of a publication pair
+ok 97 - registerMatches creates one entry per match with status da_valutare
+ok 98 - registerMatches with no matches does nothing
+ok 99 - registerMatches is idempotent per pair
+ok 100 - falso_allarme is not signalled again
+ok 101 - setStatus changes and returns the entry, and rejects unknown statuses and ids
+ok 102 - registry entries are stored encrypted
+ok 103 - searchRepetitions filters by date and by word
+ok 104 - searchRepetitions accepts Date objects and full timestamps, and does not change its input
+ok 105 - checkNewPublication compares a new post with the existing ones, in its own language only
+ok 106 - checkNewPublication does not repeat a pair already seen from the other side
+ok 107 - required files exist
+ok 108 - nojekyll exists
+ok 109 - APP_VERSION is semver
+ok 110 - openDb creates every store and Db works on each
+ok 111 - stored value does not contain the plaintext
+ok 112 - stored blob does not contain the plaintext bytes or the mime type
+ok 113 - save sets id and updatedAt
+ok 114 - save keeps an explicit id, overwrites that record and refreshes updatedAt
+ok 115 - all returns decrypted records
+ok 116 - load returns null for a missing record and remove deletes a record
+ok 117 - records are unreadable with another session
+ok 118 - a record copied under another id is rejected
+ok 119 - blob roundtrip keeps bytes
+ok 120 - a blob record copied under another id is rejected
+ok 121 - loadBlob rejects for a missing id
+ok 122 - QuotaExceededError becomes StorageFullError and leaves the previous record intact
+ok 123 - QuotaExceededError while saving a blob becomes StorageFullError and writes nothing
+ok 124 - other write errors are not turned into StorageFullError
+ok 125 - a quota error raised inside the IndexedDB request writes nothing and reaches the caller
+ok 126 - a quota error that aborts the IndexedDB transaction writes nothing and becomes StorageFullError
+ok 127 - replaceAll replaces every store in one transaction
+ok 128 - replaceAll rolls everything back when a write fails
+ok 129 - replaceAll rolls everything back when the browser aborts the transaction
+ok 130 - replaceAll rejects unknown store names without touching the data
+ok 131 - storageStatus flags nearFull at 80% usage
+ok 132 - storageStatus does not fail when the browser has no storage API
+ok 133 - SIMILARITY_THRESHOLD is 0.5 (to be calibrated on the real posts)
+ok 134 - identical texts score 1 and disjoint texts score 0
+ok 135 - similarity is symmetric, ignores repeated words and stays between 0 and 1
+ok 136 - accented and unaccented words match
+ok 137 - the same text typed as NFC or NFD matches
+ok 138 - cuore and cuori share a stem
+ok 139 - tokenize lowercases, splits on punctuation and drops stopwords and short words
+ok 140 - known limits of the stemmer: amar and amando, valiente and valentía are different words
+ok 141 - tokenize rejects an unsupported language
+ok 142 - texts in different languages are never compared
+ok 143 - findSimilar respects the threshold and the limit
+ok 144 - findSimilar sorts by score and breaks ties with the most recent post
+ok 145 - findSimilar compares title and description and reports the shared words
+ok 146 - findSimilar does not change its input
+ok 147 - findSimilar handles posts without title or description
+ok 148 - vendor stemmers give the same stems as snowball-stem 1.1.1
+ok 149 - formatResults formats one line per result
+ok 150 - formatResults handles missing ms
+ok 151 - formatResults keeps one line per result when details contain newlines
+ok 152 - zero posts gives zeros and empty arrays
+ok 153 - posts without views are ignored in view aggregates
+ok 154 - posts without comments are ignored in comment aggregates
+ok 155 - bestHours averages by publication hour
+ok 156 - bestHours breaks ties by the earlier hour
+ok 157 - byType counts all posts
+ok 158 - viewsOverTime adds up the views of each day and is sorted by date
+ok 159 - commentsPerPost is in publication order
+ok 160 - days and hours follow the time zone
+ok 161 - invalid dates are counted in the totals but left out of the time charts
+ok 162 - only finite non-negative numbers count as views and comments
+ok 163 - computeStats does not change its input and ignores unknown types in byType
+ok 164 - PLACEHOLDERS lists the placeholders of the spec
+ok 165 - there are 4 kinds in 2 languages, all builtin, with unique ids
+ok 166 - every default template contains {lingua} and {idea}
+ok 167 - every default template asks for hook and caption separately
+ok 168 - default templates use only known placeholders and the history/style ones
+ok 169 - video templates ask for the video length and photo templates do not
+ok 170 - renderTemplate replaces all placeholders
+ok 171 - renderTemplate treats values literally
+ok 172 - renderTemplate leaves placeholders without a value untouched
+ok 173 - findUnfilled lists missing placeholders
+ok 174 - duplicateTemplate makes an editable copy
+ok 175 - renderTemplate leaves placeholders with an empty value untouched
+ok 176 - json roundtrip
+ok 177 - bytes roundtrip keeps every byte
+ok 178 - encrypting the same value twice gives different ciphertexts
+ok 179 - tampered ciphertext is rejected
+ok 180 - wrong password throws WrongSecretError
+ok 181 - correct password opens the vault and reads the same data
+ok 182 - recovery code has 32 base32 characters in groups of 4
+ok 183 - recovery code opens the vault (lowercase and spaces)
+ok 184 - wrong recovery code throws WrongSecretError
+ok 185 - changePassword keeps old data readable and rejects the old password
+ok 186 - changePassword keeps the recovery code and the setup state
+ok 187 - changePassword rejects a password shorter than MIN_PASSWORD_LENGTH
+ok 188 - changePassword rejects a session from another vault
+ok 189 - password is normalized to NFC
+ok 190 - password with accents, ñ, ¿ and ¡ opens with any normalization
+ok 191 - isSetupComplete is false until confirmRecoveryCode
+ok 192 - a vault never confirmed is still incomplete after a restart
+ok 193 - vault record survives a JSON roundtrip and can be stored as a meta record
+ok 194 - default iterations constant is 600000
+ok 195 - createVault rejects a password shorter than MIN_PASSWORD_LENGTH
+ok 196 - createVault rejects a non-string password and invalid iterations
+ok 197 - two vaults get different recovery codes and wrapped keys
+ok 198 - changePassword accepts a new password typed as NFD and unlocks with NFC
+ok 199 - createVault counts the minimum length after NFC
+ok 200 - recovery code accepts typographic dashes and full-width characters
+ok 201 - a corrupt vault record is not reported as a wrong password
+ok 202 - a vault whose wrapped key was altered looks like a wrong password
+ok 203 - unlock functions always return a promise, even for invalid input
+1..203
+# tests 203
+# suites 0
+# pass 203
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2326.659788
+```
+
+**Test del piano, task per task** (confronto automatico dei nomi nei file con i nomi scritti nel piano; i test dei punti 1, 3 e 4 del Review Focus sono tra questi):
+
+| Task | Nomi del piano trovati | Test nei file del task | Note |
+|---|---|---|---|
+| T3 | 5 su 5 | `i18n.test.js` 13 | |
+| T4 | 11 su 11 | `vault.test.js` 28, `password.test.js` 6 | punto 1: `password is normalized to NFC`; punto 2: `isSetupComplete is false until confirmRecoveryCode` |
+| T5 | 6 su 6 | `secure-store.test.js` 23 (4 sono di `replaceAll`, aggiunti in T9) | punto 4: `QuotaExceededError becomes StorageFullError and leaves the previous record intact` |
+| T6 | 9 su 9 | `ideas.test.js` 11 (compreso `draft roundtrip and clear`), `templates.test.js` 12, `prompts.test.js` 13 | |
+| T7 | 8 su 8 | `similarity.test.js` 16, `repetitions.test.js` 11 | punto 1: `accented and unaccented words match` (contiene l'esempio del piano, che passa solo con Dice a soglia 0,5: vedi scostamento 1) |
+| T8 | 7 su 7 (6 del piano + `shareContent returns unsupported on NotAllowedError` chiesto da Luca) | `export.test.js` 22 | |
+| T9 | 6 su 6 | `backup.test.js` 29 | punto 3: `truncated file throws BackupFormatError and leaves the db unchanged`, `future version throws BackupVersionError`, `wrong secret throws WrongSecretError and leaves the db unchanged` |
+| T10 | 4 su 4 | `stats.test.js` 12 | |
+
+Su ogni task ho fatto mutazioni temporanee del codice (e poi ripristinato): i test falliscono come devono. Dove una mutazione non veniva intercettata ho aggiunto il test prima del commit (T5: percorso asincrono della quota; T9: annullamento asincrono di `replaceAll`, record `vault` tra i `meta`).
+
+**File creati.**
+- Spec: `docs/superpowers/specs/2026-11-16-nay-app-design-v1.md` (modificata, 5 sostituzioni).
+- T3: `js/i18n/index.js`, `es.js`, `it.js`; `tests/i18n.test.js`.
+- T4: `js/core/crypto.js`, `vault.js`, `password.js`; `tests/vault.test.js`, `password.test.js`.
+- T5: `js/core/db.js`, `secure-store.js`; `tests/secure-store.test.js`.
+- T6: `js/features/ideas.js`, `templates.js`, `prompts.js`, `drafts.js`; `tests/ideas.test.js`, `templates.test.js`, `prompts.test.js`.
+- T7: `js/features/similarity.js`, `repetitions.js`, **`text.js`** (non nel piano); `vendor/snowball-es.js`, `vendor/snowball-it.js`; `tests/similarity.test.js`, `repetitions.test.js`; `ideas.js` modificato per usare `text.js`.
+- T8: `js/features/export.js`; `tests/export.test.js`.
+- T9: `js/core/backup.js`; `tests/backup.test.js`; modificati `db.js` (aggiunto `replaceAll`), `vault.js` (esportato `sessionMatchesVault`), `tests/secure-store.test.js`.
+- T10: `js/features/stats.js`; `tests/stats.test.js`.
+- Questo resoconto: `docs/npm-test-dopo-T10.txt` (output integrale di `npm test`).
+- `STATUS.md` aggiornato a ogni task.
+
+**Scostamenti dal piano** (motivi e costi nella sezione «Fase 2 (T3-T10): fatti, scelte e scostamenti» più sotto):
+1. **T7, misura di somiglianza:** il piano non fissa la formula; ho usato il coefficiente di **Dice** perché l'esempio del piano («Ánimo valiente» ↔ «animo y valentía») con lo stemmer vero ha radici `valient` ≠ `valent` e con la Jaccard darebbe 0,33 (sotto soglia); con Dice vale 0,5, esattamente la soglia. Caso al limite: soglia da calibrare **[Da provare]**. Gli accenti (anche «ñ») si tolgono prima della radice.
+2. **T9, `Db.replaceAll`:** metodo in più in `db.js` (il piano dà a `Db` solo `put/get/list/remove`) per rendere atomica la sostituzione dei dati; il formato del file ha in più un SHA-256 dell'intestazione.
+3. **T7, `searchRepetitions`:** filtra le date sul controllo (`checkedAt`), non sulla pubblicazione trovata, perché il tipo `Repetition` del piano non ha quella data: da risolvere in T14.
+4. **T10, T8:** parametri facoltativi in più (`computeStats(pubs, {timeZone})`, `saveToDevice(blob, name, env)`), solo per poterli provare.
+5. **T6:** `Idea` ha il campo facoltativo `publicationId`; il test `draft roundtrip and clear` sta in `tests/ideas.test.js`.
+6. **T4/T5:** forma del record del vault e dei record cifrati (`id` e `updatedAt` in chiaro, id controllato nel contenuto cifrato, `check` nel vault); non rifiutato `changePassword` su un vault non confermato (resta una regola per T11).
+7. **Metodo:** lavoro direttamente su `main`; `STATUS.md` fa da registro. Durante l'attesa della revisione di T9 un hook di fine turno mi ha chiesto di committare le modifiche non salvate: ho rinviato il commit perché Luca vuole la revisione indipendente prima del commit di T9; la revisione è arrivata poco dopo e il commit è stato fatto subito dopo averne applicato l'esito.
+
+**Cosa NON ho verificato.**
+- **Il Samsung e i fatti che mi hai dato:** (ZIP non condivisibile, PBKDF2 78 ms, AES-GCM su 42 MB, ZIP di 159,4 MB in 0,59 s) li ho solo riportati e usati, non misurati.
+- **Browser e IndexedDB veri:** i test usano `fake-indexeddb`; la quota esaurita, l'annullamento della transazione e le dimensioni massime sono **simulati**. Comportamento di `navigator.share`, `clipboard` e del download con `<a download>`: provato solo con oggetti finti.
+- **Memoria e tempi con file grandi sul telefono:** misure indicative solo in Node (cifratura base64 di file da 50 e 150 MB; `makeZip` da 159 e 600 MB). La busta in base64 passa il limite di lunghezza delle stringhe di V8 oltre circa 380 MB di file (misura del revisore in Node). Import ed export del backup tengono tutto in memoria.
+- **Somiglianza:** qualità sui 50 post veri, soglia 0,5, elenchi delle parole vuote (scritti da me), formula Dice: tutto **[Da provare]**. Radici testate con `snowball-stem` 1.1.1, non su testi veri.
+- **Testi:** i corpi degli 8 template e i testi di interfaccia in spagnolo e italiano sono scritti da me e non rivisti (lei per lo spagnolo, Luca per l'italiano, T19); il numero di varianti (5 hook, 3 caption) è provvisorio.
+- **Fusi orari:** `computeStats` provato con i fusi UTC e Europa/Madrid nel Node di qui; sul telefono vale il suo fuso.
+- **Revisione indipendente:** solo per T4 e T9 (come chiesto); T3, T5-T8 e T10 non hanno avuto un secondo revisore, solo le mie mutazioni di controllo.
+- **Interfaccia:** nessuna; nulla di T11 in avanti, né il gate G1 (GitHub Pages) né G3.
+
+**Stato git.** Prima di scrivere questo blocco: working tree pulito e `HEAD` = `origin/main` = `db9b050` (verificato con `git fetch`). La stessa verifica dopo il commit di questo resoconto è nella risposta.
+
 ## Resoconto per Claude (dopo T2, 16 novembre 2026)
 
 **Stato.** T0, T1 e T2 chiusi, uno per commit, tutti pubblicati su `main` (verificato: `HEAD` = `origin/main`). Esecuzione ferma prima di T3, come chiesto. Repo `lucata76-beep/Nay-app`, visibilità **public** (verificato con l'elenco dei repo di GitHub).
