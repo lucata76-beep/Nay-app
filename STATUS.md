@@ -513,6 +513,9 @@ Ultimo aggiornamento: 16 novembre 2026
 - Scelte (il piano non le fissa): `viewsOverTime` somma le visualizzazioni per giorno, in ordine di data; `commentsPerPost` è in ordine di pubblicazione (i post con data non valida in fondo); `bestHours` va dalla fascia con più visualizzazioni medie, a parità l'ora più presto (il grafico di T15 può riordinarla per ora); le date non valide contano nei totali ma restano fuori dai grafici nel tempo; contano come dati solo i numeri finiti e non negativi (lo zero è un dato vero); i tipi sconosciuti non compaiono in `byType` ma contano in `totalPosts`; `totalPosts` conta tutti i post.
 - **Per T15:** con 200-260 post all'anno il grafico dei commenti per post va limitato (per esempio agli ultimi N); `computeStats` restituisce tutti i dati.
 
+**Correzioni a moduli di fase 2 trovate in fase 3**
+- **T5, `Db.add(store, record)` (commit `fix:` prima di T11).** Il revisore di T11 ha trovato che la creazione del vault controllava (`creationStatus`) e poi scriveva (`db.put`) in due transazioni separate: con due schede ferme sulla schermata del codice di recupero, entrambe potevano scrivere e l'ultima vinceva, lasciando la prima con una sessione che cifra con una chiave diversa dal vault salvato (dati illeggibili). Correzione: `add` fallisce con `ConstraintError` se l'id esiste già (controllo e scrittura nella stessa transazione), usato da `js/ui/screens/lock.js`. Test: `Db.add writes a new record and refuses to overwrite an existing one (ConstraintError)`, visto rosso (`db.add is not a function`) poi verde. Costo se sbagliata: un metodo in più in `db.js`.
+
 ## Da verificare
 
 - Tutto ciò che richiede il Samsung (gate G2): vedi `docs/test-samsung-results.md`.

@@ -59,6 +59,9 @@ function replaceAll(idb, data) {
 function makeDb(idb) {
   return {
     put: (store, record) => run(idb, store, 'readwrite', (s) => s.put(record)).then(() => undefined),
+    // Come put, ma fallisce con ConstraintError se l'id esiste già: serve a creare il vault senza mai
+    // sovrascrivere quello di un'altra scheda (il controllo e la scrittura sono la stessa transazione).
+    add: (store, record) => run(idb, store, 'readwrite', (s) => s.add(record)).then(() => undefined),
     get: (store, id) => run(idb, store, 'readonly', (s) => s.get(id)).then((value) => (value === undefined ? null : value)),
     list: (store) => run(idb, store, 'readonly', (s) => s.getAll()),
     remove: (store, id) => run(idb, store, 'readwrite', (s) => s.delete(id)).then(() => undefined),
