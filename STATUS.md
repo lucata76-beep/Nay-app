@@ -1,5 +1,41 @@
 # STATUS
 
+## Resoconto per Claude (dopo T17, 17 novembre 2026)
+
+**Riassunto.**
+1. T17 (applicare i risultati di G2) è fatto, **solo documentazione**: `docs/test-samsung-results.md` compilato (dati riferiti da Luca e riportati da Claude; il testo grezzo di «Copia risultati» non è nel repo); spec sezione 3: 2 marcatori **[Da provare]** sostituiti su 8 (Selettore galleria, Hosting); spec sezione 9: paragrafo «Esiti del test del 16-17 novembre 2026» con l'esito dei 9 punti; `STATUS.md` aggiornato. T18 e T19 non toccati.
+2. **Codice non cambiato, perché i dati non lo richiedono** (controllato nel codice: `export.js` non condivide mai lo ZIP; `persist()` c'è; nessun codice per impronta/PRF nei 56 file serviti; 600.000 ripetizioni = 78 ms). `APP_VERSION` resta 0.7.0, `precache.json` invariato, `spike/` invariato.
+3. Su due marcatori **non sono d'accordo fino in fondo**, e l'ho scritto nella spec: **Hosting**: i dati coprono solo `/spike/`, quindi la riga conserva un **[Da provare]** per la radice di Pages (gate G1); **Selettore galleria**: sostituito, ma ho scritto che Android 14 e 15 non sono provati (il telefono ha Android 17) e che l'offerta della fotocamera non è stata riferita. Se vuoi che i due residui spariscano dalla spec, basta dirlo.
+4. Dati ambigui scritti come ricevuti e dichiarati tali: «74 ms» con «499.500 coppie» (la spike misura tre tempi per 1000 testi), «159,4 MB» (ingresso o ZIP), `share` e `prf` senza `OK`/`KO`/`?`. Dettagli in «Fase 4 (T17)» più sotto.
+5. Altri **[Da provare]** nelle sezioni 6 e 7 della spec (righe 208, 213, 225, 229) sono coperti in parte dai dati ma **non cambiati** (istruzione: nient'altro nella spec).
+
+**Stato.** Fase 3 unita in `main` (PR #1, `66a424a`); T17 sul ramo `claude/samsung-test-results-t17-7lfx0i`, non online finché Luca non apre e unisce una nuova pull request. Spec: sha256 `401d573a952f6512df6f9be26616c1f12a5562b942a2abf78fcf6ef35f02b0da` (prima: `6b69efebff601db61c4dfd44ef1c7c06dc4aeee16911526e311983d4dc5ed940`). Aperti e non toccati: via A o B (nella spec solo i dati), `spike/sw.js` riga 30, «Importa backup» nell'accesso, `{stile}` mancante, 12 post per il grafico dei commenti, 30 post nello storico, soglia 0,5, file grandi (G4), nessun `LICENSE`, nessuna 1.0.0. Per T19: le etichette «2.61k» dei grafici usano il punto decimale in spagnolo e italiano (`compact()` in `js/ui/charts.js`).
+
+**Ambiente (verificato).** Node v22.23.4. Nel clone nuovo mancava `node_modules`: la prima `npm test` ha dato 156 pass e 10 fail (`Cannot find package 'fake-indexeddb'`); dopo `npm ci` (3 pacchetti dal lockfile, `node_modules/` ignorato da git) la suite dà 343/343. Nessun browser avviato in T17.
+
+**Commit** (ramo `claude/samsung-test-results-t17-7lfx0i`; base `66a424a`, uguale a `origin/main`):
+
+| Hash | Messaggio |
+|---|---|
+| `66a424a` | Merge pull request #1 (fase 3, di Luca) — base |
+| ultimo sul ramo | docs: esiti del test sul Samsung (T17) (il suo hash è in `git log -1`) |
+
+**Output di `npm test`** (dopo `npm ci`, sul lavoro di T17; l'elenco dei 343 test è identico a quello del blocco precedente, nessun test è stato aggiunto o tolto):
+
+```
+> nay-app@0.1.0 test
+> node --test "tests/*.test.js"
+...
+1..343
+# tests 343
+# suites 0
+# pass 343
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+```
+
 ## Resoconto per Claude (dopo T16, 17 novembre 2026)
 
 **Riassunto.**
@@ -859,18 +895,19 @@ Rosso prima del verde (visto): in T0 il primo rosso era per il motivo sbagliato 
 
 ---
 
-Ultimo aggiornamento: 16 novembre 2026
+Ultimo aggiornamento: 17 novembre 2026
 
 ## Dove siamo
 
-- **Fase:** 3 — Interfaccia (T11-T16) in corso, sul ramo `claude/fase-3-interfaccia-ck0hog` (non su `main`: vedi «Fase 3»). Ultimo aggiornamento: 17 novembre 2026.
-- **Ultimo task chiuso:** T16 (Menu ⋮, Impostazioni, backup) — `APP_VERSION` 0.7.0. È l'ultimo task di fase 3: **T17-T19 non si toccano** (servono Luca e il telefono).
-- **Prossimo task:** T17 (applicare i risultati di G2) — **non iniziato**, aspetta `docs/test-samsung-results.md` compilato da Luca.
+- **Fase:** 4 — Esiti del test sul Samsung: T17 chiuso (17 novembre 2026). La fase 3 (T11-T16) è completa e **unita in `main`** da Luca con la pull request #1 (commit `66a424a`, nessuna differenza di file rispetto a `1c6f5f1`, secondo il resoconto di Claude). Il lavoro di T17 è sul ramo `claude/samsung-test-results-t17-7lfx0i` (quello assegnato dall'ambiente): GitHub Pages serve `main`, quindi i commit di T17 **non sono online** finché Luca non apre e unisce una nuova pull request.
+- **Ultimo task chiuso:** T17 (applicare i risultati di G2) — solo documentazione: `docs/test-samsung-results.md`, spec (sezioni 3 e 9) e questo file. Nessun file servito è cambiato: `APP_VERSION` resta **0.7.0**, `precache.json` invariato. `npm test`: 343/343.
+- **Prossimo task:** T18 (esperimenti facoltativi: vocabolario, significato, OCR) — **non iniziato**: servono Luca e i 50 post veri (modello di significato e OCR solo se Luca li chiede dopo aver visto i numeri). **T18 e T19 non si toccano** senza di lui.
 
 ## Gate aperti
 
-- **G1** (Luca): abilitare GitHub Pages dalle impostazioni del repo (ramo `main`, cartella radice) e verificare che `https://lucata76-beep.github.io/Nay-app/` si apra in HTTPS e mostri «NAY-App» e `v0.1.0`. **[Da provare]**: non è stato aperto da questa sessione.
-- **G2** (Luca, non blocca le fasi 2-3): aprire `https://lucata76-beep.github.io/Nay-app/spike/` sul Samsung in Chrome, aggiungere alla schermata Home, eseguire i controlli e incollare i risultati in chat. Istruzioni e tabella da compilare: `docs/test-samsung-results.md`. **[Da provare]**: l'indirizzo è ricavato dal nome del repo.
+- **G1** (Luca): GitHub Pages è abilitato e serve `main`. Secondo un fetch di Claude (non un browser, non il telefono) la radice serve `APP_VERSION = '0.7.0'`. **Resta aperto:** che `https://lucata76-beep.github.io/Nay-app/` si apra in HTTPS **sul telefono** e mostri «NAY-App» con il numero di versione non è verificato **[Da provare]**: questa sessione non l'ha aperto e nessuno l'ha aperto sul Samsung (il test di G2 è stato fatto all'indirizzo `/spike/`).
+- **G2 — chiuso con T17.** Risultati riferiti da Luca e riportati da Claude (il testo grezzo di «Copia risultati» non è nel repo): `docs/test-samsung-results.md` e spec sezione 9. **Restano da provare** (elenco in `docs/test-samsung-results.md`, «Non provato»): offline reale, radice di Pages sul telefono, ZIP allegato a mano, testo insieme ai file e numero massimo di file per messaggio, PRF, qualità della somiglianza sui 50 post veri, file molto grandi (G4).
+- **G4** (Luca, prova finale sul Samsung, task T19): non toccato.
 
 ## Scostamenti dal piano e scelte fatte
 
@@ -1208,7 +1245,22 @@ Rilanciati anche gli script di T11-T15 dopo le modifiche a `main.js`, `lock.js`,
 
 **Non provato [Da provare sul Samsung]:** dove finisce il file scaricato e come si comporta `<a download>` dall'app installata (tra il tocco su «Exportar» e il download passano la lettura di tutto il database e la costruzione del file: l'attivazione dell'utente potrebbe essere scaduta); il selettore file di Android con un file `.naybk`; backup grandi (foto e video: l'esportazione costruisce il file e l'importazione lo legge tutto in memoria; tempi della derivazione a 600.000 ripetizioni); i numeri di `navigator.storage.estimate` e l'esito di `persist()`; l'evento `cancel` del selettore su Chrome per Android; l'app installata e una scheda del browser aperte insieme (il messaggio tra schede); `visibilitychange` e blocco automatico reali durante un'importazione.
 
+## Fase 4 (T17): fatti, scelte e scostamenti
+
+**Cosa è cambiato (commit `docs: esiti del test sul Samsung (T17)`):** `docs/test-samsung-results.md` (compilato), la spec (sezioni 3 e 9, vedi sotto) e `STATUS.md`. Niente altro: `git diff --stat` mostra solo questi tre file.
+
+- **Origine dei dati.** Riferiti da Luca (16-17 novembre 2026), riportati da Claude (il Project). Il testo grezzo di «Copia risultati» **non è nel repo**; questa sessione non ha un telefono Android e non ha verificato nulla di questi esiti.
+- **Spec, sezione 3.** Su 8 marcatori **[Da provare]**: sostituiti 2 (Selettore galleria, Hosting); gli altri 6 sono intatti (impronta/PRF, app di IA e ZIP, OCR, significato, vocabolari, stemmer). Sull'hosting vale solo l'indirizzo `/spike/`: la radice di Pages sul telefono non è stata aperta, quindi la riga dell'hosting conserva un **[Da provare]** per la radice (gate G1). Nella riga del selettore ho scritto in chiaro che Android 14 e 15 non sono stati provati (il telefono ha Android 17) e che l'offerta della fotocamera nel selettore non è stata riferita.
+- **Spec, sezione 9.** Dopo l'elenco dei 9 punti, il paragrafo «Esiti del test del 16-17 novembre 2026» con l'esito di ogni punto, preso solo dai dati riferiti. Nessuna decisione cambiata: la spec non dice che la via A sia scelta in base ai dati (la riga della tabella delle vie, «scelta [Luca]», c'era già e non è stata toccata).
+- **Spec, ciò che i dati toccano ma non è stato cambiato** (istruzione: nient'altro nella spec): **[Da provare]** nelle sezioni 6 e 7 che i dati riferiti coprono in parte: riga 208 (testo e file insieme nell'app di IA), riga 213 (lo ZIP con video lunghi deve reggere), riga 225 (tempo di sblocco a 600.000 ripetizioni: riferiti 78 ms), riga 229 (costo della cifratura dei video grandi: riferiti 60 ms per 42 MB). Restano così finché Claude o Luca non chiedono di aggiornarli.
+- **Dati ambigui, scritti come ricevuti.** (1) «74 ms» per «1000 testi, 499.500 coppie»: per 1000 testi la spike misura tre tempi (una query contro tutti, solo il confronto, ogni testo contro i precedenti) e il dato non dice quale sia: lo dichiarano la spec e il file dei risultati. (2) «159,4 MB» per i 3 video: la spike scrive sia la dimensione in ingresso sia quella dello ZIP; col formato «stored» (`ZipPassThrough`) la differenza è di poche centinaia di byte per file, ma il dato non dice quale delle due sia. (3) Per `share` e `prf` non è stato riferito un `OK`/`KO`/`?`: nella tabella c'è «non riferito» e i fatti sono nei dettagli.
+- **Codice: nessuna modifica, perché i dati non la richiedono** (controllato nel codice, non a memoria): `js/features/export.js` non condivide mai uno ZIP (`canShareFiles` è falso se c'è uno ZIP; `NotAllowedError` dà `unsupported`), com'è provato sul telefono; `persist()` si chiama dopo il codice di recupero (`lock.js`) e dal pulsante in Impostazioni, che sparisce se lo storage è già persistente (`settings.js`); nel codice servito non c'è nulla su impronta o PRF (nessun riferimento a `PublicKeyCredential`, `prf` o WebAuthn fuori dalla spike), quindi l'impronta è fuori dall'app com'è giusto finché il PRF non è provato; le 600.000 ripetizioni restano (78 ms riferiti). Non si è toccato `spike/` né `precache.json`; `APP_VERSION` resta 0.7.0.
+- **Non deciso e non toccato (indicazioni di Luca):** via A (PWA) o via B (Capacitor): Luca non ha ancora confermato la A, la spec riporta solo i dati; `spike/sw.js` riga 30; «Importa backup» nella schermata di accesso; `{stile}` mancante (avviso o blocco), 12 post per il grafico dei commenti, 30 post nello storico; soglia di somiglianza 0,5 (da calibrare sui 50 post veri, che la sessione non ha: resta **[Da provare]**); file grandi sul telefono (da provare a G4 con il video più pesante); nessun `LICENSE`, nessuna versione 1.0.0.
+- **Segnalazione per T19 (non toccata):** le etichette dei grafici come «2.61k» usano il punto decimale in spagnolo e in italiano (`compact()` in `js/ui/charts.js`).
+- **Ramo.** Il messaggio di T17 indicava il ramo `claude/fase-3-interfaccia-ck0hog`; l'ambiente ha assegnato `claude/samsung-test-results-t17-7lfx0i` e il lavoro è su quello. `git merge --ff-only origin/main` non serviva: `HEAD` era già `66a424a`, uguale a `origin/main` (verificato con `git rev-parse`; `1c6f5f1` è antenato di `66a424a`).
+- **`node_modules`.** Nel clone nuovo mancava e la prima `npm test` ha dato 156 pass e 10 fail (`Cannot find package 'fake-indexeddb'`, dichiarato nelle `devDependencies`). Dopo `npm ci` (3 pacchetti dal lockfile; `node_modules/` è ignorato da git) la suite dà 343/343. Nessun file del repo è cambiato per questo.
+
 ## Da verificare
 
-- Tutto ciò che richiede il Samsung (gate G2): vedi `docs/test-samsung-results.md`.
-- GitHub Pages in HTTPS (gate G1).
+- Tutto ciò che richiede il Samsung: G2 è fatto (T17); resta ciò che `docs/test-samsung-results.md` elenca sotto «Non provato», più i punti **[Da provare sul Samsung]** dei task di fase 3.
+- GitHub Pages in HTTPS sul telefono (gate G1).
