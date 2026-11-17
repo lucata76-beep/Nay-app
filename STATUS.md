@@ -1,5 +1,453 @@
 # STATUS
 
+## Resoconto per Claude (dopo T16, 17 novembre 2026)
+
+**Riassunto.**
+1. T11-T16 (l'interfaccia) sono fatti in ordine, ognuno con i test prima (visti rossi, poi verdi), un commit per task e la «verifica a mano» del piano eseguita in Chromium con script; la suite passa da 203 a **343 test, tutti verdi** (Node 22.23.4); `APP_VERSION` 0.7.0. Ci sono 17 screenshot (dati inventati) in `docs/screenshots-fase3/`. T17-T19 non sono stati toccati.
+2. T11 e T16 sono stati rivisti prima del commit da un revisore indipendente (sub-agente su modello Opus, sola lettura). T11: nessun Critical, 8 Important, 7 Minor. T16: 1 grave, 3 medi, 4 bassi; il più importante era che un blocco automatico durante un'importazione lunga permetteva di sbloccare con la password vecchia sopra i dati importati (illeggibili). Ho riletto ogni punto nel codice prima di agire; tutti corretti con test o con la prova in Chromium, tranne `spike/sw.js` (non toccata: decide Luca).
+3. **Tutto il lavoro è sul ramo `claude/fase-3-interfaccia-ck0hog`, non su `main`** (l'ambiente consente solo quel ramo): GitHub Pages serve `main`, quindi l'interfaccia **non è online** finché Luca non unisce il ramo. Non verificato: tutto ciò che richiede il Samsung (installazione, download, selettore file, condivisione vera, memoria con file grandi), HTTPS di Pages (G1) e i testi in spagnolo e in italiano (T19).
+
+**Stato.** Fase 3 (interfaccia, T11-T16) completa. L'app ha: accesso e creazione della password, barra in alto e in basso, Ideare, Sviluppare, Pubblicazioni salvate con registro, Dashboard con grafici, menu ⋮ con Impostazioni, backup e Informazioni; funziona offline sotto `/Nay-app/`, con aggiornamento tramite `APP_VERSION`. `spike/`, `docs/superpowers/` (spec e piano) e `package.json` sono **invariati** rispetto a `ea64f38` (verificato con `git diff`). Nessun `LICENSE`, nessuna CDN, nessun segreto nel codice, nessuna richiesta di rete a runtime (CSP nell'`index.html`; negli script di Chromium di T11-T16, esclusi quelli sulle due versioni e sulla quota, nessuna richiesta fuori da `127.0.0.1`).
+
+**Ambiente (verificato).** Node v22.23.4; Python 3.13.18 (`python3 -m http.server`); Chromium 153.0.8010.12 con Playwright 1.63.0 (script **fuori dal repo**: nessuna dipendenza nuova). Telefono emulato: viewport 384×832, `deviceScaleFactor` 2,8125, touch (gli screenshot sono salvati a scala 2). L'app è servita da una cartella temporanea con un collegamento `Nay-app`, quindi sotto `/Nay-app/`. **Non è Android né Chrome per Android né Samsung Internet.**
+
+**Commit (tutti sul ramo `claude/fase-3-interfaccia-ck0hog`, tutti pubblicati; `main` è fermo a `ea64f38`):**
+
+| Hash | Messaggio |
+|---|---|
+| `58274a5` | fix: Db.add rifiuta di sovrascrivere un record (T5, trovato nella revisione di T11) |
+| `710f40b` | feat: guscio dell'app, accesso e barre (T11) — v0.2.0 |
+| `bf5870a` | feat: pagina Ideare (T12) — v0.3.0 |
+| `a85cea5` | feat: pagina Sviluppare (T13) — v0.4.0 |
+| `f7363ed` | feat: pagina Pubblicazioni salvate (T14) — v0.5.0 |
+| `b254486` | feat: Dashboard (T15) — v0.6.0 |
+| `0e02173` | feat: menu e impostazioni (T16, messaggio del piano) — v0.7.0 |
+| `16d8257` | docs: screenshot fase 3 (17 PNG e `LEGGIMI.md`, fuori da `precache.json`) |
+| ultimo sul ramo | docs: resoconto per Claude dopo T16 (questo blocco; il suo hash è in `git log -1`) |
+
+**Output di `npm test`** (343 test, dopo il commit di T16). Versione compatta (tolte di ogni test le righe `# Subtest`, `---`, `duration_ms`, `type` e `...`); l'output **integrale** (2072 righe) è in `docs/npm-test-dopo-T16.txt`.
+
+```
+> nay-app@0.1.0 test
+> node --test "tests/*.test.js"
+
+TAP version 13
+ok 1 - changeVaultPassword opens with the new password, rejects the old one and keeps the recovery code
+ok 2 - changeVaultPassword keeps the data readable and the vault confirmed
+ok 3 - changeVaultPassword asks for the current password and changes nothing when it is wrong
+ok 4 - changeVaultPassword refuses a short password and changes nothing
+ok 5 - changeVaultPassword refuses a session of another vault
+ok 6 - changeVaultPassword puts the old vault back when the saved one does not open with the new password
+ok 7 - changeVaultPassword refuses when there is no confirmed vault
+ok 8 - resetPasswordWithRecoveryCode sets a new password with the code, and a wrong code changes nothing
+ok 9 - resetPasswordWithRecoveryCode refuses a short new password and changes nothing
+ok 10 - exportCurrentBackup uses the vault stored now, not an older copy
+ok 11 - exportCurrentBackup also opens with the recovery code
+ok 12 - exportCurrentBackup refuses when the vault is missing or not confirmed
+ok 13 - backupFileName is a safe dated name
+ok 14 - backupErrorKey maps each backup error to its message key
+ok 15 - unlockCurrentVault opens with the vault stored now and returns a working session
+ok 16 - unlockCurrentVault reads the vault at every attempt: the vault replaced by an import is used, the old password no longer opens
+ok 17 - unlockCurrentVault opens with the recovery code of the vault stored now
+ok 18 - unlockCurrentVault never returns a session of a vault that was replaced while the key was derived
+ok 19 - unlockCurrentVault gives up with VaultChangedError when the vault keeps changing
+ok 20 - unlockCurrentVault refuses when there is no confirmed vault
+ok 21 - changeVaultPassword does not save over a vault that was replaced by an import while it worked
+ok 22 - resetPasswordWithRecoveryCode does not save over a vault that was replaced by an import while it worked
+ok 23 - changeVaultPassword does not put the old vault back over a vault replaced meanwhile
+ok 24 - roundtrip into an empty db restores all stores
+ok 25 - the backup keeps the records encrypted
+ok 26 - import replaces the existing data and the vault
+ok 27 - wrong secret throws WrongSecretError and leaves the db unchanged
+ok 28 - truncated file throws BackupFormatError and leaves the db unchanged
+ok 29 - a file with extra bytes at the end throws BackupFormatError
+ok 30 - a corrupted record throws BackupFormatError and leaves the db unchanged
+ok 31 - a record moved under another id throws BackupFormatError
+ok 32 - future version throws BackupVersionError
+ok 33 - files that are not backups throw BackupFormatError
+ok 34 - errors carry clear names and are Error instances
+ok 35 - recovery code opens a backup
+ok 36 - estimateBackupSize is at least the sum of the stored blob sizes
+ok 37 - exporting an app with only the vault gives a backup that imports
+ok 38 - the backup does not list the vault twice and its counts match the records
+ok 39 - import is all-or-nothing when the storage fills up while writing
+ok 40 - import is all-or-nothing when the browser aborts the write transaction
+ok 41 - a rebuilt file without defects imports (so the cases below fail only for their own defect)
+ok 42 - every single flipped bit in the header area is rejected, never imported
+ok 43 - a header altered but with a matching digest is still checked field by field
+ok 44 - PBKDF2 iterations above the cap are refused at once
+ok 45 - the declared counts must match the records in the file
+ok 46 - duplicate ids, an out-of-range store index, and a vault record among the meta records are refused
+ok 47 - records that are not valid records are refused
+ok 48 - a blob whose info belongs to another blob is refused
+ok 49 - the version field is checked on its own: 0 is invalid, 2 is a future version
+ok 50 - a file whose records come from another vault is refused
+ok 51 - exportBackup refuses a vault whose recovery code was never confirmed
+ok 52 - exportBackup rejects a vault that is not a vault record
+ok 53 - barChartSvg draws one rect per datum
+ok 54 - donutChartSvg draws one path per non-zero slice
+ok 55 - charts return a placeholder svg for empty data
+ok 56 - areaChartSvg draws one dot per datum, an area and a line
+ok 57 - bars are proportional to the values and never negative
+ok 58 - the chart values never produce NaN or Infinity in the markup
+ok 59 - chart labels are escaped: a post title cannot inject markup
+ok 60 - charts use classes and gradients, never color values (colors come from css/tokens.css)
+ok 61 - bar chart shows the values above the bars only when there are few, and the labels without crowding
+ok 62 - each chart has an accessible name and a title
+ok 63 - lastN keeps the most recent N entries of a list in publication order
+ok 64 - gradient ids are unique, so several charts in one page do not share a gradient
+ok 65 - areaChartSvg labels the first, the middle and the last date on the axis
+ok 66 - the max-value label never overlaps the value above the tallest bar
+ok 67 - barChartSvg can leave the axis labels out (titles stay in the tooltips)
+ok 68 - every --bg-*, --text* and --fill-*/--on-* token is a six-digit hex color (no color is skipped silently)
+ok 69 - contrast helper matches known WCAG values
+ok 70 - text color on every background token has contrast >= 4.5
+ok 71 - text on every button fill has contrast >= 4.5
+ok 72 - tokens include the poster palette of the spec
+ok 73 - no color literals outside css/tokens.css (CSS and UI code use tokens only)
+ok 74 - suggestKind picks video, then foto, then testo from the idea media
+ok 75 - templatesFor lists the builtin template and the custom ones of that kind and language only
+ok 76 - neededFields lists the form fields the template body uses, and idea when the idea has no text
+ok 77 - mediaValues joins the descriptions and the video durations written by the user
+ok 78 - buildDevelopPrompt fills idea, style guide, language and a history of the same language only
+ok 79 - buildDevelopPrompt lists the placeholders left unfilled and leaves them visible
+ok 80 - buildDevelopPrompt ignores braces that belong to the idea text, not to the template
+ok 81 - buildDevelopPrompt respects the history size and takes media values unless the form overrides them
+ok 82 - buildDevelopPrompt uses the text of the form when the idea has only media
+ok 83 - saveGeneratedPrompt saves the prompt, moves the idea to in_sviluppo and returns the similar posts
+ok 84 - saveGeneratedPrompt does not move a published idea back, and keeps one record per generation
+ok 85 - saveGeneratedPrompt removes the prompt again when the idea cannot be saved (nothing half-done)
+ok 86 - a failing similarity check does not undo a saved prompt
+ok 87 - loadMediaFiles returns File objects with the stored name, type and bytes
+ok 88 - zipFileName is a safe name from the idea and the date
+ok 89 - insertAtCursor puts a placeholder at the cursor or over the selection
+ok 90 - validateTemplate asks for a name and a body
+ok 91 - newTemplate and copyOfTemplate make editable, non builtin templates; the original is untouched
+ok 92 - saveTemplate stores a custom template encrypted; deleteTemplate refuses a builtin one
+ok 93 - form values and the style guide are remembered encrypted in the meta store
+ok 94 - saved form values are cleaned: unknown fields dropped and a bad history size falls back to the default
+ok 95 - zip contains prompt.txt and the files
+ok 96 - duplicate names get a suffix
+ok 97 - a suffix never collides with another name, nor with prompt.txt, nor by case
+ok 98 - file names cannot point outside the archive
+ok 99 - file names with accents and ñ survive in the zip
+ok 100 - zip works with no files, with an empty prompt and with a large file in many chunks
+ok 101 - zip stores media as they are and deflates the text
+ok 102 - fileCountWarning is false at 10 and true at 11
+ok 103 - shareContent returns unsupported without canShare
+ok 104 - shareContent returns unsupported without navigator.share
+ok 105 - shareContent returns cancelled on AbortError
+ok 106 - shareContent returns unsupported on NotAllowedError
+ok 107 - shareContent returns shared and gives text and files to navigator.share
+ok 108 - shareContent shares plain text when there are no files
+ok 109 - shareContent never shares a ZIP, even when canShare says yes
+ok 110 - shareContent rethrows other errors
+ok 111 - shareContent rejects when there is nothing to share
+ok 112 - canShareFiles asks navigator.canShare and is false without it
+ok 113 - copyText calls clipboard.writeText
+ok 114 - copyText rejects when the clipboard is unavailable or refuses
+ok 115 - saveToDevice clicks a download link for the blob and releases the URL later
+ok 116 - saveToDevice cleans the file name
+ok 117 - es and it have the same keys
+ok 118 - es and it use the same placeholders in every key
+ok 119 - no message is empty
+ok 120 - required keys exist
+ok 121 - default language is es
+ok 122 - setLang persists and getLang reads it back
+ok 123 - getLang falls back to es when the stored value is unknown
+ok 124 - setLang rejects an unsupported language
+ok 125 - setLang emits langchange on globalThis when it exists
+ok 126 - setLang works when globalThis has no dispatchEvent
+ok 127 - t uses the current language
+ok 128 - t interpolates {n}
+ok 129 - t returns the key when missing
+ok 130 - icon sizes
+ok 131 - mediaKind maps image and video mime types
+ok 132 - createIdeaWithMedia saves a note without files as an idea with no media
+ok 133 - createIdeaWithMedia saves the idea, a Media record per file and an encrypted blob per file
+ok 134 - an idea with no text and no files is refused before anything is written
+ok 135 - unsupported files are refused before anything is written, and the error names them
+ok 136 - StorageFullError on the second blob removes the first blob and writes no media or idea
+ok 137 - StorageFullError while saving a Media record removes its blob and the earlier media and blobs
+ok 138 - StorageFullError while saving the idea removes every blob and Media record
+ok 139 - a note whose save runs out of memory leaves nothing and reports StorageFullError
+ok 140 - any other error also rolls back, and a failing rollback does not hide the original error
+ok 141 - updateIdeaWithMedia changes text, language and status and keeps the other fields
+ok 142 - updateIdeaWithMedia rejects an unknown language or status without writing
+ok 143 - updateIdeaWithMedia adds new files and removes the chosen media with their blobs only after the idea is saved
+ok 144 - updateIdeaWithMedia keeps the old media and removes the new ones when saving fails
+ok 145 - an invalid language is refused before any file is written
+ok 146 - an idea left with no text and no media is refused and nothing changes
+ok 147 - descriptions are saved on the media (new and existing)
+ok 148 - deleteIdea removes the idea, its media and blobs, its prompts and its registry entries, and nothing else
+ok 149 - deleteIdea removes the idea first so a failure never leaves an idea with missing media
+ok 150 - checkIdeaSimilarity registers new matches once and returns every current match with its publication
+ok 151 - checkIdeaSimilarity only compares texts of the same language and ignores ideas with no text
+ok 152 - createIdea rejects an idea with no text and no media
+ok 153 - createIdea accepts text only, media only, or both
+ok 154 - default lang is es
+ok 155 - createIdea rejects an unsupported lang
+ok 156 - createIdea fills id, status, dates and copies mediaIds
+ok 157 - status changes follow the rules
+ok 158 - searchIdeas finds words ignoring case and accents
+ok 159 - searchIdeas matches the same word typed as NFC or NFD
+ok 160 - searchIdeas returns everything for an empty query and keeps the order
+ok 161 - draft roundtrip and clear
+ok 162 - drafts are stored encrypted
+ok 163 - creationStatus is ok on an empty database
+ok 164 - creationStatus is exists when a confirmed vault is stored, and a lone vault is not data
+ok 165 - an unconfirmed vault alone does not block a new creation
+ok 166 - creationStatus is orphan when encrypted data exists without a confirmed vault
+ok 167 - a confirmed vault wins over the data it protects (the app unlocks, it never recreates)
+ok 168 - hasEncryptedData never reads the blobs store (it would load the videos in memory)
+ok 169 - MIN_PASSWORD_LENGTH is 10
+ok 170 - passwordStrength is debole under 10 chars
+ok 171 - passwordStrength is buona with 14+ chars and three kinds
+ok 172 - passwordStrength is media from 10 chars or with fewer than three kinds
+ok 173 - passwordStrength counts characters after NFC normalization
+ok 174 - PasswordTooShortError carries the minimum length
+ok 175 - formatHistory keeps similarIds first and respects max
+ok 176 - formatHistory takes the most recent posts first when there are no similar ones
+ok 177 - formatHistory never exceeds max, even with more similar posts than max
+ok 178 - formatHistory returns an empty string without posts or with max 0
+ok 179 - formatHistory skips unknown similarIds and does not repeat a post
+ok 180 - formatHistory writes each post on a single line
+ok 181 - formatHistory does not change the posts it receives
+ok 182 - buildPrompt fills idea, history and language
+ok 183 - buildPrompt writes the language name in the template language
+ok 184 - buildPrompt uses a neutral line when there is no history
+ok 185 - buildPrompt: the idea, history and language come from the idea, not from values
+ok 186 - buildPrompt leaves unfilled form placeholders visible so they can be flagged
+ok 187 - buildPrompt uses the idea text from the form only when the idea has no text
+ok 188 - normalizePublicationInput requires screenshot, title and description and trims them
+ok 189 - normalizePublicationInput refuses a screenshot that is not an image
+ok 190 - normalizePublicationInput applies the defaults: type foto, language es, date now
+ok 191 - normalizePublicationInput accepts empty views and comments, refuses negative or fractional numbers
+ok 192 - savePublication stores the screenshot blob, a Media record and the publication, all encrypted
+ok 193 - savePublication links the chosen idea and marks it pubblicata
+ok 194 - savePublication registers similar earlier posts in the registry without further steps
+ok 195 - a post in the other language is never reported as a repetition
+ok 196 - savePublication: running out of memory after the blob removes everything it wrote
+ok 197 - savePublication: if linking the idea fails, the publication, screenshot and Media are removed again
+ok 198 - savePublication refuses a missing idea or a missing screenshot before writing anything
+ok 199 - a failing similarity check does not undo the saved publication
+ok 200 - updatePublication changes fields and keeps the rest
+ok 201 - updatePublication re-checks similarity when the text changes and does not duplicate known pairs
+ok 202 - updatePublication replaces the screenshot and removes the old one only after saving
+ok 203 - updatePublication keeps the old screenshot and removes the new one when saving fails
+ok 204 - updatePublication moves the idea link: the old idea loses publicationId, the new one becomes pubblicata
+ok 205 - updatePublication puts the idea links back when the publication cannot be saved
+ok 206 - deletePublication removes the publication, its screenshot, its registry entries and the idea link, nothing else
+ok 207 - filterPublications filters by day range in local time and by type, newest first
+ok 208 - enrichRepetitions joins the found publication and the checked text; a missing source is labelled
+ok 209 - filterRegistry filters by check date, publication date, status and word
+ok 210 - highlightParts marks the shared words in a text, even in other forms of the same word
+ok 211 - date helpers: datetime-local values round-trip and a day range covers the whole local day
+ok 212 - reviewCount counts the registry entries still to evaluate
+ok 213 - pairKey is stable, distinguishes its parts and ignores the order of a publication pair
+ok 214 - registerMatches creates one entry per match with status da_valutare
+ok 215 - registerMatches with no matches does nothing
+ok 216 - registerMatches is idempotent per pair
+ok 217 - falso_allarme is not signalled again
+ok 218 - setStatus changes and returns the entry, and rejects unknown statuses and ids
+ok 219 - registry entries are stored encrypted
+ok 220 - searchRepetitions filters by date and by word
+ok 221 - searchRepetitions accepts Date objects and full timestamps, and does not change its input
+ok 222 - checkNewPublication compares a new post with the existing ones, in its own language only
+ok 223 - checkNewPublication does not repeat a pair already seen from the other side
+ok 224 - required files exist
+ok 225 - nojekyll exists
+ok 226 - APP_VERSION is semver
+ok 227 - openDb creates every store and Db works on each
+ok 228 - stored value does not contain the plaintext
+ok 229 - stored blob does not contain the plaintext bytes or the mime type
+ok 230 - save sets id and updatedAt
+ok 231 - save keeps an explicit id, overwrites that record and refreshes updatedAt
+ok 232 - all returns decrypted records
+ok 233 - load returns null for a missing record and remove deletes a record
+ok 234 - records are unreadable with another session
+ok 235 - a record copied under another id is rejected
+ok 236 - blob roundtrip keeps bytes
+ok 237 - a blob record copied under another id is rejected
+ok 238 - loadBlob rejects for a missing id
+ok 239 - QuotaExceededError becomes StorageFullError and leaves the previous record intact
+ok 240 - QuotaExceededError while saving a blob becomes StorageFullError and writes nothing
+ok 241 - other write errors are not turned into StorageFullError
+ok 242 - a quota error raised inside the IndexedDB request writes nothing and reaches the caller
+ok 243 - a quota error that aborts the IndexedDB transaction writes nothing and becomes StorageFullError
+ok 244 - replaceAll replaces every store in one transaction
+ok 245 - replaceAll rolls everything back when a write fails
+ok 246 - replaceAll rolls everything back when the browser aborts the transaction
+ok 247 - Db.add writes a new record and refuses to overwrite an existing one (ConstraintError)
+ok 248 - replaceAll rejects unknown store names without touching the data
+ok 249 - storageStatus flags nearFull at 80% usage
+ok 250 - storageStatus does not fail when the browser has no storage API
+ok 251 - precache list files all exist
+ok 252 - cacheName changes with the version
+ok 253 - route maps each hash
+ok 254 - route falls back to dashboard for unknown hashes and ignores parameters
+ok 255 - hashFor builds a hash that route maps back
+ok 256 - only caches named like ours and of another version are deleted
+ok 257 - AUTO_LOCK_MS is 60000
+ok 258 - precache.json was built for the current version and file contents
+ok 259 - assertVersionBumped refuses changed files under the same version
+ok 260 - assertVersionBumped accepts a new version, an unchanged hash, or no previous file
+ok 261 - the precache hash covers sw.js too (a changed service worker needs a new version)
+ok 262 - APP_VERSION was raised if the served files changed since the last commit
+ok 263 - precache does not contain spike, tests, docs, tools or node_modules
+ok 264 - precache entries are relative paths
+ok 265 - every module imported from js/main.js and sw.js is in precache.json
+ok 266 - files referenced by index.html, the manifest, the CSS and the JS strings are in precache.json
+ok 267 - a flag image for every interface language is in precache.json
+ok 268 - served files use no absolute paths (the app lives in /Nay-app/)
+ok 269 - no served file or folder starts with an underscore (Jekyll would hide it) and .nojekyll stays
+ok 270 - manifest has the fields the plan asks for
+ok 271 - index.html loads the CSS and main.js with relative paths, in a Spanish-first shell
+ok 272 - sw.js registers the module worker pieces the plan asks for
+ok 273 - SIMILARITY_THRESHOLD is 0.5 (to be calibrated on the real posts)
+ok 274 - identical texts score 1 and disjoint texts score 0
+ok 275 - similarity is symmetric, ignores repeated words and stays between 0 and 1
+ok 276 - accented and unaccented words match
+ok 277 - the same text typed as NFC or NFD matches
+ok 278 - cuore and cuori share a stem
+ok 279 - tokenize lowercases, splits on punctuation and drops stopwords and short words
+ok 280 - known limits of the stemmer: amar and amando, valiente and valentía are different words
+ok 281 - tokenize rejects an unsupported language
+ok 282 - texts in different languages are never compared
+ok 283 - findSimilar respects the threshold and the limit
+ok 284 - findSimilar sorts by score and breaks ties with the most recent post
+ok 285 - findSimilar compares title and description and reports the shared words
+ok 286 - findSimilar does not change its input
+ok 287 - findSimilar handles posts without title or description
+ok 288 - vendor stemmers give the same stems as snowball-stem 1.1.1
+ok 289 - formatResults formats one line per result
+ok 290 - formatResults handles missing ms
+ok 291 - formatResults keeps one line per result when details contain newlines
+ok 292 - zero posts gives zeros and empty arrays
+ok 293 - posts without views are ignored in view aggregates
+ok 294 - posts without comments are ignored in comment aggregates
+ok 295 - bestHours averages by publication hour
+ok 296 - bestHours breaks ties by the earlier hour
+ok 297 - byType counts all posts
+ok 298 - viewsOverTime adds up the views of each day and is sorted by date
+ok 299 - commentsPerPost is in publication order
+ok 300 - days and hours follow the time zone
+ok 301 - invalid dates are counted in the totals but left out of the time charts
+ok 302 - only finite non-negative numbers count as views and comments
+ok 303 - computeStats does not change its input and ignores unknown types in byType
+ok 304 - PLACEHOLDERS lists the placeholders of the spec
+ok 305 - there are 4 kinds in 2 languages, all builtin, with unique ids
+ok 306 - every default template contains {lingua} and {idea}
+ok 307 - every default template asks for hook and caption separately
+ok 308 - default templates use only known placeholders and the history/style ones
+ok 309 - video templates ask for the video length and photo templates do not
+ok 310 - renderTemplate replaces all placeholders
+ok 311 - renderTemplate treats values literally
+ok 312 - renderTemplate leaves placeholders without a value untouched
+ok 313 - findUnfilled lists missing placeholders
+ok 314 - duplicateTemplate makes an editable copy
+ok 315 - renderTemplate leaves placeholders with an empty value untouched
+ok 316 - json roundtrip
+ok 317 - bytes roundtrip keeps every byte
+ok 318 - encrypting the same value twice gives different ciphertexts
+ok 319 - tampered ciphertext is rejected
+ok 320 - wrong password throws WrongSecretError
+ok 321 - correct password opens the vault and reads the same data
+ok 322 - recovery code has 32 base32 characters in groups of 4
+ok 323 - recovery code opens the vault (lowercase and spaces)
+ok 324 - wrong recovery code throws WrongSecretError
+ok 325 - changePassword keeps old data readable and rejects the old password
+ok 326 - changePassword keeps the recovery code and the setup state
+ok 327 - changePassword rejects a password shorter than MIN_PASSWORD_LENGTH
+ok 328 - changePassword rejects a session from another vault
+ok 329 - password is normalized to NFC
+ok 330 - password with accents, ñ, ¿ and ¡ opens with any normalization
+ok 331 - isSetupComplete is false until confirmRecoveryCode
+ok 332 - a vault never confirmed is still incomplete after a restart
+ok 333 - vault record survives a JSON roundtrip and can be stored as a meta record
+ok 334 - default iterations constant is 600000
+ok 335 - createVault rejects a password shorter than MIN_PASSWORD_LENGTH
+ok 336 - createVault rejects a non-string password and invalid iterations
+ok 337 - two vaults get different recovery codes and wrapped keys
+ok 338 - changePassword accepts a new password typed as NFD and unlocks with NFC
+ok 339 - createVault counts the minimum length after NFC
+ok 340 - recovery code accepts typographic dashes and full-width characters
+ok 341 - a corrupt vault record is not reported as a wrong password
+ok 342 - a vault whose wrapped key was altered looks like a wrong password
+ok 343 - unlock functions always return a promise, even for invalid input
+1..343
+# tests 343
+# suites 0
+# pass 343
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2641.68629
+```
+
+**Test del piano, task per task** (confronto automatico dei nomi scritti nel piano con i `test('…')` nei file; i test di T12-T14 e T16 non hanno nomi nel piano: sono di interfaccia, la logica provabile sta in moduli con test miei):
+
+| Task | Nomi del piano trovati | Test nei file del task | Note |
+|---|---|---|---|
+| T11 | 4 su 4 (`precache list files all exist`, `cacheName changes with the version`, `route maps each hash`, `text color on every background token has contrast >= 4.5`) | `shell.test.js` 22, `contrast.test.js` 6, `lock.test.js` 6 | più 1 test di `Db.add` in `secure-store.test.js` (commit `fix:`) |
+| T12 | nessun nome nel piano | `idea-save.test.js` 21 | |
+| T13 | nessun nome nel piano | `develop.test.js` 21 | |
+| T14 | nessun nome nel piano | `publications.test.js` 25 | |
+| T15 | 3 su 3 (`barChartSvg draws one rect per datum`, `donutChartSvg draws one path per non-zero slice`, `charts return a placeholder svg for empty data`) | `charts.test.js` 15 | |
+| T16 | nessun nome nel piano | `account.test.js` 23 | 9 dei 23 sono nati dalla revisione indipendente |
+
+Somma: 203 (fase 2) + 1 + 34 (T11) + 21 + 21 + 25 + 15 + 23 = 343. Mutazioni temporanee del codice su ogni task (e poi ripristinato): tutte intercettate; dove non lo erano ho aggiunto test o rinforzato la prova prima del commit (T12 due, T14 tre, T15 una, T16 una nelle prove in Chromium). Dettagli nelle sezioni dei task.
+
+**File creati.**
+- T11: `index.html` (modificato), `manifest.webmanifest`, `sw.js`, `precache.json`, `tools/build_precache.mjs`, `css/tokens.css`, `base.css`, `components.css`, `assets/flags/es.svg`, `it.svg`, `js/main.js`, `js/router.js`, **`js/cache.js`, `js/ui/dom.js`, `js/ui/icons.js`** (non nel piano), `js/ui/topbar.js`, `bottombar.js`, `menu.js`, `js/ui/screens/lock.js`; `tests/shell.test.js`, `contrast.test.js`, `lock.test.js`; `js/version.js` e `js/i18n/*` modificati. Prima: `js/core/db.js` (aggiunto `add`) e `tests/secure-store.test.js`.
+- T12: `js/features/idea-save.js` (non nel piano), `js/ui/cards.js`, `js/ui/dialog.js`, `js/ui/screens/ideas.js`; `tests/idea-save.test.js`.
+- T13: `js/features/develop.js` (non nel piano), `js/ui/form-draft.js` (non nel piano), `js/ui/screens/develop.js`; `tests/develop.test.js`.
+- T14: `js/features/publications.js` (non nel piano), `js/ui/screens/publications.js`; `tests/publications.test.js`; modificati `idea-save.js`, `cards.js`, `dialog.js`.
+- T15: `js/ui/charts.js`, `js/ui/screens/dashboard.js`; `tests/charts.test.js`.
+- T16: `js/ui/screens/settings.js`, **`js/features/account.js`, `js/ui/fields.js`** (non nel piano); `tests/account.test.js`; modificati `lock.js`, `main.js`, `dialog.js`.
+- Ogni task: `js/version.js` (0.2.0 … 0.7.0), `precache.json` rigenerato, `js/i18n/es.js` e `it.js` (da 52 a 330 chiavi, contate nei commit: T11 +18, T12 +42, T13 +84, T14 +70, T15 +24, T16 +40; tutte in entrambe le lingue, test `es and it have the same keys`), `STATUS.md`.
+- Questo resoconto: `docs/npm-test-dopo-T16.txt`, `docs/screenshots-fase3/` (17 PNG + `LEGGIMI.md`).
+
+**Scostamenti dal piano** (motivi e costi nelle sezioni «Fase 3» e T11-T16 più sotto):
+1. **Ramo `claude/fase-3-interfaccia-ck0hog` invece di `main`** (CLAUDE.md dice `main`; l'ambiente non lo consente senza permesso esplicito). Costo: un `git merge --ff-only` (storia lineare) e, prima, G1/G3 restano **[Da provare]**.
+2. **Versione alzata ad ogni task** e `precache.json` con `version` e `hash`, con un test che fallisce se i file cambiano senza alzare `APP_VERSION` (non nel piano; provato in Chromium che senza alzarla il telefono non installa nulla).
+3. **Service worker:** `updateViaCache: 'none'` (serve davvero: provato con un server che manda `max-age=600` come Pages), nessuno `skipWaiting`, cancellazione solo delle cache `nay-X.Y.Z` di un'altra versione, auto-riparazione se la cache sparisce.
+4. **T11:** nel database non si scrive nulla prima della conferma del codice di recupero; con dati cifrati ma senza vault non si crea nulla (nessuna via d'uscita nell'interfaccia: vedi decisioni).
+5. **T13:** `{stile}` senza guida di stile salvata → avviso arancione, il prompt si può generare lo stesso; storico di 30 post (mia scelta provvisoria); nessuna soglia di dimensione dei file (G4); il controllo di somiglianza usa il testo dell'idea, non quello del prompt.
+6. **T14:** uniscono le pubblicazioni alle voci del registro (`enrichRepetitions`) invece di estendere `Repetition`; i giorni dei filtri sono locali; «falso allarme» vale per coppia.
+7. **T15:** grafico dei commenti limitato agli **ultimi 12** post (costante `COMMENTS_LAST_N`), senza etichette sull'asse.
+8. **T16:** il cambio password chiede la password attuale; messaggi «Descarga … iniciada» (il browser non dice se un file è arrivato; riscritto anche il messaggio dello ZIP di T13); estensione `.naybk`; blocco durante un'importazione che aspetta la fine; blocco delle altre schede con `BroadcastChannel`; `lock.js` sblocca col vault riletto dal database.
+9. **Screenshot a scala 2** (768×1664) invece di 2,8125, per ridurre il peso (6,6 MB in tutto nella cartella).
+10. **Metodo:** durante l'attesa delle revisioni di T11 e T16 il hook di fine turno ha chiesto di committare le modifiche non salvate: ho rinviato i commit perché Luca vuole la revisione indipendente prima (come in T9). **Conteggi delle chiavi di testo corretti** rileggendo i commit: T11 15 → 18, T12 41 → 42, T15 25 → 24 (nelle sezioni dei task).
+
+**Decisioni che spettano a Luca** (non prese da me):
+- Unire il ramo a `main` (G1/G3 dipendono da questo; Pages serve `main`).
+- `spike/sw.js` riga 30 cancella **tutte** le cache diverse dalla sua: aprire `/Nay-app/spike/` su un profilo nuovo cancella la cache dell'app (e, sull'origine condivisa `github.io`, quelle di altri progetti). Correzione di una riga proposta in T11; l'app si ripara da sola online.
+- Offrire «Importa backup» già nella schermata di accesso/creazione (oggi un telefono nuovo deve creare una password che subito viene sostituita; e lo stato «dati senza vault» non ha via d'uscita).
+- `{stile}` mancante: avviso (attuale) o blocco della generazione; N = 12 per i commenti; storico = 30 post.
+
+**Cosa NON ho verificato.**
+
+*Provato in Chromium (desktop, telefono emulato; non Android):*
+- T11 (73 controlli + 12 sulle due versioni), T12 (51 + 8 di quota vera), T13 (73), T14 (56), T15 (35), T16 (47 + 29 sui punti della revisione); gli script di T11-T15 sono stati **rilanciati dopo T16** e passano; quello di T16 e quello della revisione 3 volte di fila senza instabilità.
+- Creazione della password interrotta e ripresa; blocco automatico con **orologio simulato**; due schede che confermano insieme; aggiornamento del service worker cambiando solo `js/version.js` (server che imita Pages; **non** è un push vero su Pages); offline; tutte le richieste sotto `/Nay-app/`, nessuna fuori origine, CSP senza violazioni.
+- Salvataggi con **quota vera ridotta** via CDP (`Storage.overrideQuotaForOrigin`, applicata prima di qualunque scrittura) e con errori simulati; tutto o niente su idee, media, pubblicazioni, importazione.
+- File veri (PNG del repo, un WebM registrato da Chromium) dal selettore file intercettato; appunti veri; **`navigator.share` simulato** (registra ciò che riceve); **download vero** (evento `download`) per ZIP e backup, file riaperti e controllati (ZIP con `fflate`, backup che comincia con `NAYBK1` e non contiene testi in chiaro).
+- Backup: esportazione, importazione con password e **con codice di recupero**, password sbagliata, file troncato / di una versione futura / non backup, memoria piena simulata, blocco immediato dopo l'importazione, vault aggiornato dopo un cambio di password; cambio password e ripristino con il codice; blocco durante un'importazione tenuta in sospeso (PBKDF2 e cifratura rallentati da uno script), altra scheda bloccata, file scelto dopo il blocco, Tab nelle finestre.
+- Simulati e non reali anche in Chromium: l'evento `cancel` del selettore (lanciato a mano), lo spazio «quasi pieno» (`navigator.storage.estimate` sostituito), il fuso orario (qui è UTC).
+
+*Da provare sul Samsung (non provato da nessuna parte):*
+- Installazione e avvio dall'icona (standalone), tastiera di Android, proposta di salvataggio password di Chrome, `visibilitychange` e blocco dopo il blocco schermo vero, aggiornamento del service worker all'avvio dell'app installata, esito di `persist()`, **HTTPS di Pages (G1)**.
+- Galleria e fotocamera (selezione multipla), condivisione vera verso ChatGPT e Gemini, dove finiscono ZIP e backup scaricati e se `<a download>` regge dopo molti passaggi asincroni, selettore file con un `.naybk`, evento `cancel` del selettore.
+- Memoria e tempi con file grandi (anteprime, ZIP, esportazione e importazione del backup, derivazione a 600.000 ripetizioni), `navigator.storage.estimate` vero, 200-260 post all'anno (elenco, registro, grafici).
+- Fuso di Madrid per i filtri per giorno e per le statistiche; resa e nitidezza degli SVG; l'app installata e una scheda del browser insieme (messaggio tra schede).
+- Testi in spagnolo e in italiano (scritti da me, mai rivisti: lei per lo spagnolo, Luca per l'italiano, T19); soglia di somiglianza sui 50 post veri.
+
+**Stato git.** Prima di scrivere questo blocco: `HEAD` = `origin/claude/fase-3-interfaccia-ck0hog` = `16d8257` (verificato con `git fetch`), `origin/main` = `ea64f38`; l'unico file non tracciato era `docs/npm-test-dopo-T16.txt`. La stessa verifica dopo il commit di questo resoconto è nella risposta.
+
+---
+
 ## Resoconto per Claude (dopo T10, 17 novembre 2026)
 
 **Riassunto.**
@@ -554,7 +1002,7 @@ Via libera di Luca del 17 novembre 2026. La fase 2 è stata verificata da Claude
 9. **Il service worker si ripara da solo:** se arriva una navigazione e la pagina principale non è nella cache (cancellata da fuori, vedi sopra), rifà il precache in background. Provato in Chromium: dopo `caches.delete('nay-0.2.0')` e un ricaricamento online la cache torna a 42 voci. Non è nel piano; costo se sbagliata: una funzione in `sw.js`.
 10. **Nessun `skipWaiting`** (vedi sopra): provato che la pagina aperta resta sulla versione vecchia finché non si chiude e riapre.
 11. **Tessera del logo:** uso `assets/icons/icon-192.png` (il logo intero, già su fondo crema) e non il PNG originale da 4,4 MB; il test `files referenced by index.html…` controlla che sia in precache. **Bandierine:** disegni semplici in SVG (spagnola senza stemma, tre bande verticali per l'italiana), non copie di file ufficiali.
-12. **Testi:** 15 chiavi nuove in `es.js` e `it.js` (accesso, errori, navigazione), scritte da me e non riviste (T19).
+12. **Testi:** 18 chiavi nuove in `es.js` e `it.js` (52 → 70; accesso, errori, navigazione), scritte da me e non riviste (T19). *(Avevo scritto 15: errore di conteggio, corretto contando le chiavi nei commit.)*
 13. **Password manager del browser:** i campi non sono in un `<form>` e hanno `autocomplete="off"`, ma Chrome può comunque proporre di salvare la password nel gestore di Google: **[Da provare sul Samsung]**.
 
 **«Verifica a mano» del piano per T11, in Chromium con script** (viewport 384×832, `deviceScaleFactor` 2,8125, touch; app servita sotto `/Nay-app/`; 73 controlli dello script principale + 12 delle due versioni, tutti passati, ripetuti 3 volte senza instabilità):
@@ -591,7 +1039,7 @@ Via libera di Luca del 17 novembre 2026. La fase 2 è stata verificata da Claude
 5. **Eliminare un'idea toglie anche i suoi prompt e le voci del registro che la riguardano** (il piano non lo dice); la finestra di conferma lo avvisa. Costo se sbagliata: una riga in `deleteIdea`.
 6. **Pulizia best-effort dopo il salvataggio:** se la cancellazione dei media tolti o dell'idea eliminata si interrompe, restano al massimo dati senza padrone (spazio occupato), mai un'idea con file mancanti. Non c'è ancora una pulizia degli orfani all'avvio.
 7. **Il controllo di somiglianza parte dopo il salvataggio** e non può far perdere l'idea: se fallisce compare `ideas.checkFailed`.
-8. 41 chiavi nuove in `es.js` e `it.js` (scritte da me, non riviste, T19); `color-scheme: dark` in `css/base.css` per i controlli nativi (select).
+8. 42 chiavi nuove in `es.js` e `it.js` (70 → 112; scritte da me, non riviste, T19; avevo scritto 41: errore di conteggio, corretto); `color-scheme: dark` in `css/base.css` per i controlli nativi (select).
 
 **«Verifica a mano» del piano per T12, in Chromium con script** (51 controlli dello script principale + 8 della prova di quota, tutti passati; il selettore file è intercettato da Playwright):
 
@@ -736,7 +1184,7 @@ Rilanciati anche gli script di T11-T14 dopo le modifiche condivise (T11 73/73, T
 6. **Dopo l'importazione si blocca subito, senza salvare le bozze** (`lock({noFlush})`), come chiede il piano; le bozze si salvano **prima** di chiedere la password del backup.
 7. **`lock.js` sblocca sempre con il vault riletto dal database** (`unlockCurrentVault`), non con quello letto all'apertura della schermata: modifica a un comportamento di T11, motivata dal punto 1 della revisione.
 8. **Un blocco durante un'importazione aspetta la fine** (schermata di sola attesa): se l'importazione si blocca senza finire, l'accesso non compare. Costo: nessun limite di tempo sull'attesa; alternativa: un tetto di tempo, ma interromperebbe una scrittura che poi non si può annullare.
-9. **Messaggi «Descarga … iniciada»** invece di «guardado nel telefono» (punto 6 della revisione), anche per lo ZIP di T13. 40 chiavi nuove in `es.js` e `it.js` (290 → 330; testi non rivisti, T19) e 4 chiavi esistenti riscritte (`backup.export.confirm`, `backup.export.done`, `settings.backup.hint`, `develop.zipSaved`).
+9. **Messaggi «Descarga … iniciada»** invece di «guardado en el teléfono» (punto 6 della revisione), anche per lo ZIP di T13. 40 chiavi nuove in `es.js` e `it.js` (290 → 330; testi non rivisti, T19) e 4 chiavi esistenti riscritte (`backup.export.confirm`, `backup.export.done`, `settings.backup.hint`, `develop.zipSaved`).
 10. **Impronta digitale: non implementata** (il piano: «solo se T17 dice che funziona»). Dimensioni e soglie: nessun limite di dimensione del backup è proposto (si legge in memoria: un file troppo grande dà `error.backupMemory`, i limiti veri si misurano sul Samsung, G4).
 11. **Un telefono nuovo deve prima creare una password per poter importare** (l'importazione sta dietro lo sblocco): il piano dice «cancellare i dati del sito, importare con la password»; con i dati del sito cancellati l'app mostra la creazione della password, e solo dopo si può importare (la password creata viene sostituita da quella del backup). **Decisione da prendere con Luca:** offrire «Importa backup» già nella schermata di accesso/creazione (vedi anche la nota di T11 sul caso «dati senza vault»). Costo se sbagliata: oggi un utente con un backup in mano deve creare una password che subito sparisce.
 
