@@ -10,7 +10,8 @@ const ITEMS = [
   { name: 'pubblicazioni', icon: 'archive', label: 'nav.pubblicazioni' },
 ];
 
-export function renderBottombar(root, { active } = {}) {
+// onReselect: si è toccata la voce già attiva (l'indirizzo non cambia): la pagina riparte dall'inizio.
+export function renderBottombar(root, { active, onReselect } = {}) {
   const links = ITEMS.map((item) =>
     h(
       'a',
@@ -18,6 +19,11 @@ export function renderBottombar(root, { active } = {}) {
         class: 'bottombar__item',
         href: hashFor(item.name),
         'aria-current': item.name === active ? 'page' : null,
+        onclick: (event) => {
+          if (item.name !== active) return;
+          event.preventDefault();
+          onReselect?.();
+        },
       },
       icon(item.icon),
       h('span', { class: 'bottombar__label', i18n: item.label }),

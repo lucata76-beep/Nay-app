@@ -3,7 +3,6 @@
 import { i18n } from '../../i18n/index.js';
 import { StorageFullError } from '../../core/secure-store.js';
 import { EmptyIdeaError, searchIdeas } from '../../features/ideas.js';
-import { clearDraft, loadDraft, saveDraft } from '../../features/drafts.js';
 import {
   UnsupportedMediaError,
   checkIdeaSimilarity,
@@ -17,6 +16,7 @@ import { icon } from '../icons.js';
 import { renderCard } from '../cards.js';
 import { closeMenu, openMenu } from '../menu.js';
 import { confirmDialog } from '../dialog.js';
+import { createFormDraft } from '../form-draft.js';
 
 const LANGS = ['es', 'it'];
 const STATUSES = ['nuova', 'in_sviluppo', 'pubblicata'];
@@ -215,6 +215,7 @@ export async function renderIdeas(root, ctx) {
         videos.length ? { icon: 'video', text: t('ideas.videos', { n: videos.length }) } : null,
       ].filter(Boolean),
       menu: [
+        { label: t('ideas.develop'), onSelect: () => ctx.navigate('sviluppare', { idea: idea.id }) },
         { label: t('common.edit'), onSelect: () => openEditor(idea) },
         { label: t('common.delete'), danger: true, onSelect: () => askDelete(idea) },
       ],
@@ -251,7 +252,7 @@ export async function renderIdeas(root, ctx) {
     if (!ok) return;
     try {
       await deleteIdea(store, idea);
-      await clearDraft(store, `idea:${idea.id}`).catch(() => {});
+      await store.remove('meta', `draft:idea:${idea.id}`).catch(() => {});
     } catch (err) {
       console.error(err);
       showNotice('error.unexpected');
@@ -287,11 +288,8 @@ export async function renderIdeas(root, ctx) {
     const removed = new Set();
     const descriptions = Object.fromEntries((idea?.mediaIds ?? []).map((id) => [id, mediaById.get(id)?.description ?? '']));
     const thumbUrls = new Map(); // anteprime delle foto già salvate
-    let touched = false;
-    let dirty = false;
     let saving = false;
     let closed = false;
-    let timer = null;
 
     const error = h('p', { class: 'banner banner--error', role: 'alert', hidden: true });
     const restored = h('p', { class: 'banner banner--warn', i18n: 'ideas.draftRestored', hidden: true });
@@ -325,54 +323,34 @@ export async function renderIdeas(root, ctx) {
 
     const setError = (key, params) => bannerState(error, { key, params });
 
-    // ----- bozza: si salva a ogni modifica (dopo 400 ms di pausa) e prima del blocco o del cambio pagina -----
-    const draftData = () => ({ text: textarea.value, lang: langSelect.value, ...(idea ? { status: statusSelect.value } : {}) });
-    async function persistDraft() {
-      clearTimeout(timer);
-      timer = null;
-      if (!dirty || closed) return;
-      try {
-        await saveDraft(store, formId, draftData());
-      } catch (err) {
-        console.error(err); // la bozza non si salva (memoria piena?): ciò che si scrive resta nel modulo
-      }
-    }
-    function scheduleDraft() {
-      dirty = true;
-      touched = true;
-      clearTimeout(timer);
-      timer = setTimeout(persistDraft, 400);
-    }
-    textarea.addEventListener('input', scheduleDraft);
-    langSelect.addEventListener('change', scheduleDraft);
-    statusSelect.addEventListener('change', scheduleDraft);
-    const offBackground = ctx.onBackground(persistDraft);
-
-    loadDraft(store, formId)
-      .then((draft) => {
-        if (closed || touched || !draft || typeof draft !== 'object') return;
-        textarea.value = typeof draft.text === 'string' ? draft.text : initial.text;
-        if (LANGS.includes(draft.lang)) langSelect.value = draft.lang;
-        if (idea && STATUSES.includes(draft.status)) statusSelect.value = draft.status;
-        restored.hidden = false;
-        discardButton.hidden = false;
-      })
-      .catch((err) => console.error(err)); // bozza illeggibile: l'editor si apre vuoto e la sovrascrive
+    // ----- bozza: testo, lingua e stato (i file scelti non si possono rimettere in un modulo) -----
+    const draft = createFormDraft({
+      ctx,
+      store,
+      formId,
+      collect: () => ({ text: textarea.value, lang: langSelect.value, ...(idea ? { status: statusSelect.value } : {}) }),
+      apply: (data) => {
+        textarea.value = typeof data.text === 'string' ? data.text : initial.text;
+        if (LANGS.includes(data.lang)) langSelect.value = data.lang;
+        if (idea && STATUSES.includes(data.status)) statusSelect.value = data.status;
+      },
+    });
+    textarea.addEventListener('input', draft.schedule);
+    langSelect.addEventListener('change', draft.schedule);
+    statusSelect.addEventListener('change', draft.schedule);
+    draft.restore().then((restoredNow) => {
+      if (!restoredNow) return;
+      restored.hidden = false;
+      discardButton.hidden = false;
+    });
 
     discardButton.addEventListener('click', async () => {
-      clearTimeout(timer);
-      dirty = false;
-      touched = true; // se la bozza non fosse ancora stata letta, non deve più rimettersi
       textarea.value = initial.text;
       langSelect.value = initial.lang;
       statusSelect.value = initial.status;
       restored.hidden = true;
       discardButton.hidden = true;
-      try {
-        await clearDraft(store, formId);
-      } catch (err) {
-        console.error(err);
-      }
+      await draft.discard();
     });
 
     // ----- file allegati -----
@@ -526,12 +504,7 @@ export async function renderIdeas(root, ctx) {
         return;
       }
       closed = true;
-      clearTimeout(timer);
-      try {
-        await clearDraft(store, formId);
-      } catch (err) {
-        console.error(err);
-      }
+      await draft.clear();
       closeEditor();
       await reload();
       // il controllo di somiglianza non può far perdere l'idea già salvata
@@ -547,7 +520,7 @@ export async function renderIdeas(root, ctx) {
 
     async function leave() {
       if (saving) return;
-      await persistDraft(); // uscire senza salvare non perde il testo
+      await draft.flush(); // uscire senza salvare non perde il testo
       closeEditor();
     }
 
@@ -592,8 +565,7 @@ export async function renderIdeas(root, ctx) {
       refresh: renderAttachments,
       dispose() {
         closed = true;
-        clearTimeout(timer);
-        offBackground?.();
+        draft.dispose();
         for (const item of pending) if (item.previewUrl) revoke(item.previewUrl);
         for (const url of thumbUrls.values()) revoke(url);
         thumbUrls.clear();

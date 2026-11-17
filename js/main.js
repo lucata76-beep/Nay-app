@@ -10,6 +10,7 @@ import { renderBottombar } from './ui/bottombar.js';
 import { closeMenu, openMenu } from './ui/menu.js';
 import { renderLock } from './ui/screens/lock.js';
 import { renderIdeas } from './ui/screens/ideas.js';
+import { renderDevelop } from './ui/screens/develop.js';
 import { closeDialogs } from './ui/dialog.js';
 import { applyI18n, h } from './ui/dom.js';
 
@@ -26,7 +27,7 @@ function renderPlaceholder(view, ctx) {
 const SCREENS = {
   dashboard: renderPlaceholder,
   ideare: renderIdeas,
-  sviluppare: renderPlaceholder,
+  sviluppare: renderDevelop,
   pubblicazioni: renderPlaceholder,
   impostazioni: renderPlaceholder,
 };
@@ -167,7 +168,7 @@ function runApp(root, { db, session }) {
         onHome: () => (globalThis.location.hash = hashFor('dashboard')),
         onMenu: (anchor) => openMenu(anchor, menuItems()),
       });
-      renderBottombar(bottombarHost, { active: name });
+      renderBottombar(bottombarHost, { active: name, onReselect: () => renderRoute() });
     }
 
     // Cambio di lingua: si riscrivono i testi sul posto, la pagina non si ricostruisce

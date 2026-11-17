@@ -416,8 +416,8 @@ Ultimo aggiornamento: 16 novembre 2026
 ## Dove siamo
 
 - **Fase:** 3 — Interfaccia (T11-T16) in corso, sul ramo `claude/fase-3-interfaccia-ck0hog` (non su `main`: vedi «Fase 3»). Ultimo aggiornamento: 17 novembre 2026.
-- **Ultimo task chiuso:** T12 (Ideare) — `APP_VERSION` 0.3.0.
-- **Prossimo task:** T13 (Sviluppare).
+- **Ultimo task chiuso:** T13 (Sviluppare) — `APP_VERSION` 0.4.0.
+- **Prossimo task:** T14 (Pubblicazioni salvate e registro).
 
 ## Gate aperti
 
@@ -612,6 +612,37 @@ Via libera di Luca del 17 novembre 2026. La fase 2 è stata verificata da Claude
 - Con la quota ridotta, salvare **un file da 12 MB** e **due file (1 MB che entra, 8 MB che no)** dà un vero `QuotaExceededError` del browser → `StorageFullError` → messaggio `error.storageFull`. Dopo l'errore: nessun record `ideas`/`media`/`blobs` in più (il primo blob del caso a due file è stato tolto), il modulo resta com'era; alzata la quota la stessa idea si salva.
 - **Il metodo ha una trappola:** l'override va applicato **prima di qualunque scrittura della sessione del browser**. Applicato dopo che l'app ha già scritto (per esempio dopo aver creato la password), `getUsageAndQuota` dice `overrideActive: true` ma le scritture da 12 MB passano senza errore (provato con contesto persistente e non persistente, anche riaprendo il database). Nel contesto persistente, anche con l'override attivo fin dall'inizio non l'ho riprovato: lo script usa un contesto non persistente.
 - Dopo i fallimenti `getUsageAndQuota` continua a dichiarare uno «spazio usato» alto (17,5 MB con quota di 3,2 MB) pur senza record: è la contabilità del browser, non un residuo trovato nell'archivio (i conteggi dei record sono zero). Cosa succede davvero sul Samsung con spazio vero finito **[Da provare sul Samsung]**.
+
+### T13 — Sviluppare (v0.4.0)
+
+**Test.** Come per T12 il piano non elenca test per l'interfaccia; la logica nuova sta in `js/features/develop.js` (modulo in più) con `tests/develop.test.js` (**21 test**, nomi miei): tipo suggerito dai media, template per tipo e lingua, campi del modulo che il template usa davvero, valori di partenza da descrizioni e durate dei media, **prompt con storico solo della lingua dell'idea, i post più simili per primi, segnaposto non riempiti elencati (le graffe nel testo dell'idea non contano)**, salvataggio del prompt con l'idea «in sviluppo» (un'idea pubblicata non torna indietro) e **prompt tolto di nuovo se l'idea non si può salvare**, controllo di somiglianza che non annulla nulla se fallisce, file decifrati come `File`, nome dello ZIP, inserimento dei segnaposto nell'editor, validazione dei template, template e guida di stile cifrati nell'archivio `meta`. Visti rossi (modulo mancante, poi un errore vero: `deleteTemplate` non era `async`), poi verdi; **14 mutazioni temporanee** su 14 intercettate tranne una equivalente (una scrittura in più, stesso stato). Suite: **280 test, tutti verdi**.
+
+**Cosa fa la pagina** (`js/ui/screens/develop.js`, `js/ui/form-draft.js`): passi idea → tipo → template → dati → prompt (indicatore dei passi); tipo suggerito dai media dell'idea; template pronto del tipo e della lingua dell'idea più i propri (Modifica, Duplica, Elimina); modulo con **solo i campi che il template usa** (tono, obiettivo, lunghezza, hashtag, descrizione e durata presi dai media, testo dell'idea se ha solo file, numero di post dello storico) e ultimi valori ricordati; anteprima con i segnaposto non riempiti evidenziati; **barra di azioni fissa sopra la barra in basso: Copia, Condividi, Condividi tutto, Crea ZIP**; elenco dei prompt salvati (Abrir, Copiar, Compartir, Eliminar); editor dei template con i tasti dei segnaposto che inseriscono nel punto del cursore e bozza cifrata. Da Ideare, ⋮ → «Desarrollar» apre Sviluppare con l'idea già scelta.
+
+**Scelte e scostamenti di T13** (motivo; costo se sbagliata):
+1. **Guida di stile (`{stile}`) — come avviso.** Il piano chiedeva di decidere: la guida si incolla e si salva **dentro il modulo** (campo con «Guardar guía de estilo», cifrata in `meta`, riusata in tutti i prompt); se non c'è, il modulo mostra un avviso arancione che dice che `{stile}` resterà da riempire; si può generare lo stesso, e nell'anteprima `{stile}` resta nel testo **evidenziato** con un avviso. Costo se sbagliata: oggi il prompt può uscire con `{stile}` letterale se lei lo ignora; alternativa: bloccare la generazione.
+2. **Il controllo di somiglianza usa il testo dell'idea, non quello del prompt** (il piano dice «il testo dell'idea»; la spec dice anche «un nuovo prompt»): il prompt generato contiene lo storico con i titoli dei post e somiglierebbe sempre a quei post, producendo solo falsi allarmi. Quindi non si creano voci del registro con origine `prompt`. Costo se sbagliata: mancano le voci con `sourceType: 'prompt'` (il tipo e `registerMatches` le prevedono già).
+3. **Storico nel prompt: 30 post** (`DEFAULT_HISTORY_MAX`), modificabili nel modulo e ricordati; i 10 più simili all'idea vanno per primi. Il 30 è una scelta mia provvisoria **[Da provare]**: la spec dice che la lunghezza massima del messaggio non è verificata.
+4. **«Modifica» su un template pronto lavora su una copia** («… (copia)», con la nota che i pronti non si modificano); i pronti non si eliminano. Costo se sbagliata: una riga in `editTemplate`.
+5. **File per condividere e per lo ZIP: si decifrano quando si apre l'anteprima** e restano in memoria, così «Condividi tutto» parte da un solo tocco (la condivisione richiede un tocco recente: decifrare dopo il tocco rischierebbe di perderlo). Si possono togliere file con le caselle. **Non propongo nessuna soglia di dimensione dei file**: i limiti veri si misurano sul Samsung (G4); resta solo l'avviso sui più di 10 file previsto dalla spec. Costo: con molti video grandi la memoria del telefono è il limite **[Da provare sul Samsung]**.
+6. **Il prompt in anteprima non è modificabile a mano** (si cambia il template o i dati e si rigenera; ogni generazione è un record salvato). L'elenco dei prompt salvati mostra gli ultimi 20.
+7. **Toccare la voce già attiva della barra in basso riporta la pagina al primo passo** (vale per tutte le pagine): senza questo, in Sviluppare non c'era modo di ricominciare con un tocco. Trovato dallo script di verifica. Il lavoro in corso nei moduli si salva come bozza prima di ripartire.
+8. **`js/ui/form-draft.js`:** la gestione delle bozze (salva dopo una pausa, subito in secondo piano o prima di cambiare pagina, ripresa all'apertura) è stata tolta da `ideas.js` e messa in un aiuto usato anche dall'editor dei template; `ideas.js` è stato riprovato con lo script di T12 (51/51 dopo la modifica).
+9. 84 chiavi nuove in `es.js` e `it.js` (testi non rivisti, T19); nei testi dei passi uso «plantilla» in spagnolo e «template» in italiano.
+10. **Trovato e corretto durante la verifica:** nella schermata iniziale mancava l'area dei messaggi (la copia di un prompt salvato non dava nessun esito).
+
+**«Verifica a mano» del piano per T13, in Chromium con script** (73 controlli, tutti passati; telefono emulato; dati inventati: 4 idee, 3 post, file di prova):
+
+| Punto | Esito |
+|---|---|
+| Generare un prompt in spagnolo e uno in italiano | **fatto in Chromium** (idea in spagnolo con foto e video; idea in italiano con template italiano, guida di stile, storico di 1 solo post italiano) |
+| Copiarlo | **fatto in Chromium** con gli appunti veri (permesso concesso al sito): il contenuto è il prompt intero. Su Android/Samsung **[Da provare]** |
+| Condividere testo + foto | **provato in Chromium con `navigator.share` simulato** (registra ciò che riceve): Condividi = solo testo; Condividi tutto = testo + i 2 file con nome e tipo giusti, mai uno ZIP; annullamento senza messaggio; «Permission denied» → messaggio che suggerisce copia o ZIP. **La condivisione vera verso ChatGPT/Gemini è [Da provare sul Samsung]** |
+| Creare lo ZIP e trovarlo nel telefono | **fatto in Chromium:** il download parte davvero (evento `download`), il file si apre con `fflate` e contiene `prompt.txt` uguale al prompt e i file dell'idea con i byte originali; un'idea senza file dà uno ZIP col solo `prompt.txt`; lo ZIP non passa mai da `navigator.share`. **Dove finisce il file sul Samsung e come si comporta il download da app installata: [Da provare sul Samsung]** |
+| Con 11 file compare l'avviso | **fatto in Chromium:** 11 file → avviso; togliendone uno sparisce |
+| L'idea cambia stato | **fatto in Chromium:** prompt salvato (record in più), idea «in sviluppo», voce nel registro per l'idea simile a «Ánimo valiente» |
+| Memoria piena mentre si genera | **fatto in Chromium** (errore alla scrittura dell'idea): `error.storageFull`, nessun prompt rimasto, si resta nel modulo e si può riprovare |
+| Editor dei template, bozza, eliminazione, prompt salvati, scorciatoia da Ideare, cambio lingua a metà flusso, blocco con l'anteprima aperta, record illeggibile | **fatti in Chromium** |
 
 ## Da verificare
 

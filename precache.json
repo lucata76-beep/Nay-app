@@ -1,6 +1,6 @@
 {
-  "version": "0.3.0",
-  "hash": "6bd1c24260d992cda92bb0b3ff1d37d719644208827be8a736f7ffb7f0f29508",
+  "version": "0.4.0",
+  "hash": "53c828d379ff0bfa790fb083880e2b4e564c6075be13f283d1fb47bd04ca776b",
   "files": [
     "./",
     "./assets/flags/es.svg",
@@ -19,6 +19,7 @@
     "./js/core/password.js",
     "./js/core/secure-store.js",
     "./js/core/vault.js",
+    "./js/features/develop.js",
     "./js/features/drafts.js",
     "./js/features/export.js",
     "./js/features/idea-save.js",
@@ -38,8 +39,10 @@
     "./js/ui/cards.js",
     "./js/ui/dialog.js",
     "./js/ui/dom.js",
+    "./js/ui/form-draft.js",
     "./js/ui/icons.js",
     "./js/ui/menu.js",
+    "./js/ui/screens/develop.js",
     "./js/ui/screens/ideas.js",
     "./js/ui/screens/lock.js",
     "./js/ui/topbar.js",

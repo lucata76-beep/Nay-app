@@ -20,6 +20,12 @@ const PATHS = {
   play: ['M8 5l11 7-11 7z'],
   search: ['M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14z', 'M21 21l-5-5'],
   note: ['M5 4h14v16H5z', 'M8 9h8', 'M8 13h8', 'M8 17h5'],
+  copy: ['M8 8h11v12H8z', 'M5 16V4h11'],
+  share: ['M12 15V4', 'M7 9l5-5 5 5', 'M5 14v6h14v-6'],
+  files: ['M7 3h9l3 3v11H7z', 'M16 3v3h3', 'M4 7v14h11'],
+  download: ['M12 4v11', 'M7 11l5 5 5-5', 'M5 20h14'],
+  check: ['M5 12l5 5 9-10'],
+  chevron: ['M9 5l7 7-7 7'],
 };
 
 export function icon(name, { size = 24, className = 'icon' } = {}) {
