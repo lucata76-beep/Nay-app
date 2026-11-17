@@ -213,6 +213,77 @@ test('a quota error that aborts the IndexedDB transaction writes nothing and bec
   assert.deepEqual(await db.list('blobs'), []);
 });
 
+test('replaceAll replaces every store in one transaction', async () => {
+  const { db } = await setup();
+  await db.put('ideas', { id: 'vecchia', n: 1 });
+  await db.put('meta', { id: 'vault', n: 1 });
+  await db.put('prompts', { id: 'p-vecchio', n: 1 });
+  await db.replaceAll({ ideas: [{ id: 'nuova-1', n: 2 }, { id: 'nuova-2', n: 3 }], meta: [{ id: 'vault', n: 9 }] });
+  assert.deepEqual((await db.list('ideas')).map((r) => r.id).sort(), ['nuova-1', 'nuova-2']);
+  assert.deepEqual(await db.list('meta'), [{ id: 'vault', n: 9 }]);
+  assert.deepEqual(await db.list('prompts'), [], 'gli archivi non nominati si svuotano');
+  await db.replaceAll({});
+  for (const name of STORES) assert.deepEqual(await db.list(name), []);
+});
+
+test('replaceAll rolls everything back when a write fails', async () => {
+  const { db } = await setup();
+  await db.put('ideas', { id: 'vecchia', n: 1 });
+  await db.put('meta', { id: 'vault', n: 1 });
+  const original = IDBObjectStore.prototype.put;
+  let puts = 0;
+  IDBObjectStore.prototype.put = function (...args) {
+    if (++puts === 3) throw quotaError();
+    return original.apply(this, args);
+  };
+  let err;
+  try {
+    err = await db.replaceAll({ ideas: [{ id: 'a' }, { id: 'b' }, { id: 'c' }], meta: [{ id: 'vault', n: 2 }] }).catch((e) => e);
+  } finally {
+    IDBObjectStore.prototype.put = original;
+  }
+  assert.equal(err.name, 'QuotaExceededError');
+  assert.deepEqual(await db.list('ideas'), [{ id: 'vecchia', n: 1 }]);
+  assert.deepEqual(await db.list('meta'), [{ id: 'vault', n: 1 }]);
+});
+
+test('replaceAll rolls everything back when the browser aborts the transaction', async () => {
+  // come con la quota esaurita nel browser: la transazione si annulla più tardi e l'errore sta in tx.error
+  const { db } = await setup();
+  await db.put('ideas', { id: 'vecchia', n: 1 });
+  await db.put('meta', { id: 'vault', n: 1 });
+  const original = IDBObjectStore.prototype.put;
+  let puts = 0;
+  IDBObjectStore.prototype.put = function (...args) {
+    const request = original.apply(this, args);
+    if (++puts === 3) {
+      // l'annullamento arriva dopo che tutte le scritture sono state accodate, come nel browser
+      const tx = this.transaction;
+      queueMicrotask(() => {
+        Object.defineProperty(tx, 'error', { value: quotaError(), configurable: true });
+        tx.abort();
+      });
+    }
+    return request;
+  };
+  let err;
+  try {
+    err = await db.replaceAll({ ideas: [{ id: 'a' }, { id: 'b' }, { id: 'c' }], meta: [{ id: 'vault', n: 2 }] }).catch((e) => e);
+  } finally {
+    IDBObjectStore.prototype.put = original;
+  }
+  assert.equal(err && err.name, 'QuotaExceededError', String(err));
+  assert.deepEqual(await db.list('ideas'), [{ id: 'vecchia', n: 1 }]);
+  assert.deepEqual(await db.list('meta'), [{ id: 'vault', n: 1 }]);
+});
+
+test('replaceAll rejects unknown store names without touching the data', async () => {
+  const { db } = await setup();
+  await db.put('ideas', { id: 'vecchia', n: 1 });
+  await assert.rejects(db.replaceAll({ inventato: [{ id: 'x' }] }), TypeError);
+  assert.deepEqual(await db.list('ideas'), [{ id: 'vecchia', n: 1 }]);
+});
+
 test('storageStatus flags nearFull at 80% usage', async () => {
   const nav = (usage, quota, persisted = true) => ({
     storage: { estimate: async () => ({ usage, quota }), persisted: async () => persisted },

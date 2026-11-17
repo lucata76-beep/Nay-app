@@ -81,7 +81,8 @@ async function openSession(secret, slot, iterations) {
   }
 }
 
-async function sessionMatchesVault(vault, session) {
+// Vero se la sessione ha la chiave dei dati di questo vault (si decifra la costante `check`).
+export async function sessionMatchesVault(vault, session) {
   try {
     const value = await session.decryptJson(vault.check);
     return Boolean(value) && value.nay === CHECK_VALUE.nay;

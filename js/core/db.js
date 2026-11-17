@@ -28,12 +28,41 @@ function run(idb, storeName, mode, operation) {
   });
 }
 
+// Sostituisce il contenuto di tutti gli archivi in una sola transazione: o cambia tutto o non
+// cambia niente (anche se la memoria finisce a metà). `data` è {nome archivio: [record]};
+// gli archivi che non compaiono si svuotano. Serve all'importazione del backup.
+function replaceAll(idb, data) {
+  return new Promise((resolve, reject) => {
+    let tx;
+    try {
+      const unknown = Object.keys(data).filter((name) => !STORES.includes(name));
+      if (unknown.length > 0) throw new TypeError(`Archivi sconosciuti: ${unknown.join(', ')}`);
+      tx = idb.transaction(STORES, 'readwrite');
+      for (const name of STORES) {
+        const store = tx.objectStore(name);
+        store.clear();
+        for (const record of data[name] ?? []) store.put(record);
+      }
+      tx.oncomplete = () => resolve();
+      tx.onabort = () => reject(tx.error || new DOMException('Transazione annullata', 'AbortError'));
+    } catch (err) {
+      try {
+        if (tx) tx.abort();
+      } catch {
+        // la transazione era già chiusa
+      }
+      reject(err);
+    }
+  });
+}
+
 function makeDb(idb) {
   return {
     put: (store, record) => run(idb, store, 'readwrite', (s) => s.put(record)).then(() => undefined),
     get: (store, id) => run(idb, store, 'readonly', (s) => s.get(id)).then((value) => (value === undefined ? null : value)),
     list: (store) => run(idb, store, 'readonly', (s) => s.getAll()),
     remove: (store, id) => run(idb, store, 'readwrite', (s) => s.delete(id)).then(() => undefined),
+    replaceAll: (data) => replaceAll(idb, data),
   };
 }
 
