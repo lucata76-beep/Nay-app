@@ -28,7 +28,7 @@ export function mediaKind(mime) {
 const nameOf = (file) => file.name ?? file.blob.name ?? '';
 
 // Scrive blob e record Media dei file; ciò che crea lo annota in `created` per poterlo annullare.
-async function saveMedia(store, files, created) {
+export async function saveMedia(store, files, created) {
   const unsupported = files.filter((file) => mediaKind(file.blob.type) === null);
   if (unsupported.length > 0) throw new UnsupportedMediaError(unsupported.map(nameOf));
   const saved = [];
@@ -54,6 +54,13 @@ async function saveMedia(store, files, created) {
 // si raccoglie e lo si allega a quello.
 async function rollback(store, created) {
   const failures = [];
+  for (const id of created.publicationIds ?? []) {
+    try {
+      await store.remove('publications', id);
+    } catch (err) {
+      failures.push(err);
+    }
+  }
   for (const id of created.mediaIds) {
     try {
       await store.remove('media', id);
@@ -68,9 +75,10 @@ async function rollback(store, created) {
       failures.push(err);
     }
   }
-  for (const previous of created.restore) {
+  // record modificati prima del guasto: si rimettono com'erano ({store, record})
+  for (const { store: name, record } of created.restore) {
     try {
-      await store.save('media', previous);
+      await store.save(name, record);
     } catch (err) {
       failures.push(err);
     }
@@ -78,8 +86,8 @@ async function rollback(store, created) {
   return failures;
 }
 
-async function withRollback(store, operation) {
-  const created = { blobIds: [], mediaIds: [], restore: [] };
+export async function withRollback(store, operation) {
+  const created = { blobIds: [], mediaIds: [], publicationIds: [], restore: [] };
   try {
     return await operation(created);
   } catch (err) {
@@ -119,7 +127,7 @@ export async function updateIdeaWithMedia(store, idea, { text, lang, status, add
       if (!kept.includes(id)) continue;
       const current = await store.load('media', id);
       if (current && current.description !== description) {
-        created.restore.push(current);
+        created.restore.push({ store: 'media', record: current });
         await store.save('media', { ...current, description });
       }
     }
@@ -140,7 +148,7 @@ export async function updateIdeaWithMedia(store, idea, { text, lang, status, add
 }
 
 // Toglie un record Media e il suo blob. Restituisce gli errori incontrati (la pulizia prosegue).
-async function removeMedia(store, mediaId) {
+export async function removeMedia(store, mediaId) {
   const failures = [];
   let blobId = null;
   try {

@@ -26,6 +26,8 @@ const PATHS = {
   download: ['M12 4v11', 'M7 11l5 5 5-5', 'M5 20h14'],
   check: ['M5 12l5 5 9-10'],
   chevron: ['M9 5l7 7-7 7'],
+  eyeView: ['M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z', 'M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z'],
+  comment: ['M4 5h16v11H9l-5 4z'],
 };
 
 export function icon(name, { size = 24, className = 'icon' } = {}) {

@@ -44,31 +44,30 @@ function visibilityObserver() {
   return observer;
 }
 
-// item: {title, subtitle?, thumb?: Blob, thumbLoader?: () => Promise<Blob|null>, placeholder?: 'image'|'video'|'note',
-//        badges?: [{icon?, text}], menu: [{label, onSelect, danger?}], onOpen?: () => void}
-// Restituisce {element, dispose}: dispose libera gli indirizzi temporanei delle anteprime.
-export function renderCard(root, item) {
+// Anteprima di un blob dentro `thumb` (un elemento che contiene già l'icona di ripiego). Se c'è `blob` si mostra subito;
+// altrimenti `loader()` (→ Promise<Blob|null>) parte quando l'elemento si avvicina allo schermo, due alla volta.
+// Restituisce dispose(): libera l'indirizzo temporaneo e ferma i caricamenti non ancora partiti.
+export function lazyThumb(thumb, { blob, loader, fallbackIcon = 'image' } = {}) {
   let url = null;
   let disposed = false;
-  const thumb = h('span', { class: 'item__thumb', 'aria-hidden': 'true' }, icon(item.placeholder ?? 'note', { size: 28 }));
 
-  function showBlob(blob) {
-    if (disposed || !blob) return;
-    url = URL.createObjectURL(blob);
+  function show(data) {
+    if (disposed || !data) return;
+    url = URL.createObjectURL(data);
     const img = h('img', { class: 'item__img', src: url, alt: '', decoding: 'async' });
-    img.addEventListener('error', () => thumb.replaceChildren(icon('image', { size: 28 })));
+    img.addEventListener('error', () => thumb.replaceChildren(icon(fallbackIcon, { size: 28 })));
     thumb.replaceChildren(img);
   }
 
-  if (item.thumb) showBlob(item.thumb);
-  else if (item.thumbLoader) {
+  if (blob) show(blob);
+  else if (loader) {
     const load = () =>
       enqueue(async () => {
         if (disposed) return;
         try {
-          showBlob(await item.thumbLoader());
+          show(await loader());
         } catch (err) {
-          console.error(err); // la scheda resta con l'icona
+          console.error(err); // resta l'icona
         }
       });
     const obs = visibilityObserver();
@@ -77,6 +76,22 @@ export function renderCard(root, item) {
       obs.observe(thumb);
     } else load();
   }
+
+  return () => {
+    disposed = true;
+    if (observer) observer.unobserve(thumb);
+    watched.delete(thumb);
+    if (url) URL.revokeObjectURL(url);
+    url = null;
+  };
+}
+
+// item: {title, subtitle?, thumb?: Blob, thumbLoader?: () => Promise<Blob|null>, placeholder?: 'image'|'video'|'note',
+//        badges?: [{icon?, text}], menu: [{label, onSelect, danger?}], onOpen?: () => void}
+// Restituisce {element, dispose}: dispose libera gli indirizzi temporanei delle anteprime.
+export function renderCard(root, item) {
+  const thumb = h('span', { class: 'item__thumb', 'aria-hidden': 'true' }, icon(item.placeholder ?? 'note', { size: 28 }));
+  const disposeThumb = lazyThumb(thumb, { blob: item.thumb, loader: item.thumbLoader });
 
   const body = h(
     'span',
@@ -109,14 +124,5 @@ export function renderCard(root, item) {
   const element = h('article', { class: 'item' }, main, item.menu?.length ? menuButton : null);
   root.append(element);
 
-  return {
-    element,
-    dispose() {
-      disposed = true;
-      if (observer) observer.unobserve(thumb);
-      watched.delete(thumb);
-      if (url) URL.revokeObjectURL(url);
-      url = null;
-    },
-  };
+  return { element, dispose: disposeThumb };
 }

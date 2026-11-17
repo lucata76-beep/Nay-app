@@ -1,6 +1,6 @@
 {
-  "version": "0.4.0",
-  "hash": "53c828d379ff0bfa790fb083880e2b4e564c6075be13f283d1fb47bd04ca776b",
+  "version": "0.5.0",
+  "hash": "e674cfb341353960fcaec2ce69594702c7edd97d607e4bd033c7f5e83fdc0391",
   "files": [
     "./",
     "./assets/flags/es.svg",
@@ -25,6 +25,7 @@
     "./js/features/idea-save.js",
     "./js/features/ideas.js",
     "./js/features/prompts.js",
+    "./js/features/publications.js",
     "./js/features/repetitions.js",
     "./js/features/similarity.js",
     "./js/features/stats.js",
@@ -45,6 +46,7 @@
     "./js/ui/screens/develop.js",
     "./js/ui/screens/ideas.js",
     "./js/ui/screens/lock.js",
+    "./js/ui/screens/publications.js",
     "./js/ui/topbar.js",
     "./js/version.js",
     "./manifest.webmanifest",

@@ -416,8 +416,8 @@ Ultimo aggiornamento: 16 novembre 2026
 ## Dove siamo
 
 - **Fase:** 3 — Interfaccia (T11-T16) in corso, sul ramo `claude/fase-3-interfaccia-ck0hog` (non su `main`: vedi «Fase 3»). Ultimo aggiornamento: 17 novembre 2026.
-- **Ultimo task chiuso:** T13 (Sviluppare) — `APP_VERSION` 0.4.0.
-- **Prossimo task:** T14 (Pubblicazioni salvate e registro).
+- **Ultimo task chiuso:** T14 (Pubblicazioni salvate e registro) — `APP_VERSION` 0.5.0.
+- **Prossimo task:** T15 (Dashboard e grafici).
 
 ## Gate aperti
 
@@ -643,6 +643,39 @@ Via libera di Luca del 17 novembre 2026. La fase 2 è stata verificata da Claude
 | L'idea cambia stato | **fatto in Chromium:** prompt salvato (record in più), idea «in sviluppo», voce nel registro per l'idea simile a «Ánimo valiente» |
 | Memoria piena mentre si genera | **fatto in Chromium** (errore alla scrittura dell'idea): `error.storageFull`, nessun prompt rimasto, si resta nel modulo e si può riprovare |
 | Editor dei template, bozza, eliminazione, prompt salvati, scorciatoia da Ideare, cambio lingua a metà flusso, blocco con l'anteprima aperta, record illeggibile | **fatti in Chromium** |
+
+### T14 — Pubblicazioni salvate e registro (v0.5.0)
+
+**Test.** Come per T12 e T13 la logica nuova sta in un modulo con i suoi test: `js/features/publications.js` (modulo in più rispetto al piano) con `tests/publications.test.js` (**25 test**, nomi miei): campi obbligatori e valori predefiniti, visualizzazioni e commenti facoltativi (lo 0 è un dato; negativi e decimali rifiutati), solo immagini come screenshot, **salvataggio tutto o niente** (blob → Media → pubblicazione → idea collegata: memoria piena a ogni passo, nessun residuo; nessuna scrittura se l'idea o lo screenshot mancano), idea collegata che passa a «pubblicata», voci del registro create da sole confrontando con le pubblicazioni precedenti (mai tra lingue diverse; un confronto che fallisce non annulla il salvataggio), modifica (screenshot sostituito, il vecchio tolto solo dopo il salvataggio; collegamenti alle idee rimessi com'erano se la pubblicazione non si salva; riconfronto solo se cambia il testo, senza duplicare le coppie), eliminazione (pubblicazione, screenshot, voci del registro che la riguardano, collegamento dell'idea), filtri per giorno e tipo, unione delle voci del registro con pubblicazioni e testi controllati, filtri del registro, evidenziazione delle parole in comune, date. Visti rossi (modulo mancante), poi verdi; **19 mutazioni temporanee**: tre non erano intercettate (0 numerico trattato come assente, screenshot non immagine, ripristino delle idee) e ho aggiunto i test, poi tutte intercettate. `idea-save.js` (T12) è stato generalizzato per riusare lo stesso meccanismo di annullamento (esporta `withRollback`, `saveMedia`, `removeMedia`; ripristina i record modificati). Suite: **305 test, tutti verdi**.
+
+**Cosa fa la pagina** (`js/ui/screens/publications.js`): due schede, «Publicaciones» e «Registro». **Elenco:** anteprima dello screenshot, titolo, «data · tipo · lingua», visualizzazioni e commenti, filtri per data e tipo (con etichetta «Filtros (activos)» e «Quitar los filtros» che seguono i filtri), [+], ⋮ Modifica / Elimina con conferma. **Modulo:** screenshot, titolo e descrizione obbligatori; tipo `foto`, lingua `es`, data e ora «adesso» modificabili; visualizzazioni, commenti, nota e idea collegata facoltativi; «Guardar y añadir otra» (tiene tipo, lingua e data, per caricare lo storico); bozza cifrata. **Registro:** per ogni voce la pubblicazione trovata (titolo, data, **screenshot che si apre a tutto schermo toccandolo**), il testo controllato (idea, prompt o post) e il testo trovato **con le parole in comune evidenziate** (anche in forme diverse della stessa parola: «cuori» per «cuore»), le parole in comune, il grado di somiglianza **orientativo**, la data del controllo e i tre stati con un tocco; ricerca per parola e filtri per stato, data della pubblicazione trovata e data del controllo.
+
+**Scelte e scostamenti di T14** (motivo; costo se sbagliata):
+1. **Date della pubblicazione trovata nel registro: unisco le pubblicazioni alle voci** (`enrichRepetitions`) invece di estendere `Repetition` (come chiedeva la nota di T7). `filterRegistry` filtra sia la data del controllo sia quella della pubblicazione trovata. `searchRepetitions` (T7) resta com'è, con i suoi test, ma **l'interfaccia non la usa**: filtra solo `checkedAt` e in UTC. Costo se sbagliata: una funzione da sostituire con `searchRepetitions` + un filtro.
+2. **I giorni dei campi data sono giorni del telefono (locali), non UTC:** `dayRange` converte «2026-03-10» in inizio e fine di quel giorno locale. Nel contenitore il fuso è UTC, quindi **non ho potuto mostrare in Chromium la differenza tra giorno locale e UTC**: la copre un test unitario con date locali. **[Da provare sul Samsung]** (fuso di Madrid).
+3. **La ricerca nel registro cerca tra parole in comune, testo controllato e titolo e descrizione della pubblicazione trovata** (servono tutte le parole, senza accenti né maiuscole), non solo tra le parole in comune. Costo se sbagliata: restringere a `sharedWords`.
+4. **«Falso allarme» e «ricaricare un post uguale».** Il piano chiede che dopo «falso allarme» ricaricare un post uguale non faccia riapparire la voce. Provato: **rifare il controllo della stessa pubblicazione** (modifica del testo) **non riapre né duplica** la voce segnata «falso allarme»; invece **un post uguale caricato come nuova pubblicazione è una coppia nuova** e crea voci nuove (con l'originale e con l'altro post simile): è il comportamento di T7 (`pairKey` per coppia). Costo se sbagliata: se si intendeva «mai più segnalare quel testo» serve un'altra regola.
+5. **Eliminare una pubblicazione** toglie lo screenshot, le voci del registro che la riguardano (come fonte o come trovata) e il riferimento `publicationId` nell'idea collegata, **ma non cambia lo stato dell'idea** («pubblicata»): si corregge a mano in Ideare. Spostare il collegamento a un'altra idea toglie il riferimento alla vecchia (stato invariato) e porta la nuova a «pubblicata».
+6. **Lo screenshot è un solo file immagine** (`image/*`); nessun OCR (rimandato dal piano, T18).
+7. **La scheda scelta resta nell'indirizzo** (`#/pubblicazioni?tab=registro|lista`, senza nuova voce nella cronologia): dopo un blocco si torna alla stessa scheda. La Dashboard (T15) aprirà `#/pubblicazioni?tab=registro&status=da_valutare`, già provato. **Toccare di nuovo la voce attiva della barra in basso toglie ora anche i parametri dell'indirizzo** (scheda, idea scelta in Sviluppare) prima di ripartire (`main.js`).
+8. **Condivisi con T12/T13:** `lazyThumb` esportato da `cards.js` (anteprime pigre, due alla volta) e `showImage` in `dialog.js` (si chiude con Esc, tocco fuori o pulsante; il blocco dell'app la chiude).
+9. **Trovati e corretti durante la verifica in Chromium:** il pannello dei filtri non aggiornava l'etichetta né mostrava «Togli i filtri» se i filtri si attivavano dopo l'apertura; l'avviso di somiglianza restava visibile cambiando scheda; dopo un blocco la scheda tornava a quella dell'indirizzo anche se se n'era scelta un'altra.
+10. 70 chiavi nuove in `es.js` e `it.js` (testi non rivisti, T19).
+
+**«Verifica a mano» del piano per T14, in Chromium con script** (56 controlli, tutti passati; telefono emulato; dati inventati; screenshot = icone del repo):
+
+| Punto | Esito |
+|---|---|
+| Salvataggio veloce con screenshot, titolo e descrizione obbligatori | **fatto in Chromium** (messaggio per ciascun campo mancante, nulla scritto; valori predefiniti: foto, spagnolo, adesso) |
+| «Aggiungi un altro» per caricare lo storico | **fatto in Chromium** (5 post caricati di seguito: titolo e descrizione vuoti, data, tipo e lingua di prima) |
+| Caricare 5 post di prova di cui due con parole in comune: il registro ha una voce «da valutare» con le parole evidenziate | **fatto in Chromium:** avviso al quinto post, 1 voce senza altri tocchi, parole evidenziate nei due testi, elenco delle parole, grado orientativo e data del controllo |
+| Segnarla «falso allarme» e ricaricare un post uguale: non riappare | **fatto in Chromium con l'interpretazione del punto 4** |
+| Screenshot che si apre toccando | **fatto in Chromium** (si apre a tutto schermo, Esc lo chiude) |
+| Elenco con filtri per data e tipo; modifica ed eliminazione | **fatti in Chromium** (giorni interi, compreso un post delle 23:30; modifica con nuovo screenshot e idea collegata; eliminazione con conferma) |
+| Registro: ricerca per parola e per date, stato per voce | **fatti in Chromium** (stato, parola senza accenti, data della pubblicazione trovata, data del controllo) |
+| Memoria piena, bozza, blocco con il modulo aperto, cambio lingua, record illeggibile | **fatti in Chromium** (errore simulato alla scrittura della pubblicazione: nessun blob né media rimasto, riprovando riesce; record del registro illeggibile → `error.dataUnreadable` con «Reintentar») |
+
+**Non provato [Da provare sul Samsung]:** il selettore delle immagini di Android per lo screenshot; l'aspetto del campo «data e ora» sul telefono (qui è quello di Chromium); l'elenco e il registro con 200-260 post l'anno (`registerMatches` rilegge tutte le voci a ogni confronto, già annotato in T7: non misurato oltre qualche decina).
 
 ## Da verificare
 

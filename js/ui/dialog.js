@@ -56,3 +56,37 @@ export function confirmDialog({ title, message, confirmLabel, cancelLabel = i18n
     cancel.focus();
   });
 }
+
+// Immagine a tutto schermo (lo screenshot di un post). Sta fuori da #app come le finestre di conferma:
+// il blocco dell'app la chiude. Si chiude con il pulsante, toccando fuori o con Esc.
+export function showImage({ blob, title = '' }) {
+  const previous = document.activeElement;
+  const url = URL.createObjectURL(blob);
+  const closeButton = h('button', { type: 'button', class: 'btn btn--secondary viewer__close', text: i18n.t('common.close') });
+  const img = h('img', { class: 'viewer__img', src: url, alt: title });
+  const backdrop = h('div', { class: 'dialog-backdrop viewer', role: 'dialog', 'aria-modal': 'true', 'aria-label': title || i18n.t('common.close') }, img, closeButton);
+
+  function close() {
+    if (!open.has(close)) return;
+    open.delete(close);
+    document.removeEventListener('keydown', onKey, true);
+    backdrop.remove();
+    URL.revokeObjectURL(url);
+    if (previous && previous.isConnected) previous.focus?.();
+  }
+  function onKey(event) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      close();
+    }
+  }
+  closeButton.addEventListener('click', close);
+  backdrop.addEventListener('click', (event) => {
+    if (event.target === backdrop) close();
+  });
+  open.add(close);
+  document.addEventListener('keydown', onKey, true);
+  document.body.append(backdrop);
+  closeButton.focus();
+  return close;
+}

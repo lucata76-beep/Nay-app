@@ -11,6 +11,7 @@ import { closeMenu, openMenu } from './ui/menu.js';
 import { renderLock } from './ui/screens/lock.js';
 import { renderIdeas } from './ui/screens/ideas.js';
 import { renderDevelop } from './ui/screens/develop.js';
+import { renderPublications } from './ui/screens/publications.js';
 import { closeDialogs } from './ui/dialog.js';
 import { applyI18n, h } from './ui/dom.js';
 
@@ -28,7 +29,7 @@ const SCREENS = {
   dashboard: renderPlaceholder,
   ideare: renderIdeas,
   sviluppare: renderDevelop,
-  pubblicazioni: renderPlaceholder,
+  pubblicazioni: renderPublications,
   impostazioni: renderPlaceholder,
 };
 
@@ -161,6 +162,12 @@ function runApp(root, { db, session }) {
       return [{ label: i18n.t('menu.lockNow'), onSelect: () => lock() }];
     }
 
+    function reselect(name) {
+      // la voce attiva si è toccata di nuovo: via i parametri dell'indirizzo (scheda, idea scelta...) e si riparte
+      globalThis.history?.replaceState(null, '', hashFor(name));
+      renderRoute();
+    }
+
     // Barre in alto e in basso: non contengono ciò che l'utente digita, si ricostruiscono sempre.
     function renderChrome(name) {
       renderTopbar(topbarHost, {
@@ -168,7 +175,7 @@ function runApp(root, { db, session }) {
         onHome: () => (globalThis.location.hash = hashFor('dashboard')),
         onMenu: (anchor) => openMenu(anchor, menuItems()),
       });
-      renderBottombar(bottombarHost, { active: name, onReselect: () => renderRoute() });
+      renderBottombar(bottombarHost, { active: name, onReselect: () => reselect(name) });
     }
 
     // Cambio di lingua: si riscrivono i testi sul posto, la pagina non si ricostruisce
