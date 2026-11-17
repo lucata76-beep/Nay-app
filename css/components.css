@@ -518,3 +518,305 @@
 .menu__item--danger {
   color: var(--text-danger);
 }
+
+/* ---------- Elenchi e schede (Ideare, Pubblicazioni, ...) ---------- */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.page--with-fab {
+  padding-bottom: 84px; /* spazio per il pulsante [+] */
+}
+
+.searchbar {
+  position: relative;
+}
+
+.searchbar__icon {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.searchbar .field__input {
+  padding-left: 44px;
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item {
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  background: var(--grad-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--glow-cyan);
+}
+
+.item__main {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 10px;
+  background: transparent;
+  border: 0;
+  color: var(--text);
+  text-align: left;
+}
+
+.item__thumb {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  background: var(--bg-0);
+  border: 1px solid var(--line-soft);
+  border-radius: 12px;
+  color: var(--text-muted);
+}
+
+.item__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.item__title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.item__subtitle {
+  font-size: 0.82rem;
+}
+
+.item__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.item__menu {
+  flex: none;
+  align-self: center;
+  margin-right: 4px;
+}
+
+.empty {
+  padding: 28px 12px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* ---------- Pulsante [+] ---------- */
+.fab-layer {
+  position: fixed;
+  bottom: calc(var(--bottombar-h) + 16px + env(safe-area-inset-bottom));
+  left: 50%;
+  z-index: 15;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  max-width: 560px;
+  padding: 0 var(--gutter);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.fab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: var(--grad-primary);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: var(--glow-violet), var(--shadow-pop);
+  color: var(--on-primary);
+  pointer-events: auto;
+}
+
+/* ---------- Modulo (nuova idea, modifica) ---------- */
+.editor {
+  gap: 14px;
+}
+
+.editor__bar {
+  display: flex;
+  align-items: center;
+}
+
+.editor__back {
+  justify-content: flex-start;
+  width: auto;
+  min-height: 44px;
+  padding: 6px 12px 6px 2px;
+}
+
+.editor__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.textarea {
+  min-height: 160px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.select {
+  appearance: auto;
+}
+
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.attach-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.attach {
+  display: grid;
+  grid-template-columns: 64px 1fr 44px;
+  gap: 10px;
+  align-items: start;
+  padding: 10px;
+  background: var(--bg-0);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-sm);
+}
+
+.attach__info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.attach__desc {
+  grid-column: 1 / -1; /* la descrizione sta a tutta larghezza sotto anteprima e nome */
+}
+
+.attach__meta {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+/* ---------- Avvisi con elenco ---------- */
+.notices:empty {
+  display: none;
+}
+
+.banner__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.banner__list {
+  margin: 6px 0;
+  padding-left: 18px;
+}
+
+.banner__hint {
+  font-size: 0.85rem;
+}
+
+.banner__text {
+  flex: 1;
+}
+
+.notices .banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.banner__close {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  margin: -6px -6px 0 0;
+  color: inherit;
+}
+
+/* ---------- Finestra di conferma ---------- */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: var(--overlay);
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 420px;
+  padding: 20px 18px;
+  background: var(--bg-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-pop);
+}
+
+.dialog__title {
+  color: var(--text);
+}
+
+.dialog__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}

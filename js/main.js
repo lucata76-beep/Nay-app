@@ -9,6 +9,8 @@ import { renderTopbar } from './ui/topbar.js';
 import { renderBottombar } from './ui/bottombar.js';
 import { closeMenu, openMenu } from './ui/menu.js';
 import { renderLock } from './ui/screens/lock.js';
+import { renderIdeas } from './ui/screens/ideas.js';
+import { closeDialogs } from './ui/dialog.js';
 import { applyI18n, h } from './ui/dom.js';
 
 // Tempo in secondo piano dopo il quale l'app si blocca (spec: «blocco automatico»).
@@ -23,7 +25,7 @@ function renderPlaceholder(view, ctx) {
 }
 const SCREENS = {
   dashboard: renderPlaceholder,
-  ideare: renderPlaceholder,
+  ideare: renderIdeas,
   sviluppare: renderPlaceholder,
   pubblicazioni: renderPlaceholder,
   impostazioni: renderPlaceholder,
@@ -118,6 +120,7 @@ function runApp(root, { db, session }) {
       document.removeEventListener('visibilitychange', onVisibility);
       globalThis.removeEventListener('pagehide', flushAll);
       closeMenu();
+      closeDialogs();
       endScope();
       root.replaceChildren(); // via ogni testo in chiaro dallo schermo
       resolveLocked();
@@ -138,9 +141,12 @@ function runApp(root, { db, session }) {
           globalThis.location.hash = hashFor(name, query);
         },
         onDispose: (fn) => (mine.disposed ? fn() : mine.disposers.push(fn)),
+        // restituisce la funzione che toglie il salvataggio dall'elenco (per un modulo che si chiude prima della pagina)
         onBackground: (fn) => {
           flushers.add(fn);
-          mine.disposers.push(() => flushers.delete(fn));
+          const off = () => flushers.delete(fn);
+          mine.disposers.push(off);
+          return off;
         },
         // pagine con testi calcolati (date, conteggi): si riscrivono quando cambia la lingua
         onLangChange: (fn) => {

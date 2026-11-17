@@ -416,8 +416,8 @@ Ultimo aggiornamento: 16 novembre 2026
 ## Dove siamo
 
 - **Fase:** 3 — Interfaccia (T11-T16) in corso, sul ramo `claude/fase-3-interfaccia-ck0hog` (non su `main`: vedi «Fase 3»). Ultimo aggiornamento: 17 novembre 2026.
-- **Ultimo task chiuso:** T11 (guscio dell'app, accesso, barre) — `APP_VERSION` 0.2.0.
-- **Prossimo task:** T12 (Ideare).
+- **Ultimo task chiuso:** T12 (Ideare) — `APP_VERSION` 0.3.0.
+- **Prossimo task:** T13 (Sviluppare).
 
 ## Gate aperti
 
@@ -573,7 +573,45 @@ Via libera di Luca del 17 novembre 2026. La fase 2 è stata verificata da Claude
 | Percorsi sotto `/Nay-app/` | **fatto in Chromium:** nessuna richiesta dalla radice, nessun 404, nessuna richiesta verso altri siti, nessun errore in console |
 | Due schede che confermano insieme | **fatto in Chromium:** una entra, l'altra torna allo sblocco; un solo vault confermato |
 
-**Non provato [Da provare sul Samsung]:** installazione e avvio standalone, tastiera di Android (campi nascosti dalla tastiera, correttore), proposta di salvataggio password, `visibilitychange` e blocco dopo il blocco schermo vero, aggiornamento del service worker all'avvio dell'app installata, esito di `persist()`, HTTPS di Pages (G1). Il salvataggio delle bozze prima del blocco (punti 3-4 della revisione: svuotare le bozze prima di cambiare pagina, tetto di 3 s) è realizzato ma **non ancora provato**: le bozze arrivano con T12.
+**Non provato [Da provare sul Samsung]:** installazione e avvio standalone, tastiera di Android (campi nascosti dalla tastiera, correttore), proposta di salvataggio password, `visibilitychange` e blocco dopo il blocco schermo vero, aggiornamento del service worker all'avvio dell'app installata, esito di `persist()`, HTTPS di Pages (G1). Il salvataggio delle bozze prima del blocco e prima di cambiare pagina e il tetto di 3 s (punti 3-4 della revisione) sono stati provati in Chromium con le bozze vere di T12 (vedi sotto).
+
+### T12 — Ideare (v0.3.0)
+
+**Test.** Il piano non elenca test per T12 (interfaccia), ma la regola «se `StorageFullError` arriva dopo `saveBlob`, cancella il blob rimasto» e il «finto errore nei test» chiesti da Luca richiedono logica provabile: l'ho messa in `js/features/idea-save.js` (modulo in più rispetto al piano) con `tests/idea-save.test.js` (**21 test**, nomi miei): note senza file, idea con media (record Media, blob cifrati, nome e tipo non leggibili), file non supportati rifiutati prima di scrivere, **`StorageFullError` sul secondo blob / su un record Media / sull'idea → nessun blob, media o idea rimasti**, un errore qualunque annulla lo stesso e una pulizia che fallisce non nasconde l'errore vero, modifica (testo, lingua, stato, file aggiunti e tolti **solo dopo** il salvataggio dell'idea, descrizioni ripristinate se il salvataggio fallisce), idea lasciata senza testo né media rifiutata, eliminazione (idea, media, blob, prompt e voci del registro di quell'idea, niente altro), controllo di somiglianza (voce nel registro una volta sola, mai tra lingue diverse). Visti rossi (modulo mancante), poi verdi; **12 mutazioni temporanee** del codice intercettate (due non lo erano: ho rinforzato i test). Suite: **259 test, tutti verdi**.
+
+**Cosa fa la pagina** (`js/ui/screens/ideas.js`, `js/ui/cards.js`, `js/ui/dialog.js`): elenco con anteprima, ricerca per parola (accenti ignorati), [+] con Nota/Foto/Video (Foto e Video aprono subito il selettore file, `image/*` o `video/*`; nel modulo il campo è `image/*,video/*` con `multiple`), modulo con testo, lingua dell'idea (spagnolo predefinito), stato (solo in modifica, correggibile a mano), file con anteprima, **descrizione scritta da lei per ogni file** (campo `Media.description`, servirà a `{descrizione_media}` in T13), conferma prima di eliminare, ⋮ su ogni scheda (Modifica, Elimina), avviso di somiglianza dopo il salvataggio con titolo, data e parole in comune del post trovato.
+
+**Bozze:** testo, lingua e stato si salvano cifrati dopo 400 ms di pausa e **subito** quando l'app va in secondo piano, prima di cambiare pagina e prima del blocco (tetto di 3 s: un salvataggio appeso non lascia i testi sullo schermo). Uscire senza salvare non cancella la bozza; «Scarta la bozza» sì.
+
+**Scelte e scostamenti di T12** (motivo; costo se sbagliata):
+1. **Modulo in più `js/features/idea-save.js`** (e `dialog.js`): vedi sopra; costo: due file da fondere nella pagina.
+2. **`renderCard` esteso** rispetto alla firma del piano: oltre a `{title, subtitle?, thumb?, menu}` accetta `thumbLoader`, `badges`, `placeholder`, `onOpen` e restituisce `{element, dispose}` (libera gli indirizzi temporanei delle anteprime).
+3. **Anteprime:** le foto si decifrano solo quando la scheda si avvicina allo schermo e **due alla volta** (ogni foto va decifrata per intero); i **video non hanno anteprima nell'elenco** (icona, tipo, durata), per non decifrare video da decine di MB solo per mostrare l'elenco. Costo: elenco meno ricco; sul Samsung con molti file grandi **[Da provare]**.
+4. **Le bozze non contengono i file scelti** (non si possono rimettere in un modulo): se si esce dal modulo i file vanno scelti di nuovo; il testo no.
+5. **Eliminare un'idea toglie anche i suoi prompt e le voci del registro che la riguardano** (il piano non lo dice); la finestra di conferma lo avvisa. Costo se sbagliata: una riga in `deleteIdea`.
+6. **Pulizia best-effort dopo il salvataggio:** se la cancellazione dei media tolti o dell'idea eliminata si interrompe, restano al massimo dati senza padrone (spazio occupato), mai un'idea con file mancanti. Non c'è ancora una pulizia degli orfani all'avvio.
+7. **Il controllo di somiglianza parte dopo il salvataggio** e non può far perdere l'idea: se fallisce compare `ideas.checkFailed`.
+8. 41 chiavi nuove in `es.js` e `it.js` (scritte da me, non riviste, T19); `color-scheme: dark` in `css/base.css` per i controlli nativi (select).
+
+**«Verifica a mano» del piano per T12, in Chromium con script** (51 controlli dello script principale + 8 della prova di quota, tutti passati; il selettore file è intercettato da Playwright):
+
+| Punto | Esito |
+|---|---|
+| Salvare una nota | **fatto in Chromium** (record cifrato: il testo non è leggibile nel database) |
+| Scrivere un testo e uscire senza salvare, riaprire: il testo c'è | **fatto in Chromium**, anche cambiando pagina subito dopo aver digitato (senza attendere i 400 ms) e con app in secondo piano + blocco automatico + sblocco: la bozza è già salvata; con il salvataggio appeso (cifratura che non risponde) il blocco arriva lo stesso e il testo sparisce dallo schermo |
+| Aggiungere 2 foto e un video dalla galleria | **fatto in Chromium con file veri** (due PNG del repo e un WebM registrato da Chromium) scelti dal selettore file intercettato: anteprime, durata del video, 3 media e 3 blob nel database. **Il selettore/galleria di Android (selezione multipla, fotocamera) è [Da provare sul Samsung]** |
+| `QuotaExceededError` simulato: compare `error.storageFull` e nulla resta a metà | **fatto in Chromium** (errore lanciato alla seconda scrittura di un record Media): nessuna idea, media né blob in più; il modulo resta com'era e il salvataggio riprovato riesce |
+| **Memoria piena con quota vera ridotta** (CDP `Storage.overrideQuotaForOrigin`) | **fatto in Chromium**, vedi sotto |
+| Ricerca, modifica, eliminazione con conferma, somiglianza | **fatti in Chromium** (ricerca «animo» trova «Ánimo»; togliere un file lo toglie dal database solo al salvataggio; avviso con parole in comune e voce nel registro) |
+| Record illeggibile | **fatto in Chromium:** un'idea con il testo cifrato alterato → messaggio `error.dataUnreadable` con «Reintentar», non una pagina vuota |
+| Cambio lingua con il modulo aperto | **fatto in Chromium:** il testo digitato resta, titoli e pulsanti passano all'italiano |
+| Blocco con una finestra di conferma aperta | **fatto in Chromium:** la finestra sparisce |
+| Indirizzi temporanei delle anteprime | **fatto in Chromium:** creati = liberati lasciando la pagina |
+
+**Quota vera in Chromium — metodo e cosa ho scoperto** (`Storage.overrideQuotaForOrigin` sull'origine locale, quota = spazio usato + 3 MB):
+- Con la quota ridotta, salvare **un file da 12 MB** e **due file (1 MB che entra, 8 MB che no)** dà un vero `QuotaExceededError` del browser → `StorageFullError` → messaggio `error.storageFull`. Dopo l'errore: nessun record `ideas`/`media`/`blobs` in più (il primo blob del caso a due file è stato tolto), il modulo resta com'era; alzata la quota la stessa idea si salva.
+- **Il metodo ha una trappola:** l'override va applicato **prima di qualunque scrittura della sessione del browser**. Applicato dopo che l'app ha già scritto (per esempio dopo aver creato la password), `getUsageAndQuota` dice `overrideActive: true` ma le scritture da 12 MB passano senza errore (provato con contesto persistente e non persistente, anche riaprendo il database). Nel contesto persistente, anche con l'override attivo fin dall'inizio non l'ho riprovato: lo script usa un contesto non persistente.
+- Dopo i fallimenti `getUsageAndQuota` continua a dichiarare uno «spazio usato» alto (17,5 MB con quota di 3,2 MB) pur senza record: è la contabilità del browser, non un residuo trovato nell'archivio (i conteggi dei record sono zero). Cosa succede davvero sul Samsung con spazio vero finito **[Da provare sul Samsung]**.
 
 ## Da verificare
 

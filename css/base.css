@@ -6,6 +6,7 @@
 }
 
 html {
+  color-scheme: dark; /* menu a tendina e campi nativi in tinta con l'app */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
