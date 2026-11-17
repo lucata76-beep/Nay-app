@@ -121,8 +121,8 @@ Ultimo aggiornamento: 16 novembre 2026
 ## Dove siamo
 
 - **Fase:** 2 — Logica (T3-T10), in corso. La fase 1 è completa lato codice; il gate G2 (prova sul Samsung) è stato eseguito da Luca (vedi «Fatti comunicati da Luca» più sotto).
-- **Ultimo task chiuso:** T4 (cifratura e vault)
-- **Prossimo task:** T5 (archivio cifrato)
+- **Ultimo task chiuso:** T5 (archivio cifrato)
+- **Prossimo task:** T6 (idee, template, prompt, bozze)
 
 ## Gate aperti
 
@@ -169,6 +169,13 @@ Ultimo aggiornamento: 16 novembre 2026
 - Test in più rispetto al piano: busta alterata, byte, IV diverso a ogni cifratura, forma del codice di recupero, codice sbagliato, `changePassword` (codice di recupero e stato conservati, password corta, sessione di un altro vault, NFD), accenti/ñ/¿/¡ con NFC e NFD, vault mai confermato dopo il riavvio, record JSON, due vault diversi, input non validi. Controllati con mutazioni temporanee (NFC disattivata, controllo di appartenenza tolto, `isSetupComplete` sempre vero): i test falliscono come devono.
 - **Regole per T11** (dalla revisione): (1) salvare sempre il record restituito da `confirmRecoveryCode`, non quello di `createVault`; (2) una nuova creazione non deve mai sovrascrivere un vault se esistono già dati cifrati; (3) la schermata di sblocco non deve togliere gli spazi (`trim`) dalla password: gli spazi fanno parte della password.
 - **Limite [Da provare sul telefono]:** la busta cifrata è in base64 (come da piano). Misurato in Node dal revisore, non sul Samsung: cifrare un file da 50 MB ≈ 2,5 s e ≈ 530 MB di memoria, 150 MB ≈ 6,5 s e ≈ 1,46 GB; oltre circa 380 MB di file la stringa base64 supera il limite di lunghezza di V8 (`RangeError`). I video molto grandi potrebbero quindi non salvarsi: da misurare sul telefono (il test di Luca, con 42 MB, è andato bene).
+
+**T5 — archivio cifrato**
+- Nel database restano in chiaro solo `id` e `updatedAt`: il record è `{id, updatedAt, enc}`; per i blob `{id, updatedAt, enc, info}` dove `info` è una busta cifrata con `{id, type, size}` (anche il tipo MIME è cifrato). Test: `stored value does not contain the plaintext` e, in più, `stored blob does not contain the plaintext bytes or the mime type`.
+- Scelte (il piano non le fissa): `Db.get` restituisce `null` se il record manca; `STORES`, `DB_NAME` e `NEAR_FULL_RATIO` sono esportati da `db.js`; `save` rifiuta un `id` non stringa; ogni record decifrato deve avere lo stesso `id` della chiave con cui è salvato (un record copiato sotto un altro id viene rifiutato: test per record e per blob); `all` è rigoroso: se un solo record è illeggibile l'intera lista fallisce, invece di ometterlo in silenzio; `loadBlob` di un id mancante lancia un errore; senza API di spazio `storageStatus` restituisce zeri e `nearFull: false`.
+- **Review Focus 4 (memoria piena):** test `QuotaExceededError becomes StorageFullError and leaves the previous record intact` (nome del piano) più `... while saving a blob ... writes nothing`, più due test sul percorso di IndexedDB (errore lanciato dentro la richiesta e transazione annullata con l'errore in `tx.error`, come fa il browser). Una mutazione temporanea ha mostrato una lacuna nel secondo percorso: il test è stato aggiunto prima del commit. **[Da provare]** sul telefono: la quota esaurita vera è solo simulata (fake-indexeddb).
+- **Per T12:** il salvataggio di una foto o di un video fa più scritture (blob, `media`, idea) e T5 non le rende atomiche insieme: se `StorageFullError` arriva dopo `saveBlob`, T12 deve cancellare il blob rimasto con `store.remove('blobs', id)` per non lasciare record a metà.
+- Test in più rispetto al piano: `openDb` crea tutti gli archivi, `load`/`remove`, record illeggibili con un'altra sessione, `loadBlob` mancante, altri errori di scrittura non diventano `StorageFullError`, `storageStatus` senza API.
 
 ## Da verificare
 
