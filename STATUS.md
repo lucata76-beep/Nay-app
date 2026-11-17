@@ -415,7 +415,7 @@ Somma: 203 (fase 2) + 1 + 34 (T11) + 21 + 21 + 25 + 15 + 23 = 343. Mutazioni tem
 3. **Service worker:** `updateViaCache: 'none'` (serve davvero: provato con un server che manda `max-age=600` come Pages), nessuno `skipWaiting`, cancellazione solo delle cache `nay-X.Y.Z` di un'altra versione, auto-riparazione se la cache sparisce.
 4. **T11:** nel database non si scrive nulla prima della conferma del codice di recupero; con dati cifrati ma senza vault non si crea nulla (nessuna via d'uscita nell'interfaccia: vedi decisioni).
 5. **T13:** `{stile}` senza guida di stile salvata → avviso arancione, il prompt si può generare lo stesso; storico di 30 post (mia scelta provvisoria); nessuna soglia di dimensione dei file (G4); il controllo di somiglianza usa il testo dell'idea, non quello del prompt.
-6. **T14:** uniscono le pubblicazioni alle voci del registro (`enrichRepetitions`) invece di estendere `Repetition`; i giorni dei filtri sono locali; «falso allarme» vale per coppia.
+6. **T14:** unisco le pubblicazioni alle voci del registro (`enrichRepetitions`) invece di estendere `Repetition`; i giorni dei filtri sono locali; «falso allarme» vale per coppia.
 7. **T15:** grafico dei commenti limitato agli **ultimi 12** post (costante `COMMENTS_LAST_N`), senza etichette sull'asse.
 8. **T16:** il cambio password chiede la password attuale; messaggi «Descarga … iniciada» (il browser non dice se un file è arrivato; riscritto anche il messaggio dello ZIP di T13); estensione `.naybk`; blocco durante un'importazione che aspetta la fine; blocco delle altre schede con `BroadcastChannel`; `lock.js` sblocca col vault riletto dal database.
 9. **Screenshot a scala 2** (768×1664) invece di 2,8125, per ridurre il peso (6,6 MB in tutto nella cartella).
