@@ -121,8 +121,8 @@ Ultimo aggiornamento: 16 novembre 2026
 ## Dove siamo
 
 - **Fase:** 2 — Logica (T3-T10), in corso. La fase 1 è completa lato codice; il gate G2 (prova sul Samsung) è stato eseguito da Luca (vedi «Fatti comunicati da Luca» più sotto).
-- **Ultimo task chiuso:** T5 (archivio cifrato)
-- **Prossimo task:** T6 (idee, template, prompt, bozze)
+- **Ultimo task chiuso:** T6 (idee, template, prompt, bozze)
+- **Prossimo task:** T7 (somiglianza e registro)
 
 ## Gate aperti
 
@@ -176,6 +176,14 @@ Ultimo aggiornamento: 16 novembre 2026
 - **Review Focus 4 (memoria piena):** test `QuotaExceededError becomes StorageFullError and leaves the previous record intact` (nome del piano) più `... while saving a blob ... writes nothing`, più due test sul percorso di IndexedDB (errore lanciato dentro la richiesta e transazione annullata con l'errore in `tx.error`, come fa il browser). Una mutazione temporanea ha mostrato una lacuna nel secondo percorso: il test è stato aggiunto prima del commit. **[Da provare]** sul telefono: la quota esaurita vera è solo simulata (fake-indexeddb).
 - **Per T12:** il salvataggio di una foto o di un video fa più scritture (blob, `media`, idea) e T5 non le rende atomiche insieme: se `StorageFullError` arriva dopo `saveBlob`, T12 deve cancellare il blob rimasto con `store.remove('blobs', id)` per non lasciare record a metà.
 - Test in più rispetto al piano: `openDb` crea tutti gli archivi, `load`/`remove`, record illeggibili con un'altra sessione, `loadBlob` mancante, altri errori di scrittura non diventano `StorageFullError`, `storageStatus` senza API.
+
+**T6 — idee, template, prompt, bozze**
+- Test del piano presenti con i nomi del piano; il test `draft roundtrip and clear` sta in `tests/ideas.test.js` (il piano non elenca un file di test per le bozze). Test in più: idea con solo testo/solo media, lingua non supportata, ricerca con NFC/NFD e query vuota, segnaposto noti, `formatHistory` (più recenti, tetto `max`, ripetizioni, riga singola, input non modificato), `buildPrompt` (lingue, storico vuoto, valori che non scavalcano idea/storico/lingua), bozze cifrate. Cinque mutazioni temporanee sul codice (valori vuoti, ripiego sull'idea del modulo, ordine degli `similarIds`, stato «pubblicata», ricerca senza accenti) sono state intercettate dai test.
+- Scelte (il piano non le fissa): `Idea` ha in più il campo facoltativo `publicationId`, perché `linkToPublication(idea, publicationId)` lo riceve e non c'è altro modo di usarlo; `createIdea` toglie gli spazi ai bordi del testo, rifiuta lingue non supportate e `mediaIds` che non sia un elenco (`EmptyIdeaError` se mancano testo e media); `markInDevelopment` non fa tornare indietro un'idea già «pubblicata»; `searchIdeas` richiede tutte le parole cercate, senza badare a maiuscole, accenti e tilde (anche «ñ» vale «n»: «año» trova «ano»); le bozze stanno cifrate nell'archivio `meta` con id `draft:<formId>`.
+- `renderTemplate` sostituisce in un solo passaggio e con valori letterali; un valore vuoto o di soli spazi conta come non riempito (il segnaposto resta nel testo) e `findUnfilled` segnala anche i segnaposto sconosciuti. `duplicateTemplate` tiene lo stesso nome (nessun suffisso «copia», per non mettere testo di interfaccia fuori da `js/i18n/`): lo cambierà l'editor di T13.
+- `buildPrompt`: `idea`, `storico` e `lingua` vengono sempre dall'idea e dallo storico (il testo del modulo vale solo se l'idea non ha testo, per le idee con soli media); `{tipo_media}` parte dal tipo di template; la lingua del post è scritta nella lingua del template (template italiano + post in spagnolo → «spagnolo»); senza storico c'è una riga neutra al posto di `{storico}`; i segnaposto del modulo rimasti vuoti restano visibili. `formatHistory` non filtra per lingua: chi chiama passa i post già filtrati.
+- **Testi dei template (8 corpi, 4 tipi × 2 lingue):** scritti da Claude e **non rivisti**; richiedono HOOK e CAPTION come due risposte separate; 5 varianti di hook e 3 di caption sono una scelta provvisoria da tarare con lei **[Da provare]** (la spec lascia il numero al test).
+- **Per T13:** se non c'è una guida di stile salvata, `{stile}` resta vuoto e quindi visibile e segnalato da `findUnfilled`: l'interfaccia deve decidere se avvisare o riempirlo.
 
 ## Da verificare
 
