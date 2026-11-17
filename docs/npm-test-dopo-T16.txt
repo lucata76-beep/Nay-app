@@ -1,0 +1,2072 @@
+
+> nay-app@0.1.0 test
+> node --test "tests/*.test.js"
+
+TAP version 13
+# Subtest: changeVaultPassword opens with the new password, rejects the old one and keeps the recovery code
+ok 1 - changeVaultPassword opens with the new password, rejects the old one and keeps the recovery code
+  ---
+  duration_ms: 30.708914
+  type: 'test'
+  ...
+# Subtest: changeVaultPassword keeps the data readable and the vault confirmed
+ok 2 - changeVaultPassword keeps the data readable and the vault confirmed
+  ---
+  duration_ms: 9.710818
+  type: 'test'
+  ...
+# Subtest: changeVaultPassword asks for the current password and changes nothing when it is wrong
+ok 3 - changeVaultPassword asks for the current password and changes nothing when it is wrong
+  ---
+  duration_ms: 5.830356
+  type: 'test'
+  ...
+# Subtest: changeVaultPassword refuses a short password and changes nothing
+ok 4 - changeVaultPassword refuses a short password and changes nothing
+  ---
+  duration_ms: 4.094839
+  type: 'test'
+  ...
+# Subtest: changeVaultPassword refuses a session of another vault
+ok 5 - changeVaultPassword refuses a session of another vault
+  ---
+  duration_ms: 8.025114
+  type: 'test'
+  ...
+# Subtest: changeVaultPassword puts the old vault back when the saved one does not open with the new password
+ok 6 - changeVaultPassword puts the old vault back when the saved one does not open with the new password
+  ---
+  duration_ms: 4.746879
+  type: 'test'
+  ...
+# Subtest: changeVaultPassword refuses when there is no confirmed vault
+ok 7 - changeVaultPassword refuses when there is no confirmed vault
+  ---
+  duration_ms: 4.143653
+  type: 'test'
+  ...
+# Subtest: resetPasswordWithRecoveryCode sets a new password with the code, and a wrong code changes nothing
+ok 8 - resetPasswordWithRecoveryCode sets a new password with the code, and a wrong code changes nothing
+  ---
+  duration_ms: 12.714748
+  type: 'test'
+  ...
+# Subtest: resetPasswordWithRecoveryCode refuses a short new password and changes nothing
+ok 9 - resetPasswordWithRecoveryCode refuses a short new password and changes nothing
+  ---
+  duration_ms: 4.02326
+  type: 'test'
+  ...
+# Subtest: exportCurrentBackup uses the vault stored now, not an older copy
+ok 10 - exportCurrentBackup uses the vault stored now, not an older copy
+  ---
+  duration_ms: 22.815685
+  type: 'test'
+  ...
+# Subtest: exportCurrentBackup also opens with the recovery code
+ok 11 - exportCurrentBackup also opens with the recovery code
+  ---
+  duration_ms: 8.323445
+  type: 'test'
+  ...
+# Subtest: exportCurrentBackup refuses when the vault is missing or not confirmed
+ok 12 - exportCurrentBackup refuses when the vault is missing or not confirmed
+  ---
+  duration_ms: 5.000873
+  type: 'test'
+  ...
+# Subtest: backupFileName is a safe dated name
+ok 13 - backupFileName is a safe dated name
+  ---
+  duration_ms: 0.552971
+  type: 'test'
+  ...
+# Subtest: backupErrorKey maps each backup error to its message key
+ok 14 - backupErrorKey maps each backup error to its message key
+  ---
+  duration_ms: 3.899952
+  type: 'test'
+  ...
+# Subtest: unlockCurrentVault opens with the vault stored now and returns a working session
+ok 15 - unlockCurrentVault opens with the vault stored now and returns a working session
+  ---
+  duration_ms: 14.564363
+  type: 'test'
+  ...
+# Subtest: unlockCurrentVault reads the vault at every attempt: the vault replaced by an import is used, the old password no longer opens
+ok 16 - unlockCurrentVault reads the vault at every attempt: the vault replaced by an import is used, the old password no longer opens
+  ---
+  duration_ms: 4.802839
+  type: 'test'
+  ...
+# Subtest: unlockCurrentVault opens with the recovery code of the vault stored now
+ok 17 - unlockCurrentVault opens with the recovery code of the vault stored now
+  ---
+  duration_ms: 4.151114
+  type: 'test'
+  ...
+# Subtest: unlockCurrentVault never returns a session of a vault that was replaced while the key was derived
+ok 18 - unlockCurrentVault never returns a session of a vault that was replaced while the key was derived
+  ---
+  duration_ms: 5.784867
+  type: 'test'
+  ...
+# Subtest: unlockCurrentVault gives up with VaultChangedError when the vault keeps changing
+ok 19 - unlockCurrentVault gives up with VaultChangedError when the vault keeps changing
+  ---
+  duration_ms: 4.842266
+  type: 'test'
+  ...
+# Subtest: unlockCurrentVault refuses when there is no confirmed vault
+ok 20 - unlockCurrentVault refuses when there is no confirmed vault
+  ---
+  duration_ms: 7.962968
+  type: 'test'
+  ...
+# Subtest: changeVaultPassword does not save over a vault that was replaced by an import while it worked
+ok 21 - changeVaultPassword does not save over a vault that was replaced by an import while it worked
+  ---
+  duration_ms: 6.246742
+  type: 'test'
+  ...
+# Subtest: resetPasswordWithRecoveryCode does not save over a vault that was replaced by an import while it worked
+ok 22 - resetPasswordWithRecoveryCode does not save over a vault that was replaced by an import while it worked
+  ---
+  duration_ms: 3.357861
+  type: 'test'
+  ...
+# Subtest: changeVaultPassword does not put the old vault back over a vault replaced meanwhile
+ok 23 - changeVaultPassword does not put the old vault back over a vault replaced meanwhile
+  ---
+  duration_ms: 3.831274
+  type: 'test'
+  ...
+# Subtest: roundtrip into an empty db restores all stores
+ok 24 - roundtrip into an empty db restores all stores
+  ---
+  duration_ms: 88.243668
+  type: 'test'
+  ...
+# Subtest: the backup keeps the records encrypted
+ok 25 - the backup keeps the records encrypted
+  ---
+  duration_ms: 41.079813
+  type: 'test'
+  ...
+# Subtest: import replaces the existing data and the vault
+ok 26 - import replaces the existing data and the vault
+  ---
+  duration_ms: 103.643363
+  type: 'test'
+  ...
+# Subtest: wrong secret throws WrongSecretError and leaves the db unchanged
+ok 27 - wrong secret throws WrongSecretError and leaves the db unchanged
+  ---
+  duration_ms: 91.09348
+  type: 'test'
+  ...
+# Subtest: truncated file throws BackupFormatError and leaves the db unchanged
+ok 28 - truncated file throws BackupFormatError and leaves the db unchanged
+  ---
+  duration_ms: 256.165807
+  type: 'test'
+  ...
+# Subtest: a file with extra bytes at the end throws BackupFormatError
+ok 29 - a file with extra bytes at the end throws BackupFormatError
+  ---
+  duration_ms: 78.893701
+  type: 'test'
+  ...
+# Subtest: a corrupted record throws BackupFormatError and leaves the db unchanged
+ok 30 - a corrupted record throws BackupFormatError and leaves the db unchanged
+  ---
+  duration_ms: 79.697585
+  type: 'test'
+  ...
+# Subtest: a record moved under another id throws BackupFormatError
+ok 31 - a record moved under another id throws BackupFormatError
+  ---
+  duration_ms: 82.317402
+  type: 'test'
+  ...
+# Subtest: future version throws BackupVersionError
+ok 32 - future version throws BackupVersionError
+  ---
+  duration_ms: 86.765851
+  type: 'test'
+  ...
+# Subtest: files that are not backups throw BackupFormatError
+ok 33 - files that are not backups throw BackupFormatError
+  ---
+  duration_ms: 86.038716
+  type: 'test'
+  ...
+# Subtest: errors carry clear names and are Error instances
+ok 34 - errors carry clear names and are Error instances
+  ---
+  duration_ms: 0.323208
+  type: 'test'
+  ...
+# Subtest: recovery code opens a backup
+ok 35 - recovery code opens a backup
+  ---
+  duration_ms: 46.155522
+  type: 'test'
+  ...
+# Subtest: estimateBackupSize is at least the sum of the stored blob sizes
+ok 36 - estimateBackupSize is at least the sum of the stored blob sizes
+  ---
+  duration_ms: 40.225098
+  type: 'test'
+  ...
+# Subtest: exporting an app with only the vault gives a backup that imports
+ok 37 - exporting an app with only the vault gives a backup that imports
+  ---
+  duration_ms: 5.916645
+  type: 'test'
+  ...
+# Subtest: the backup does not list the vault twice and its counts match the records
+ok 38 - the backup does not list the vault twice and its counts match the records
+  ---
+  duration_ms: 44.906139
+  type: 'test'
+  ...
+# Subtest: import is all-or-nothing when the storage fills up while writing
+ok 39 - import is all-or-nothing when the storage fills up while writing
+  ---
+  duration_ms: 76.299955
+  type: 'test'
+  ...
+# Subtest: import is all-or-nothing when the browser aborts the write transaction
+ok 40 - import is all-or-nothing when the browser aborts the write transaction
+  ---
+  duration_ms: 83.433387
+  type: 'test'
+  ...
+# Subtest: a rebuilt file without defects imports (so the cases below fail only for their own defect)
+ok 41 - a rebuilt file without defects imports (so the cases below fail only for their own defect)
+  ---
+  duration_ms: 39.482323
+  type: 'test'
+  ...
+# Subtest: every single flipped bit in the header area is rejected, never imported
+ok 42 - every single flipped bit in the header area is rejected, never imported
+  ---
+  duration_ms: 476.229117
+  type: 'test'
+  ...
+# Subtest: a header altered but with a matching digest is still checked field by field
+ok 43 - a header altered but with a matching digest is still checked field by field
+  ---
+  duration_ms: 204.035863
+  type: 'test'
+  ...
+# Subtest: PBKDF2 iterations above the cap are refused at once
+ok 44 - PBKDF2 iterations above the cap are refused at once
+  ---
+  duration_ms: 90.892469
+  type: 'test'
+  ...
+# Subtest: the declared counts must match the records in the file
+ok 45 - the declared counts must match the records in the file
+  ---
+  duration_ms: 67.212333
+  type: 'test'
+  ...
+# Subtest: duplicate ids, an out-of-range store index, and a vault record among the meta records are refused
+ok 46 - duplicate ids, an out-of-range store index, and a vault record among the meta records are refused
+  ---
+  duration_ms: 67.152012
+  type: 'test'
+  ...
+# Subtest: records that are not valid records are refused
+ok 47 - records that are not valid records are refused
+  ---
+  duration_ms: 93.157468
+  type: 'test'
+  ...
+# Subtest: a blob whose info belongs to another blob is refused
+ok 48 - a blob whose info belongs to another blob is refused
+  ---
+  duration_ms: 57.194301
+  type: 'test'
+  ...
+# Subtest: the version field is checked on its own: 0 is invalid, 2 is a future version
+ok 49 - the version field is checked on its own: 0 is invalid, 2 is a future version
+  ---
+  duration_ms: 58.795247
+  type: 'test'
+  ...
+# Subtest: a file whose records come from another vault is refused
+ok 50 - a file whose records come from another vault is refused
+  ---
+  duration_ms: 79.957047
+  type: 'test'
+  ...
+# Subtest: exportBackup refuses a vault whose recovery code was never confirmed
+ok 51 - exportBackup refuses a vault whose recovery code was never confirmed
+  ---
+  duration_ms: 1.769939
+  type: 'test'
+  ...
+# Subtest: exportBackup rejects a vault that is not a vault record
+ok 52 - exportBackup rejects a vault that is not a vault record
+  ---
+  duration_ms: 0.548999
+  type: 'test'
+  ...
+# Subtest: barChartSvg draws one rect per datum
+ok 53 - barChartSvg draws one rect per datum
+  ---
+  duration_ms: 2.45294
+  type: 'test'
+  ...
+# Subtest: donutChartSvg draws one path per non-zero slice
+ok 54 - donutChartSvg draws one path per non-zero slice
+  ---
+  duration_ms: 0.571148
+  type: 'test'
+  ...
+# Subtest: charts return a placeholder svg for empty data
+ok 55 - charts return a placeholder svg for empty data
+  ---
+  duration_ms: 0.51913
+  type: 'test'
+  ...
+# Subtest: areaChartSvg draws one dot per datum, an area and a line
+ok 56 - areaChartSvg draws one dot per datum, an area and a line
+  ---
+  duration_ms: 0.266781
+  type: 'test'
+  ...
+# Subtest: bars are proportional to the values and never negative
+ok 57 - bars are proportional to the values and never negative
+  ---
+  duration_ms: 0.834265
+  type: 'test'
+  ...
+# Subtest: the chart values never produce NaN or Infinity in the markup
+ok 58 - the chart values never produce NaN or Infinity in the markup
+  ---
+  duration_ms: 1.077544
+  type: 'test'
+  ...
+# Subtest: chart labels are escaped: a post title cannot inject markup
+ok 59 - chart labels are escaped: a post title cannot inject markup
+  ---
+  duration_ms: 0.434284
+  type: 'test'
+  ...
+# Subtest: charts use classes and gradients, never color values (colors come from css/tokens.css)
+ok 60 - charts use classes and gradients, never color values (colors come from css/tokens.css)
+  ---
+  duration_ms: 0.623173
+  type: 'test'
+  ...
+# Subtest: bar chart shows the values above the bars only when there are few, and the labels without crowding
+ok 61 - bar chart shows the values above the bars only when there are few, and the labels without crowding
+  ---
+  duration_ms: 1.594655
+  type: 'test'
+  ...
+# Subtest: each chart has an accessible name and a title
+ok 62 - each chart has an accessible name and a title
+  ---
+  duration_ms: 0.415936
+  type: 'test'
+  ...
+# Subtest: lastN keeps the most recent N entries of a list in publication order
+ok 63 - lastN keeps the most recent N entries of a list in publication order
+  ---
+  duration_ms: 0.323748
+  type: 'test'
+  ...
+# Subtest: gradient ids are unique, so several charts in one page do not share a gradient
+ok 64 - gradient ids are unique, so several charts in one page do not share a gradient
+  ---
+  duration_ms: 0.251135
+  type: 'test'
+  ...
+# Subtest: areaChartSvg labels the first, the middle and the last date on the axis
+ok 65 - areaChartSvg labels the first, the middle and the last date on the axis
+  ---
+  duration_ms: 0.171926
+  type: 'test'
+  ...
+# Subtest: the max-value label never overlaps the value above the tallest bar
+ok 66 - the max-value label never overlaps the value above the tallest bar
+  ---
+  duration_ms: 0.208865
+  type: 'test'
+  ...
+# Subtest: barChartSvg can leave the axis labels out (titles stay in the tooltips)
+ok 67 - barChartSvg can leave the axis labels out (titles stay in the tooltips)
+  ---
+  duration_ms: 0.135712
+  type: 'test'
+  ...
+# Subtest: every --bg-*, --text* and --fill-*/--on-* token is a six-digit hex color (no color is skipped silently)
+ok 68 - every --bg-*, --text* and --fill-*/--on-* token is a six-digit hex color (no color is skipped silently)
+  ---
+  duration_ms: 1.479123
+  type: 'test'
+  ...
+# Subtest: contrast helper matches known WCAG values
+ok 69 - contrast helper matches known WCAG values
+  ---
+  duration_ms: 0.355525
+  type: 'test'
+  ...
+# Subtest: text color on every background token has contrast >= 4.5
+ok 70 - text color on every background token has contrast >= 4.5
+  ---
+  duration_ms: 0.697097
+  type: 'test'
+  ...
+# Subtest: text on every button fill has contrast >= 4.5
+ok 71 - text on every button fill has contrast >= 4.5
+  ---
+  duration_ms: 0.371586
+  type: 'test'
+  ...
+# Subtest: tokens include the poster palette of the spec
+ok 72 - tokens include the poster palette of the spec
+  ---
+  duration_ms: 0.241746
+  type: 'test'
+  ...
+# Subtest: no color literals outside css/tokens.css (CSS and UI code use tokens only)
+ok 73 - no color literals outside css/tokens.css (CSS and UI code use tokens only)
+  ---
+  duration_ms: 8.04384
+  type: 'test'
+  ...
+# Subtest: suggestKind picks video, then foto, then testo from the idea media
+ok 74 - suggestKind picks video, then foto, then testo from the idea media
+  ---
+  duration_ms: 1.359577
+  type: 'test'
+  ...
+# Subtest: templatesFor lists the builtin template and the custom ones of that kind and language only
+ok 75 - templatesFor lists the builtin template and the custom ones of that kind and language only
+  ---
+  duration_ms: 1.001821
+  type: 'test'
+  ...
+# Subtest: neededFields lists the form fields the template body uses, and idea when the idea has no text
+ok 76 - neededFields lists the form fields the template body uses, and idea when the idea has no text
+  ---
+  duration_ms: 2.895173
+  type: 'test'
+  ...
+# Subtest: mediaValues joins the descriptions and the video durations written by the user
+ok 77 - mediaValues joins the descriptions and the video durations written by the user
+  ---
+  duration_ms: 0.307091
+  type: 'test'
+  ...
+# Subtest: buildDevelopPrompt fills idea, style guide, language and a history of the same language only
+ok 78 - buildDevelopPrompt fills idea, style guide, language and a history of the same language only
+  ---
+  duration_ms: 3.989663
+  type: 'test'
+  ...
+# Subtest: buildDevelopPrompt lists the placeholders left unfilled and leaves them visible
+ok 79 - buildDevelopPrompt lists the placeholders left unfilled and leaves them visible
+  ---
+  duration_ms: 0.666709
+  type: 'test'
+  ...
+# Subtest: buildDevelopPrompt ignores braces that belong to the idea text, not to the template
+ok 80 - buildDevelopPrompt ignores braces that belong to the idea text, not to the template
+  ---
+  duration_ms: 0.597856
+  type: 'test'
+  ...
+# Subtest: buildDevelopPrompt respects the history size and takes media values unless the form overrides them
+ok 81 - buildDevelopPrompt respects the history size and takes media values unless the form overrides them
+  ---
+  duration_ms: 2.758346
+  type: 'test'
+  ...
+# Subtest: buildDevelopPrompt uses the text of the form when the idea has only media
+ok 82 - buildDevelopPrompt uses the text of the form when the idea has only media
+  ---
+  duration_ms: 0.673742
+  type: 'test'
+  ...
+# Subtest: saveGeneratedPrompt saves the prompt, moves the idea to in_sviluppo and returns the similar posts
+ok 83 - saveGeneratedPrompt saves the prompt, moves the idea to in_sviluppo and returns the similar posts
+  ---
+  duration_ms: 29.318714
+  type: 'test'
+  ...
+# Subtest: saveGeneratedPrompt does not move a published idea back, and keeps one record per generation
+ok 84 - saveGeneratedPrompt does not move a published idea back, and keeps one record per generation
+  ---
+  duration_ms: 6.730208
+  type: 'test'
+  ...
+# Subtest: saveGeneratedPrompt removes the prompt again when the idea cannot be saved (nothing half-done)
+ok 85 - saveGeneratedPrompt removes the prompt again when the idea cannot be saved (nothing half-done)
+  ---
+  duration_ms: 9.893377
+  type: 'test'
+  ...
+# Subtest: a failing similarity check does not undo a saved prompt
+ok 86 - a failing similarity check does not undo a saved prompt
+  ---
+  duration_ms: 5.841546
+  type: 'test'
+  ...
+# Subtest: loadMediaFiles returns File objects with the stored name, type and bytes
+ok 87 - loadMediaFiles returns File objects with the stored name, type and bytes
+  ---
+  duration_ms: 7.962375
+  type: 'test'
+  ...
+# Subtest: zipFileName is a safe name from the idea and the date
+ok 88 - zipFileName is a safe name from the idea and the date
+  ---
+  duration_ms: 0.456416
+  type: 'test'
+  ...
+# Subtest: insertAtCursor puts a placeholder at the cursor or over the selection
+ok 89 - insertAtCursor puts a placeholder at the cursor or over the selection
+  ---
+  duration_ms: 0.216386
+  type: 'test'
+  ...
+# Subtest: validateTemplate asks for a name and a body
+ok 90 - validateTemplate asks for a name and a body
+  ---
+  duration_ms: 0.09473
+  type: 'test'
+  ...
+# Subtest: newTemplate and copyOfTemplate make editable, non builtin templates; the original is untouched
+ok 91 - newTemplate and copyOfTemplate make editable, non builtin templates; the original is untouched
+  ---
+  duration_ms: 0.153037
+  type: 'test'
+  ...
+# Subtest: saveTemplate stores a custom template encrypted; deleteTemplate refuses a builtin one
+ok 92 - saveTemplate stores a custom template encrypted; deleteTemplate refuses a builtin one
+  ---
+  duration_ms: 6.687293
+  type: 'test'
+  ...
+# Subtest: form values and the style guide are remembered encrypted in the meta store
+ok 93 - form values and the style guide are remembered encrypted in the meta store
+  ---
+  duration_ms: 6.124302
+  type: 'test'
+  ...
+# Subtest: saved form values are cleaned: unknown fields dropped and a bad history size falls back to the default
+ok 94 - saved form values are cleaned: unknown fields dropped and a bad history size falls back to the default
+  ---
+  duration_ms: 13.622741
+  type: 'test'
+  ...
+# Subtest: zip contains prompt.txt and the files
+ok 95 - zip contains prompt.txt and the files
+  ---
+  duration_ms: 8.378267
+  type: 'test'
+  ...
+# Subtest: duplicate names get a suffix
+ok 96 - duplicate names get a suffix
+  ---
+  duration_ms: 1.781073
+  type: 'test'
+  ...
+# Subtest: a suffix never collides with another name, nor with prompt.txt, nor by case
+ok 97 - a suffix never collides with another name, nor with prompt.txt, nor by case
+  ---
+  duration_ms: 1.915116
+  type: 'test'
+  ...
+# Subtest: file names cannot point outside the archive
+ok 98 - file names cannot point outside the archive
+  ---
+  duration_ms: 1.46155
+  type: 'test'
+  ...
+# Subtest: file names with accents and ñ survive in the zip
+ok 99 - file names with accents and ñ survive in the zip
+  ---
+  duration_ms: 1.521762
+  type: 'test'
+  ...
+# Subtest: zip works with no files, with an empty prompt and with a large file in many chunks
+ok 100 - zip works with no files, with an empty prompt and with a large file in many chunks
+  ---
+  duration_ms: 52.138731
+  type: 'test'
+  ...
+# Subtest: zip stores media as they are and deflates the text
+ok 101 - zip stores media as they are and deflates the text
+  ---
+  duration_ms: 1.658383
+  type: 'test'
+  ...
+# Subtest: fileCountWarning is false at 10 and true at 11
+ok 102 - fileCountWarning is false at 10 and true at 11
+  ---
+  duration_ms: 0.152414
+  type: 'test'
+  ...
+# Subtest: shareContent returns unsupported without canShare
+ok 103 - shareContent returns unsupported without canShare
+  ---
+  duration_ms: 0.638692
+  type: 'test'
+  ...
+# Subtest: shareContent returns unsupported without navigator.share
+ok 104 - shareContent returns unsupported without navigator.share
+  ---
+  duration_ms: 0.400269
+  type: 'test'
+  ...
+# Subtest: shareContent returns cancelled on AbortError
+ok 105 - shareContent returns cancelled on AbortError
+  ---
+  duration_ms: 0.453516
+  type: 'test'
+  ...
+# Subtest: shareContent returns unsupported on NotAllowedError
+ok 106 - shareContent returns unsupported on NotAllowedError
+  ---
+  duration_ms: 0.191446
+  type: 'test'
+  ...
+# Subtest: shareContent returns shared and gives text and files to navigator.share
+ok 107 - shareContent returns shared and gives text and files to navigator.share
+  ---
+  duration_ms: 0.196386
+  type: 'test'
+  ...
+# Subtest: shareContent shares plain text when there are no files
+ok 108 - shareContent shares plain text when there are no files
+  ---
+  duration_ms: 0.186011
+  type: 'test'
+  ...
+# Subtest: shareContent never shares a ZIP, even when canShare says yes
+ok 109 - shareContent never shares a ZIP, even when canShare says yes
+  ---
+  duration_ms: 0.20494
+  type: 'test'
+  ...
+# Subtest: shareContent rethrows other errors
+ok 110 - shareContent rethrows other errors
+  ---
+  duration_ms: 0.427259
+  type: 'test'
+  ...
+# Subtest: shareContent rejects when there is nothing to share
+ok 111 - shareContent rejects when there is nothing to share
+  ---
+  duration_ms: 0.126555
+  type: 'test'
+  ...
+# Subtest: canShareFiles asks navigator.canShare and is false without it
+ok 112 - canShareFiles asks navigator.canShare and is false without it
+  ---
+  duration_ms: 0.179392
+  type: 'test'
+  ...
+# Subtest: copyText calls clipboard.writeText
+ok 113 - copyText calls clipboard.writeText
+  ---
+  duration_ms: 0.18588
+  type: 'test'
+  ...
+# Subtest: copyText rejects when the clipboard is unavailable or refuses
+ok 114 - copyText rejects when the clipboard is unavailable or refuses
+  ---
+  duration_ms: 0.22631
+  type: 'test'
+  ...
+# Subtest: saveToDevice clicks a download link for the blob and releases the URL later
+ok 115 - saveToDevice clicks a download link for the blob and releases the URL later
+  ---
+  duration_ms: 0.293457
+  type: 'test'
+  ...
+# Subtest: saveToDevice cleans the file name
+ok 116 - saveToDevice cleans the file name
+  ---
+  duration_ms: 0.226675
+  type: 'test'
+  ...
+# Subtest: es and it have the same keys
+ok 117 - es and it have the same keys
+  ---
+  duration_ms: 1.416606
+  type: 'test'
+  ...
+# Subtest: es and it use the same placeholders in every key
+ok 118 - es and it use the same placeholders in every key
+  ---
+  duration_ms: 2.012955
+  type: 'test'
+  ...
+# Subtest: no message is empty
+ok 119 - no message is empty
+  ---
+  duration_ms: 0.659763
+  type: 'test'
+  ...
+# Subtest: required keys exist
+ok 120 - required keys exist
+  ---
+  duration_ms: 0.252381
+  type: 'test'
+  ...
+# Subtest: default language is es
+ok 121 - default language is es
+  ---
+  duration_ms: 0.361373
+  type: 'test'
+  ...
+# Subtest: setLang persists and getLang reads it back
+ok 122 - setLang persists and getLang reads it back
+  ---
+  duration_ms: 0.21692
+  type: 'test'
+  ...
+# Subtest: getLang falls back to es when the stored value is unknown
+ok 123 - getLang falls back to es when the stored value is unknown
+  ---
+  duration_ms: 0.238189
+  type: 'test'
+  ...
+# Subtest: setLang rejects an unsupported language
+ok 124 - setLang rejects an unsupported language
+  ---
+  duration_ms: 0.29955
+  type: 'test'
+  ...
+# Subtest: setLang emits langchange on globalThis when it exists
+ok 125 - setLang emits langchange on globalThis when it exists
+  ---
+  duration_ms: 0.501328
+  type: 'test'
+  ...
+# Subtest: setLang works when globalThis has no dispatchEvent
+ok 126 - setLang works when globalThis has no dispatchEvent
+  ---
+  duration_ms: 0.580705
+  type: 'test'
+  ...
+# Subtest: t uses the current language
+ok 127 - t uses the current language
+  ---
+  duration_ms: 0.39225
+  type: 'test'
+  ...
+# Subtest: t interpolates {n}
+ok 128 - t interpolates {n}
+  ---
+  duration_ms: 0.195788
+  type: 'test'
+  ...
+# Subtest: t returns the key when missing
+ok 129 - t returns the key when missing
+  ---
+  duration_ms: 0.08891
+  type: 'test'
+  ...
+# Subtest: icon sizes
+ok 130 - icon sizes
+  ---
+  duration_ms: 2.161288
+  type: 'test'
+  ...
+# Subtest: mediaKind maps image and video mime types
+ok 131 - mediaKind maps image and video mime types
+  ---
+  duration_ms: 1.257672
+  type: 'test'
+  ...
+# Subtest: createIdeaWithMedia saves a note without files as an idea with no media
+ok 132 - createIdeaWithMedia saves a note without files as an idea with no media
+  ---
+  duration_ms: 18.102611
+  type: 'test'
+  ...
+# Subtest: createIdeaWithMedia saves the idea, a Media record per file and an encrypted blob per file
+ok 133 - createIdeaWithMedia saves the idea, a Media record per file and an encrypted blob per file
+  ---
+  duration_ms: 12.073603
+  type: 'test'
+  ...
+# Subtest: an idea with no text and no files is refused before anything is written
+ok 134 - an idea with no text and no files is refused before anything is written
+  ---
+  duration_ms: 2.721449
+  type: 'test'
+  ...
+# Subtest: unsupported files are refused before anything is written, and the error names them
+ok 135 - unsupported files are refused before anything is written, and the error names them
+  ---
+  duration_ms: 8.175708
+  type: 'test'
+  ...
+# Subtest: StorageFullError on the second blob removes the first blob and writes no media or idea
+ok 136 - StorageFullError on the second blob removes the first blob and writes no media or idea
+  ---
+  duration_ms: 8.48697
+  type: 'test'
+  ...
+# Subtest: StorageFullError while saving a Media record removes its blob and the earlier media and blobs
+ok 137 - StorageFullError while saving a Media record removes its blob and the earlier media and blobs
+  ---
+  duration_ms: 6.426062
+  type: 'test'
+  ...
+# Subtest: StorageFullError while saving the idea removes every blob and Media record
+ok 138 - StorageFullError while saving the idea removes every blob and Media record
+  ---
+  duration_ms: 6.327731
+  type: 'test'
+  ...
+# Subtest: a note whose save runs out of memory leaves nothing and reports StorageFullError
+ok 139 - a note whose save runs out of memory leaves nothing and reports StorageFullError
+  ---
+  duration_ms: 6.775374
+  type: 'test'
+  ...
+# Subtest: any other error also rolls back, and a failing rollback does not hide the original error
+ok 140 - any other error also rolls back, and a failing rollback does not hide the original error
+  ---
+  duration_ms: 4.622599
+  type: 'test'
+  ...
+# Subtest: updateIdeaWithMedia changes text, language and status and keeps the other fields
+ok 141 - updateIdeaWithMedia changes text, language and status and keeps the other fields
+  ---
+  duration_ms: 4.168429
+  type: 'test'
+  ...
+# Subtest: updateIdeaWithMedia rejects an unknown language or status without writing
+ok 142 - updateIdeaWithMedia rejects an unknown language or status without writing
+  ---
+  duration_ms: 2.705865
+  type: 'test'
+  ...
+# Subtest: updateIdeaWithMedia adds new files and removes the chosen media with their blobs only after the idea is saved
+ok 143 - updateIdeaWithMedia adds new files and removes the chosen media with their blobs only after the idea is saved
+  ---
+  duration_ms: 13.609294
+  type: 'test'
+  ...
+# Subtest: updateIdeaWithMedia keeps the old media and removes the new ones when saving fails
+ok 144 - updateIdeaWithMedia keeps the old media and removes the new ones when saving fails
+  ---
+  duration_ms: 9.637006
+  type: 'test'
+  ...
+# Subtest: an invalid language is refused before any file is written
+ok 145 - an invalid language is refused before any file is written
+  ---
+  duration_ms: 2.05156
+  type: 'test'
+  ...
+# Subtest: an idea left with no text and no media is refused and nothing changes
+ok 146 - an idea left with no text and no media is refused and nothing changes
+  ---
+  duration_ms: 2.239593
+  type: 'test'
+  ...
+# Subtest: descriptions are saved on the media (new and existing)
+ok 147 - descriptions are saved on the media (new and existing)
+  ---
+  duration_ms: 4.065425
+  type: 'test'
+  ...
+# Subtest: deleteIdea removes the idea, its media and blobs, its prompts and its registry entries, and nothing else
+ok 148 - deleteIdea removes the idea, its media and blobs, its prompts and its registry entries, and nothing else
+  ---
+  duration_ms: 8.020144
+  type: 'test'
+  ...
+# Subtest: deleteIdea removes the idea first so a failure never leaves an idea with missing media
+ok 149 - deleteIdea removes the idea first so a failure never leaves an idea with missing media
+  ---
+  duration_ms: 2.78073
+  type: 'test'
+  ...
+# Subtest: checkIdeaSimilarity registers new matches once and returns every current match with its publication
+ok 150 - checkIdeaSimilarity registers new matches once and returns every current match with its publication
+  ---
+  duration_ms: 15.916568
+  type: 'test'
+  ...
+# Subtest: checkIdeaSimilarity only compares texts of the same language and ignores ideas with no text
+ok 151 - checkIdeaSimilarity only compares texts of the same language and ignores ideas with no text
+  ---
+  duration_ms: 4.059153
+  type: 'test'
+  ...
+# Subtest: createIdea rejects an idea with no text and no media
+ok 152 - createIdea rejects an idea with no text and no media
+  ---
+  duration_ms: 1.862725
+  type: 'test'
+  ...
+# Subtest: createIdea accepts text only, media only, or both
+ok 153 - createIdea accepts text only, media only, or both
+  ---
+  duration_ms: 3.171371
+  type: 'test'
+  ...
+# Subtest: default lang is es
+ok 154 - default lang is es
+  ---
+  duration_ms: 0.213459
+  type: 'test'
+  ...
+# Subtest: createIdea rejects an unsupported lang
+ok 155 - createIdea rejects an unsupported lang
+  ---
+  duration_ms: 0.172468
+  type: 'test'
+  ...
+# Subtest: createIdea fills id, status, dates and copies mediaIds
+ok 156 - createIdea fills id, status, dates and copies mediaIds
+  ---
+  duration_ms: 0.551104
+  type: 'test'
+  ...
+# Subtest: status changes follow the rules
+ok 157 - status changes follow the rules
+  ---
+  duration_ms: 0.39263
+  type: 'test'
+  ...
+# Subtest: searchIdeas finds words ignoring case and accents
+ok 158 - searchIdeas finds words ignoring case and accents
+  ---
+  duration_ms: 1.195796
+  type: 'test'
+  ...
+# Subtest: searchIdeas matches the same word typed as NFC or NFD
+ok 159 - searchIdeas matches the same word typed as NFC or NFD
+  ---
+  duration_ms: 0.232288
+  type: 'test'
+  ...
+# Subtest: searchIdeas returns everything for an empty query and keeps the order
+ok 160 - searchIdeas returns everything for an empty query and keeps the order
+  ---
+  duration_ms: 0.447712
+  type: 'test'
+  ...
+# Subtest: draft roundtrip and clear
+ok 161 - draft roundtrip and clear
+  ---
+  duration_ms: 28.344505
+  type: 'test'
+  ...
+# Subtest: drafts are stored encrypted
+ok 162 - drafts are stored encrypted
+  ---
+  duration_ms: 6.332598
+  type: 'test'
+  ...
+# Subtest: creationStatus is ok on an empty database
+ok 163 - creationStatus is ok on an empty database
+  ---
+  duration_ms: 8.37192
+  type: 'test'
+  ...
+# Subtest: creationStatus is exists when a confirmed vault is stored, and a lone vault is not data
+ok 164 - creationStatus is exists when a confirmed vault is stored, and a lone vault is not data
+  ---
+  duration_ms: 10.940725
+  type: 'test'
+  ...
+# Subtest: an unconfirmed vault alone does not block a new creation
+ok 165 - an unconfirmed vault alone does not block a new creation
+  ---
+  duration_ms: 4.475264
+  type: 'test'
+  ...
+# Subtest: creationStatus is orphan when encrypted data exists without a confirmed vault
+ok 166 - creationStatus is orphan when encrypted data exists without a confirmed vault
+  ---
+  duration_ms: 20.236667
+  type: 'test'
+  ...
+# Subtest: a confirmed vault wins over the data it protects (the app unlocks, it never recreates)
+ok 167 - a confirmed vault wins over the data it protects (the app unlocks, it never recreates)
+  ---
+  duration_ms: 2.093335
+  type: 'test'
+  ...
+# Subtest: hasEncryptedData never reads the blobs store (it would load the videos in memory)
+ok 168 - hasEncryptedData never reads the blobs store (it would load the videos in memory)
+  ---
+  duration_ms: 2.411821
+  type: 'test'
+  ...
+# Subtest: MIN_PASSWORD_LENGTH is 10
+ok 169 - MIN_PASSWORD_LENGTH is 10
+  ---
+  duration_ms: 0.728277
+  type: 'test'
+  ...
+# Subtest: passwordStrength is debole under 10 chars
+ok 170 - passwordStrength is debole under 10 chars
+  ---
+  duration_ms: 0.418175
+  type: 'test'
+  ...
+# Subtest: passwordStrength is buona with 14+ chars and three kinds
+ok 171 - passwordStrength is buona with 14+ chars and three kinds
+  ---
+  duration_ms: 1.060409
+  type: 'test'
+  ...
+# Subtest: passwordStrength is media from 10 chars or with fewer than three kinds
+ok 172 - passwordStrength is media from 10 chars or with fewer than three kinds
+  ---
+  duration_ms: 1.267052
+  type: 'test'
+  ...
+# Subtest: passwordStrength counts characters after NFC normalization
+ok 173 - passwordStrength counts characters after NFC normalization
+  ---
+  duration_ms: 0.255241
+  type: 'test'
+  ...
+# Subtest: PasswordTooShortError carries the minimum length
+ok 174 - PasswordTooShortError carries the minimum length
+  ---
+  duration_ms: 0.174822
+  type: 'test'
+  ...
+# Subtest: formatHistory keeps similarIds first and respects max
+ok 175 - formatHistory keeps similarIds first and respects max
+  ---
+  duration_ms: 1.746986
+  type: 'test'
+  ...
+# Subtest: formatHistory takes the most recent posts first when there are no similar ones
+ok 176 - formatHistory takes the most recent posts first when there are no similar ones
+  ---
+  duration_ms: 1.298391
+  type: 'test'
+  ...
+# Subtest: formatHistory never exceeds max, even with more similar posts than max
+ok 177 - formatHistory never exceeds max, even with more similar posts than max
+  ---
+  duration_ms: 0.343933
+  type: 'test'
+  ...
+# Subtest: formatHistory returns an empty string without posts or with max 0
+ok 178 - formatHistory returns an empty string without posts or with max 0
+  ---
+  duration_ms: 0.301602
+  type: 'test'
+  ...
+# Subtest: formatHistory skips unknown similarIds and does not repeat a post
+ok 179 - formatHistory skips unknown similarIds and does not repeat a post
+  ---
+  duration_ms: 0.393917
+  type: 'test'
+  ...
+# Subtest: formatHistory writes each post on a single line
+ok 180 - formatHistory writes each post on a single line
+  ---
+  duration_ms: 0.421638
+  type: 'test'
+  ...
+# Subtest: formatHistory does not change the posts it receives
+ok 181 - formatHistory does not change the posts it receives
+  ---
+  duration_ms: 0.47616
+  type: 'test'
+  ...
+# Subtest: buildPrompt fills idea, history and language
+ok 182 - buildPrompt fills idea, history and language
+  ---
+  duration_ms: 3.456463
+  type: 'test'
+  ...
+# Subtest: buildPrompt writes the language name in the template language
+ok 183 - buildPrompt writes the language name in the template language
+  ---
+  duration_ms: 0.661209
+  type: 'test'
+  ...
+# Subtest: buildPrompt uses a neutral line when there is no history
+ok 184 - buildPrompt uses a neutral line when there is no history
+  ---
+  duration_ms: 0.715759
+  type: 'test'
+  ...
+# Subtest: buildPrompt: the idea, history and language come from the idea, not from values
+ok 185 - buildPrompt: the idea, history and language come from the idea, not from values
+  ---
+  duration_ms: 0.433261
+  type: 'test'
+  ...
+# Subtest: buildPrompt leaves unfilled form placeholders visible so they can be flagged
+ok 186 - buildPrompt leaves unfilled form placeholders visible so they can be flagged
+  ---
+  duration_ms: 0.263293
+  type: 'test'
+  ...
+# Subtest: buildPrompt uses the idea text from the form only when the idea has no text
+ok 187 - buildPrompt uses the idea text from the form only when the idea has no text
+  ---
+  duration_ms: 0.455614
+  type: 'test'
+  ...
+# Subtest: normalizePublicationInput requires screenshot, title and description and trims them
+ok 188 - normalizePublicationInput requires screenshot, title and description and trims them
+  ---
+  duration_ms: 3.977623
+  type: 'test'
+  ...
+# Subtest: normalizePublicationInput refuses a screenshot that is not an image
+ok 189 - normalizePublicationInput refuses a screenshot that is not an image
+  ---
+  duration_ms: 0.650222
+  type: 'test'
+  ...
+# Subtest: normalizePublicationInput applies the defaults: type foto, language es, date now
+ok 190 - normalizePublicationInput applies the defaults: type foto, language es, date now
+  ---
+  duration_ms: 0.87169
+  type: 'test'
+  ...
+# Subtest: normalizePublicationInput accepts empty views and comments, refuses negative or fractional numbers
+ok 191 - normalizePublicationInput accepts empty views and comments, refuses negative or fractional numbers
+  ---
+  duration_ms: 1.055736
+  type: 'test'
+  ...
+# Subtest: savePublication stores the screenshot blob, a Media record and the publication, all encrypted
+ok 192 - savePublication stores the screenshot blob, a Media record and the publication, all encrypted
+  ---
+  duration_ms: 31.262014
+  type: 'test'
+  ...
+# Subtest: savePublication links the chosen idea and marks it pubblicata
+ok 193 - savePublication links the chosen idea and marks it pubblicata
+  ---
+  duration_ms: 5.481559
+  type: 'test'
+  ...
+# Subtest: savePublication registers similar earlier posts in the registry without further steps
+ok 194 - savePublication registers similar earlier posts in the registry without further steps
+  ---
+  duration_ms: 13.208309
+  type: 'test'
+  ...
+# Subtest: a post in the other language is never reported as a repetition
+ok 195 - a post in the other language is never reported as a repetition
+  ---
+  duration_ms: 7.022862
+  type: 'test'
+  ...
+# Subtest: savePublication: running out of memory after the blob removes everything it wrote
+ok 196 - savePublication: running out of memory after the blob removes everything it wrote
+  ---
+  duration_ms: 23.482036
+  type: 'test'
+  ...
+# Subtest: savePublication: if linking the idea fails, the publication, screenshot and Media are removed again
+ok 197 - savePublication: if linking the idea fails, the publication, screenshot and Media are removed again
+  ---
+  duration_ms: 6.569
+  type: 'test'
+  ...
+# Subtest: savePublication refuses a missing idea or a missing screenshot before writing anything
+ok 198 - savePublication refuses a missing idea or a missing screenshot before writing anything
+  ---
+  duration_ms: 4.182414
+  type: 'test'
+  ...
+# Subtest: a failing similarity check does not undo the saved publication
+ok 199 - a failing similarity check does not undo the saved publication
+  ---
+  duration_ms: 23.645025
+  type: 'test'
+  ...
+# Subtest: updatePublication changes fields and keeps the rest
+ok 200 - updatePublication changes fields and keeps the rest
+  ---
+  duration_ms: 6.08254
+  type: 'test'
+  ...
+# Subtest: updatePublication re-checks similarity when the text changes and does not duplicate known pairs
+ok 201 - updatePublication re-checks similarity when the text changes and does not duplicate known pairs
+  ---
+  duration_ms: 12.456884
+  type: 'test'
+  ...
+# Subtest: updatePublication replaces the screenshot and removes the old one only after saving
+ok 202 - updatePublication replaces the screenshot and removes the old one only after saving
+  ---
+  duration_ms: 6.305372
+  type: 'test'
+  ...
+# Subtest: updatePublication keeps the old screenshot and removes the new one when saving fails
+ok 203 - updatePublication keeps the old screenshot and removes the new one when saving fails
+  ---
+  duration_ms: 5.979306
+  type: 'test'
+  ...
+# Subtest: updatePublication moves the idea link: the old idea loses publicationId, the new one becomes pubblicata
+ok 204 - updatePublication moves the idea link: the old idea loses publicationId, the new one becomes pubblicata
+  ---
+  duration_ms: 15.340074
+  type: 'test'
+  ...
+# Subtest: updatePublication puts the idea links back when the publication cannot be saved
+ok 205 - updatePublication puts the idea links back when the publication cannot be saved
+  ---
+  duration_ms: 6.218534
+  type: 'test'
+  ...
+# Subtest: deletePublication removes the publication, its screenshot, its registry entries and the idea link, nothing else
+ok 206 - deletePublication removes the publication, its screenshot, its registry entries and the idea link, nothing else
+  ---
+  duration_ms: 9.965988
+  type: 'test'
+  ...
+# Subtest: filterPublications filters by day range in local time and by type, newest first
+ok 207 - filterPublications filters by day range in local time and by type, newest first
+  ---
+  duration_ms: 0.691604
+  type: 'test'
+  ...
+# Subtest: enrichRepetitions joins the found publication and the checked text; a missing source is labelled
+ok 208 - enrichRepetitions joins the found publication and the checked text; a missing source is labelled
+  ---
+  duration_ms: 0.398609
+  type: 'test'
+  ...
+# Subtest: filterRegistry filters by check date, publication date, status and word
+ok 209 - filterRegistry filters by check date, publication date, status and word
+  ---
+  duration_ms: 0.680039
+  type: 'test'
+  ...
+# Subtest: highlightParts marks the shared words in a text, even in other forms of the same word
+ok 210 - highlightParts marks the shared words in a text, even in other forms of the same word
+  ---
+  duration_ms: 1.692807
+  type: 'test'
+  ...
+# Subtest: date helpers: datetime-local values round-trip and a day range covers the whole local day
+ok 211 - date helpers: datetime-local values round-trip and a day range covers the whole local day
+  ---
+  duration_ms: 0.576075
+  type: 'test'
+  ...
+# Subtest: reviewCount counts the registry entries still to evaluate
+ok 212 - reviewCount counts the registry entries still to evaluate
+  ---
+  duration_ms: 0.137232
+  type: 'test'
+  ...
+# Subtest: pairKey is stable, distinguishes its parts and ignores the order of a publication pair
+ok 213 - pairKey is stable, distinguishes its parts and ignores the order of a publication pair
+  ---
+  duration_ms: 1.73204
+  type: 'test'
+  ...
+# Subtest: registerMatches creates one entry per match with status da_valutare
+ok 214 - registerMatches creates one entry per match with status da_valutare
+  ---
+  duration_ms: 18.631084
+  type: 'test'
+  ...
+# Subtest: registerMatches with no matches does nothing
+ok 215 - registerMatches with no matches does nothing
+  ---
+  duration_ms: 2.396368
+  type: 'test'
+  ...
+# Subtest: registerMatches is idempotent per pair
+ok 216 - registerMatches is idempotent per pair
+  ---
+  duration_ms: 6.708291
+  type: 'test'
+  ...
+# Subtest: falso_allarme is not signalled again
+ok 217 - falso_allarme is not signalled again
+  ---
+  duration_ms: 3.177602
+  type: 'test'
+  ...
+# Subtest: setStatus changes and returns the entry, and rejects unknown statuses and ids
+ok 218 - setStatus changes and returns the entry, and rejects unknown statuses and ids
+  ---
+  duration_ms: 4.080652
+  type: 'test'
+  ...
+# Subtest: registry entries are stored encrypted
+ok 219 - registry entries are stored encrypted
+  ---
+  duration_ms: 3.211044
+  type: 'test'
+  ...
+# Subtest: searchRepetitions filters by date and by word
+ok 220 - searchRepetitions filters by date and by word
+  ---
+  duration_ms: 0.885846
+  type: 'test'
+  ...
+# Subtest: searchRepetitions accepts Date objects and full timestamps, and does not change its input
+ok 221 - searchRepetitions accepts Date objects and full timestamps, and does not change its input
+  ---
+  duration_ms: 0.580641
+  type: 'test'
+  ...
+# Subtest: checkNewPublication compares a new post with the existing ones, in its own language only
+ok 222 - checkNewPublication compares a new post with the existing ones, in its own language only
+  ---
+  duration_ms: 6.056596
+  type: 'test'
+  ...
+# Subtest: checkNewPublication does not repeat a pair already seen from the other side
+ok 223 - checkNewPublication does not repeat a pair already seen from the other side
+  ---
+  duration_ms: 2.628858
+  type: 'test'
+  ...
+# Subtest: required files exist
+ok 224 - required files exist
+  ---
+  duration_ms: 1.240318
+  type: 'test'
+  ...
+# Subtest: nojekyll exists
+ok 225 - nojekyll exists
+  ---
+  duration_ms: 0.281965
+  type: 'test'
+  ...
+# Subtest: APP_VERSION is semver
+ok 226 - APP_VERSION is semver
+  ---
+  duration_ms: 2.543044
+  type: 'test'
+  ...
+# Subtest: openDb creates every store and Db works on each
+ok 227 - openDb creates every store and Db works on each
+  ---
+  duration_ms: 23.687172
+  type: 'test'
+  ...
+# Subtest: stored value does not contain the plaintext
+ok 228 - stored value does not contain the plaintext
+  ---
+  duration_ms: 6.117
+  type: 'test'
+  ...
+# Subtest: stored blob does not contain the plaintext bytes or the mime type
+ok 229 - stored blob does not contain the plaintext bytes or the mime type
+  ---
+  duration_ms: 2.685573
+  type: 'test'
+  ...
+# Subtest: save sets id and updatedAt
+ok 230 - save sets id and updatedAt
+  ---
+  duration_ms: 3.107692
+  type: 'test'
+  ...
+# Subtest: save keeps an explicit id, overwrites that record and refreshes updatedAt
+ok 231 - save keeps an explicit id, overwrites that record and refreshes updatedAt
+  ---
+  duration_ms: 11.552494
+  type: 'test'
+  ...
+# Subtest: all returns decrypted records
+ok 232 - all returns decrypted records
+  ---
+  duration_ms: 7.72054
+  type: 'test'
+  ...
+# Subtest: load returns null for a missing record and remove deletes a record
+ok 233 - load returns null for a missing record and remove deletes a record
+  ---
+  duration_ms: 2.139178
+  type: 'test'
+  ...
+# Subtest: records are unreadable with another session
+ok 234 - records are unreadable with another session
+  ---
+  duration_ms: 6.73954
+  type: 'test'
+  ...
+# Subtest: a record copied under another id is rejected
+ok 235 - a record copied under another id is rejected
+  ---
+  duration_ms: 4.984218
+  type: 'test'
+  ...
+# Subtest: blob roundtrip keeps bytes
+ok 236 - blob roundtrip keeps bytes
+  ---
+  duration_ms: 7.275297
+  type: 'test'
+  ...
+# Subtest: a blob record copied under another id is rejected
+ok 237 - a blob record copied under another id is rejected
+  ---
+  duration_ms: 2.695634
+  type: 'test'
+  ...
+# Subtest: loadBlob rejects for a missing id
+ok 238 - loadBlob rejects for a missing id
+  ---
+  duration_ms: 1.574918
+  type: 'test'
+  ...
+# Subtest: QuotaExceededError becomes StorageFullError and leaves the previous record intact
+ok 239 - QuotaExceededError becomes StorageFullError and leaves the previous record intact
+  ---
+  duration_ms: 3.046499
+  type: 'test'
+  ...
+# Subtest: QuotaExceededError while saving a blob becomes StorageFullError and writes nothing
+ok 240 - QuotaExceededError while saving a blob becomes StorageFullError and writes nothing
+  ---
+  duration_ms: 9.210071
+  type: 'test'
+  ...
+# Subtest: other write errors are not turned into StorageFullError
+ok 241 - other write errors are not turned into StorageFullError
+  ---
+  duration_ms: 2.823899
+  type: 'test'
+  ...
+# Subtest: a quota error raised inside the IndexedDB request writes nothing and reaches the caller
+ok 242 - a quota error raised inside the IndexedDB request writes nothing and reaches the caller
+  ---
+  duration_ms: 3.832478
+  type: 'test'
+  ...
+# Subtest: a quota error that aborts the IndexedDB transaction writes nothing and becomes StorageFullError
+ok 243 - a quota error that aborts the IndexedDB transaction writes nothing and becomes StorageFullError
+  ---
+  duration_ms: 3.863199
+  type: 'test'
+  ...
+# Subtest: replaceAll replaces every store in one transaction
+ok 244 - replaceAll replaces every store in one transaction
+  ---
+  duration_ms: 4.930434
+  type: 'test'
+  ...
+# Subtest: replaceAll rolls everything back when a write fails
+ok 245 - replaceAll rolls everything back when a write fails
+  ---
+  duration_ms: 6.232348
+  type: 'test'
+  ...
+# Subtest: replaceAll rolls everything back when the browser aborts the transaction
+ok 246 - replaceAll rolls everything back when the browser aborts the transaction
+  ---
+  duration_ms: 3.717588
+  type: 'test'
+  ...
+# Subtest: Db.add writes a new record and refuses to overwrite an existing one (ConstraintError)
+ok 247 - Db.add writes a new record and refuses to overwrite an existing one (ConstraintError)
+  ---
+  duration_ms: 2.92863
+  type: 'test'
+  ...
+# Subtest: replaceAll rejects unknown store names without touching the data
+ok 248 - replaceAll rejects unknown store names without touching the data
+  ---
+  duration_ms: 2.992197
+  type: 'test'
+  ...
+# Subtest: storageStatus flags nearFull at 80% usage
+ok 249 - storageStatus flags nearFull at 80% usage
+  ---
+  duration_ms: 0.480824
+  type: 'test'
+  ...
+# Subtest: storageStatus does not fail when the browser has no storage API
+ok 250 - storageStatus does not fail when the browser has no storage API
+  ---
+  duration_ms: 0.172435
+  type: 'test'
+  ...
+# Subtest: precache list files all exist
+ok 251 - precache list files all exist
+  ---
+  duration_ms: 2.517972
+  type: 'test'
+  ...
+# Subtest: cacheName changes with the version
+ok 252 - cacheName changes with the version
+  ---
+  duration_ms: 1.923394
+  type: 'test'
+  ...
+# Subtest: route maps each hash
+ok 253 - route maps each hash
+  ---
+  duration_ms: 0.751542
+  type: 'test'
+  ...
+# Subtest: route falls back to dashboard for unknown hashes and ignores parameters
+ok 254 - route falls back to dashboard for unknown hashes and ignores parameters
+  ---
+  duration_ms: 0.643957
+  type: 'test'
+  ...
+# Subtest: hashFor builds a hash that route maps back
+ok 255 - hashFor builds a hash that route maps back
+  ---
+  duration_ms: 0.260861
+  type: 'test'
+  ...
+# Subtest: only caches named like ours and of another version are deleted
+ok 256 - only caches named like ours and of another version are deleted
+  ---
+  duration_ms: 0.327067
+  type: 'test'
+  ...
+# Subtest: AUTO_LOCK_MS is 60000
+ok 257 - AUTO_LOCK_MS is 60000
+  ---
+  duration_ms: 34.037958
+  type: 'test'
+  ...
+# Subtest: precache.json was built for the current version and file contents
+ok 258 - precache.json was built for the current version and file contents
+  ---
+  duration_ms: 6.719302
+  type: 'test'
+  ...
+# Subtest: assertVersionBumped refuses changed files under the same version
+ok 259 - assertVersionBumped refuses changed files under the same version
+  ---
+  duration_ms: 0.801278
+  type: 'test'
+  ...
+# Subtest: assertVersionBumped accepts a new version, an unchanged hash, or no previous file
+ok 260 - assertVersionBumped accepts a new version, an unchanged hash, or no previous file
+  ---
+  duration_ms: 0.49755
+  type: 'test'
+  ...
+# Subtest: the precache hash covers sw.js too (a changed service worker needs a new version)
+ok 261 - the precache hash covers sw.js too (a changed service worker needs a new version)
+  ---
+  duration_ms: 15.594857
+  type: 'test'
+  ...
+# Subtest: APP_VERSION was raised if the served files changed since the last commit
+ok 262 - APP_VERSION was raised if the served files changed since the last commit
+  ---
+  duration_ms: 8.881656
+  type: 'test'
+  ...
+# Subtest: precache does not contain spike, tests, docs, tools or node_modules
+ok 263 - precache does not contain spike, tests, docs, tools or node_modules
+  ---
+  duration_ms: 0.33486
+  type: 'test'
+  ...
+# Subtest: precache entries are relative paths
+ok 264 - precache entries are relative paths
+  ---
+  duration_ms: 0.195805
+  type: 'test'
+  ...
+# Subtest: every module imported from js/main.js and sw.js is in precache.json
+ok 265 - every module imported from js/main.js and sw.js is in precache.json
+  ---
+  duration_ms: 11.157186
+  type: 'test'
+  ...
+# Subtest: files referenced by index.html, the manifest, the CSS and the JS strings are in precache.json
+ok 266 - files referenced by index.html, the manifest, the CSS and the JS strings are in precache.json
+  ---
+  duration_ms: 8.733278
+  type: 'test'
+  ...
+# Subtest: a flag image for every interface language is in precache.json
+ok 267 - a flag image for every interface language is in precache.json
+  ---
+  duration_ms: 0.537669
+  type: 'test'
+  ...
+# Subtest: served files use no absolute paths (the app lives in /Nay-app/)
+ok 268 - served files use no absolute paths (the app lives in /Nay-app/)
+  ---
+  duration_ms: 11.212979
+  type: 'test'
+  ...
+# Subtest: no served file or folder starts with an underscore (Jekyll would hide it) and .nojekyll stays
+ok 269 - no served file or folder starts with an underscore (Jekyll would hide it) and .nojekyll stays
+  ---
+  duration_ms: 0.990343
+  type: 'test'
+  ...
+# Subtest: manifest has the fields the plan asks for
+ok 270 - manifest has the fields the plan asks for
+  ---
+  duration_ms: 0.262936
+  type: 'test'
+  ...
+# Subtest: index.html loads the CSS and main.js with relative paths, in a Spanish-first shell
+ok 271 - index.html loads the CSS and main.js with relative paths, in a Spanish-first shell
+  ---
+  duration_ms: 0.233524
+  type: 'test'
+  ...
+# Subtest: sw.js registers the module worker pieces the plan asks for
+ok 272 - sw.js registers the module worker pieces the plan asks for
+  ---
+  duration_ms: 0.079622
+  type: 'test'
+  ...
+# Subtest: SIMILARITY_THRESHOLD is 0.5 (to be calibrated on the real posts)
+ok 273 - SIMILARITY_THRESHOLD is 0.5 (to be calibrated on the real posts)
+  ---
+  duration_ms: 2.141852
+  type: 'test'
+  ...
+# Subtest: identical texts score 1 and disjoint texts score 0
+ok 274 - identical texts score 1 and disjoint texts score 0
+  ---
+  duration_ms: 2.489052
+  type: 'test'
+  ...
+# Subtest: similarity is symmetric, ignores repeated words and stays between 0 and 1
+ok 275 - similarity is symmetric, ignores repeated words and stays between 0 and 1
+  ---
+  duration_ms: 0.251756
+  type: 'test'
+  ...
+# Subtest: accented and unaccented words match
+ok 276 - accented and unaccented words match
+  ---
+  duration_ms: 2.654157
+  type: 'test'
+  ...
+# Subtest: the same text typed as NFC or NFD matches
+ok 277 - the same text typed as NFC or NFD matches
+  ---
+  duration_ms: 0.583819
+  type: 'test'
+  ...
+# Subtest: cuore and cuori share a stem
+ok 278 - cuore and cuori share a stem
+  ---
+  duration_ms: 0.33119
+  type: 'test'
+  ...
+# Subtest: tokenize lowercases, splits on punctuation and drops stopwords and short words
+ok 279 - tokenize lowercases, splits on punctuation and drops stopwords and short words
+  ---
+  duration_ms: 0.320705
+  type: 'test'
+  ...
+# Subtest: known limits of the stemmer: amar and amando, valiente and valentía are different words
+ok 280 - known limits of the stemmer: amar and amando, valiente and valentía are different words
+  ---
+  duration_ms: 0.188897
+  type: 'test'
+  ...
+# Subtest: tokenize rejects an unsupported language
+ok 281 - tokenize rejects an unsupported language
+  ---
+  duration_ms: 0.568552
+  type: 'test'
+  ...
+# Subtest: texts in different languages are never compared
+ok 282 - texts in different languages are never compared
+  ---
+  duration_ms: 1.779797
+  type: 'test'
+  ...
+# Subtest: findSimilar respects the threshold and the limit
+ok 283 - findSimilar respects the threshold and the limit
+  ---
+  duration_ms: 1.947805
+  type: 'test'
+  ...
+# Subtest: findSimilar sorts by score and breaks ties with the most recent post
+ok 284 - findSimilar sorts by score and breaks ties with the most recent post
+  ---
+  duration_ms: 0.238025
+  type: 'test'
+  ...
+# Subtest: findSimilar compares title and description and reports the shared words
+ok 285 - findSimilar compares title and description and reports the shared words
+  ---
+  duration_ms: 0.226761
+  type: 'test'
+  ...
+# Subtest: findSimilar does not change its input
+ok 286 - findSimilar does not change its input
+  ---
+  duration_ms: 0.258716
+  type: 'test'
+  ...
+# Subtest: findSimilar handles posts without title or description
+ok 287 - findSimilar handles posts without title or description
+  ---
+  duration_ms: 0.194373
+  type: 'test'
+  ...
+# Subtest: vendor stemmers give the same stems as snowball-stem 1.1.1
+ok 288 - vendor stemmers give the same stems as snowball-stem 1.1.1
+  ---
+  duration_ms: 2.888837
+  type: 'test'
+  ...
+# Subtest: formatResults formats one line per result
+ok 289 - formatResults formats one line per result
+  ---
+  duration_ms: 1.085491
+  type: 'test'
+  ...
+# Subtest: formatResults handles missing ms
+ok 290 - formatResults handles missing ms
+  ---
+  duration_ms: 0.175236
+  type: 'test'
+  ...
+# Subtest: formatResults keeps one line per result when details contain newlines
+ok 291 - formatResults keeps one line per result when details contain newlines
+  ---
+  duration_ms: 0.127671
+  type: 'test'
+  ...
+# Subtest: zero posts gives zeros and empty arrays
+ok 292 - zero posts gives zeros and empty arrays
+  ---
+  duration_ms: 17.479348
+  type: 'test'
+  ...
+# Subtest: posts without views are ignored in view aggregates
+ok 293 - posts without views are ignored in view aggregates
+  ---
+  duration_ms: 1.975151
+  type: 'test'
+  ...
+# Subtest: posts without comments are ignored in comment aggregates
+ok 294 - posts without comments are ignored in comment aggregates
+  ---
+  duration_ms: 0.701731
+  type: 'test'
+  ...
+# Subtest: bestHours averages by publication hour
+ok 295 - bestHours averages by publication hour
+  ---
+  duration_ms: 0.547227
+  type: 'test'
+  ...
+# Subtest: bestHours breaks ties by the earlier hour
+ok 296 - bestHours breaks ties by the earlier hour
+  ---
+  duration_ms: 0.345891
+  type: 'test'
+  ...
+# Subtest: byType counts all posts
+ok 297 - byType counts all posts
+  ---
+  duration_ms: 0.395227
+  type: 'test'
+  ...
+# Subtest: viewsOverTime adds up the views of each day and is sorted by date
+ok 298 - viewsOverTime adds up the views of each day and is sorted by date
+  ---
+  duration_ms: 0.370573
+  type: 'test'
+  ...
+# Subtest: commentsPerPost is in publication order
+ok 299 - commentsPerPost is in publication order
+  ---
+  duration_ms: 0.340282
+  type: 'test'
+  ...
+# Subtest: days and hours follow the time zone
+ok 300 - days and hours follow the time zone
+  ---
+  duration_ms: 1.48088
+  type: 'test'
+  ...
+# Subtest: invalid dates are counted in the totals but left out of the time charts
+ok 301 - invalid dates are counted in the totals but left out of the time charts
+  ---
+  duration_ms: 0.760667
+  type: 'test'
+  ...
+# Subtest: only finite non-negative numbers count as views and comments
+ok 302 - only finite non-negative numbers count as views and comments
+  ---
+  duration_ms: 0.439751
+  type: 'test'
+  ...
+# Subtest: computeStats does not change its input and ignores unknown types in byType
+ok 303 - computeStats does not change its input and ignores unknown types in byType
+  ---
+  duration_ms: 0.423986
+  type: 'test'
+  ...
+# Subtest: PLACEHOLDERS lists the placeholders of the spec
+ok 304 - PLACEHOLDERS lists the placeholders of the spec
+  ---
+  duration_ms: 2.307612
+  type: 'test'
+  ...
+# Subtest: there are 4 kinds in 2 languages, all builtin, with unique ids
+ok 305 - there are 4 kinds in 2 languages, all builtin, with unique ids
+  ---
+  duration_ms: 0.446977
+  type: 'test'
+  ...
+# Subtest: every default template contains {lingua} and {idea}
+ok 306 - every default template contains {lingua} and {idea}
+  ---
+  duration_ms: 0.131901
+  type: 'test'
+  ...
+# Subtest: every default template asks for hook and caption separately
+ok 307 - every default template asks for hook and caption separately
+  ---
+  duration_ms: 0.426412
+  type: 'test'
+  ...
+# Subtest: default templates use only known placeholders and the history/style ones
+ok 308 - default templates use only known placeholders and the history/style ones
+  ---
+  duration_ms: 0.465715
+  type: 'test'
+  ...
+# Subtest: video templates ask for the video length and photo templates do not
+ok 309 - video templates ask for the video length and photo templates do not
+  ---
+  duration_ms: 0.182654
+  type: 'test'
+  ...
+# Subtest: renderTemplate replaces all placeholders
+ok 310 - renderTemplate replaces all placeholders
+  ---
+  duration_ms: 0.308274
+  type: 'test'
+  ...
+# Subtest: renderTemplate treats values literally
+ok 311 - renderTemplate treats values literally
+  ---
+  duration_ms: 0.117943
+  type: 'test'
+  ...
+# Subtest: renderTemplate leaves placeholders without a value untouched
+ok 312 - renderTemplate leaves placeholders without a value untouched
+  ---
+  duration_ms: 0.25448
+  type: 'test'
+  ...
+# Subtest: findUnfilled lists missing placeholders
+ok 313 - findUnfilled lists missing placeholders
+  ---
+  duration_ms: 0.464324
+  type: 'test'
+  ...
+# Subtest: duplicateTemplate makes an editable copy
+ok 314 - duplicateTemplate makes an editable copy
+  ---
+  duration_ms: 1.574253
+  type: 'test'
+  ...
+# Subtest: renderTemplate leaves placeholders with an empty value untouched
+ok 315 - renderTemplate leaves placeholders with an empty value untouched
+  ---
+  duration_ms: 0.106018
+  type: 'test'
+  ...
+# Subtest: json roundtrip
+ok 316 - json roundtrip
+  ---
+  duration_ms: 13.640326
+  type: 'test'
+  ...
+# Subtest: bytes roundtrip keeps every byte
+ok 317 - bytes roundtrip keeps every byte
+  ---
+  duration_ms: 3.301199
+  type: 'test'
+  ...
+# Subtest: encrypting the same value twice gives different ciphertexts
+ok 318 - encrypting the same value twice gives different ciphertexts
+  ---
+  duration_ms: 2.169341
+  type: 'test'
+  ...
+# Subtest: tampered ciphertext is rejected
+ok 319 - tampered ciphertext is rejected
+  ---
+  duration_ms: 1.747953
+  type: 'test'
+  ...
+# Subtest: wrong password throws WrongSecretError
+ok 320 - wrong password throws WrongSecretError
+  ---
+  duration_ms: 3.456592
+  type: 'test'
+  ...
+# Subtest: correct password opens the vault and reads the same data
+ok 321 - correct password opens the vault and reads the same data
+  ---
+  duration_ms: 2.027359
+  type: 'test'
+  ...
+# Subtest: recovery code has 32 base32 characters in groups of 4
+ok 322 - recovery code has 32 base32 characters in groups of 4
+  ---
+  duration_ms: 1.486346
+  type: 'test'
+  ...
+# Subtest: recovery code opens the vault (lowercase and spaces)
+ok 323 - recovery code opens the vault (lowercase and spaces)
+  ---
+  duration_ms: 4.339178
+  type: 'test'
+  ...
+# Subtest: wrong recovery code throws WrongSecretError
+ok 324 - wrong recovery code throws WrongSecretError
+  ---
+  duration_ms: 2.311928
+  type: 'test'
+  ...
+# Subtest: changePassword keeps old data readable and rejects the old password
+ok 325 - changePassword keeps old data readable and rejects the old password
+  ---
+  duration_ms: 3.553521
+  type: 'test'
+  ...
+# Subtest: changePassword keeps the recovery code and the setup state
+ok 326 - changePassword keeps the recovery code and the setup state
+  ---
+  duration_ms: 5.871071
+  type: 'test'
+  ...
+# Subtest: changePassword rejects a password shorter than MIN_PASSWORD_LENGTH
+ok 327 - changePassword rejects a password shorter than MIN_PASSWORD_LENGTH
+  ---
+  duration_ms: 5.463641
+  type: 'test'
+  ...
+# Subtest: changePassword rejects a session from another vault
+ok 328 - changePassword rejects a session from another vault
+  ---
+  duration_ms: 3.165075
+  type: 'test'
+  ...
+# Subtest: password is normalized to NFC
+ok 329 - password is normalized to NFC
+  ---
+  duration_ms: 6.112312
+  type: 'test'
+  ...
+# Subtest: password with accents, ñ, ¿ and ¡ opens with any normalization
+ok 330 - password with accents, ñ, ¿ and ¡ opens with any normalization
+  ---
+  duration_ms: 2.402809
+  type: 'test'
+  ...
+# Subtest: isSetupComplete is false until confirmRecoveryCode
+ok 331 - isSetupComplete is false until confirmRecoveryCode
+  ---
+  duration_ms: 2.356074
+  type: 'test'
+  ...
+# Subtest: a vault never confirmed is still incomplete after a restart
+ok 332 - a vault never confirmed is still incomplete after a restart
+  ---
+  duration_ms: 1.164564
+  type: 'test'
+  ...
+# Subtest: vault record survives a JSON roundtrip and can be stored as a meta record
+ok 333 - vault record survives a JSON roundtrip and can be stored as a meta record
+  ---
+  duration_ms: 2.092405
+  type: 'test'
+  ...
+# Subtest: default iterations constant is 600000
+ok 334 - default iterations constant is 600000
+  ---
+  duration_ms: 98.290547
+  type: 'test'
+  ...
+# Subtest: createVault rejects a password shorter than MIN_PASSWORD_LENGTH
+ok 335 - createVault rejects a password shorter than MIN_PASSWORD_LENGTH
+  ---
+  duration_ms: 2.363018
+  type: 'test'
+  ...
+# Subtest: createVault rejects a non-string password and invalid iterations
+ok 336 - createVault rejects a non-string password and invalid iterations
+  ---
+  duration_ms: 0.624516
+  type: 'test'
+  ...
+# Subtest: two vaults get different recovery codes and wrapped keys
+ok 337 - two vaults get different recovery codes and wrapped keys
+  ---
+  duration_ms: 2.336483
+  type: 'test'
+  ...
+# Subtest: changePassword accepts a new password typed as NFD and unlocks with NFC
+ok 338 - changePassword accepts a new password typed as NFD and unlocks with NFC
+  ---
+  duration_ms: 6.195809
+  type: 'test'
+  ...
+# Subtest: createVault counts the minimum length after NFC
+ok 339 - createVault counts the minimum length after NFC
+  ---
+  duration_ms: 0.534937
+  type: 'test'
+  ...
+# Subtest: recovery code accepts typographic dashes and full-width characters
+ok 340 - recovery code accepts typographic dashes and full-width characters
+  ---
+  duration_ms: 3.342396
+  type: 'test'
+  ...
+# Subtest: a corrupt vault record is not reported as a wrong password
+ok 341 - a corrupt vault record is not reported as a wrong password
+  ---
+  duration_ms: 6.374298
+  type: 'test'
+  ...
+# Subtest: a vault whose wrapped key was altered looks like a wrong password
+ok 342 - a vault whose wrapped key was altered looks like a wrong password
+  ---
+  duration_ms: 2.903685
+  type: 'test'
+  ...
+# Subtest: unlock functions always return a promise, even for invalid input
+ok 343 - unlock functions always return a promise, even for invalid input
+  ---
+  duration_ms: 2.830818
+  type: 'test'
+  ...
+1..343
+# tests 343
+# suites 0
+# pass 343
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2641.68629

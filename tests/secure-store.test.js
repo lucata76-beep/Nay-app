@@ -277,6 +277,20 @@ test('replaceAll rolls everything back when the browser aborts the transaction',
   assert.deepEqual(await db.list('meta'), [{ id: 'vault', n: 1 }]);
 });
 
+test('Db.add writes a new record and refuses to overwrite an existing one (ConstraintError)', async () => {
+  const { db } = await setup();
+  await db.add('meta', { id: 'vault', n: 1 });
+  assert.deepEqual(await db.get('meta', 'vault'), { id: 'vault', n: 1 });
+  const err = await db.add('meta', { id: 'vault', n: 2 }).then(
+    () => null,
+    (e) => e,
+  );
+  assert.equal(err && err.name, 'ConstraintError', String(err));
+  assert.deepEqual(await db.get('meta', 'vault'), { id: 'vault', n: 1 });
+  await db.add('meta', { id: 'altro', n: 3 });
+  assert.equal((await db.list('meta')).length, 2);
+});
+
 test('replaceAll rejects unknown store names without touching the data', async () => {
   const { db } = await setup();
   await db.put('ideas', { id: 'vecchia', n: 1 });
