@@ -1,6 +1,6 @@
 {
-  "version": "0.5.0",
-  "hash": "e674cfb341353960fcaec2ce69594702c7edd97d607e4bd033c7f5e83fdc0391",
+  "version": "0.6.0",
+  "hash": "a6b4c8057a1a96bd19f0e9d0570760532152214365cd12eadd6a8ac0cbf56f11",
   "files": [
     "./",
     "./assets/flags/es.svg",
@@ -38,11 +38,13 @@
     "./js/router.js",
     "./js/ui/bottombar.js",
     "./js/ui/cards.js",
+    "./js/ui/charts.js",
     "./js/ui/dialog.js",
     "./js/ui/dom.js",
     "./js/ui/form-draft.js",
     "./js/ui/icons.js",
     "./js/ui/menu.js",
+    "./js/ui/screens/dashboard.js",
     "./js/ui/screens/develop.js",
     "./js/ui/screens/ideas.js",
     "./js/ui/screens/lock.js",

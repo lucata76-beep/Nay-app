@@ -416,8 +416,8 @@ Ultimo aggiornamento: 16 novembre 2026
 ## Dove siamo
 
 - **Fase:** 3 — Interfaccia (T11-T16) in corso, sul ramo `claude/fase-3-interfaccia-ck0hog` (non su `main`: vedi «Fase 3»). Ultimo aggiornamento: 17 novembre 2026.
-- **Ultimo task chiuso:** T14 (Pubblicazioni salvate e registro) — `APP_VERSION` 0.5.0.
-- **Prossimo task:** T15 (Dashboard e grafici).
+- **Ultimo task chiuso:** T15 (Dashboard e grafici) — `APP_VERSION` 0.6.0.
+- **Prossimo task:** T16 (Menu ⋮, Impostazioni, backup).
 
 ## Gate aperti
 
@@ -676,6 +676,38 @@ Via libera di Luca del 17 novembre 2026. La fase 2 è stata verificata da Claude
 | Memoria piena, bozza, blocco con il modulo aperto, cambio lingua, record illeggibile | **fatti in Chromium** (errore simulato alla scrittura della pubblicazione: nessun blob né media rimasto, riprovando riesce; record del registro illeggibile → `error.dataUnreadable` con «Reintentar») |
 
 **Non provato [Da provare sul Samsung]:** il selettore delle immagini di Android per lo screenshot; l'aspetto del campo «data e ora» sul telefono (qui è quello di Chromium); l'elenco e il registro con 200-260 post l'anno (`registerMatches` rilegge tutte le voci a ogni confronto, già annotato in T7: non misurato oltre qualche decina).
+
+### T15 — Dashboard e grafici (v0.6.0)
+
+**Test del piano presenti con i nomi del piano (3 su 3):** `barChartSvg draws one rect per datum`, `donutChartSvg draws one path per non-zero slice`, `charts return a placeholder svg for empty data` (in `tests/charts.test.js`, 15 test in tutto). Gli altri 12 sono miei: ad area (un punto per dato, area e linea; un solo valore → solo il punto; etichette primo-centro-ultimo), barre proporzionali e mai negative, nessun `NaN`/`Infinity` nel markup, **etichette protette (un titolo con markup non crea elementi)**, nessuno stile o evento inline (la CSP li bloccherebbe), **nessun colore negli SVG** (solo classi e sfumature: i colori stanno in `css/tokens.css`), valori sopra le barre solo se poche, etichette non sovrapposte, nome accessibile, id delle sfumature unici, `lastN`. Visti rossi (modulo mancante), poi verdi; **14 mutazioni temporanee**, una non intercettata (etichette dell'asse) → test aggiunto → intercettata. Due test in più dopo aver guardato lo screenshot (vedi punto 8). Suite: **320 test, tutti verdi**.
+
+**Cosa fa la pagina** (`js/ui/charts.js`, `js/ui/screens/dashboard.js`): tre pulsanti grandi (IDEAR, DESARROLLAR, PUBLICACIONES GUARDADAS); numeri chiave (post, visualizzazioni totali, commenti totali); **scheda delle ripetizioni da valutare** con il tasto che apre il registro già filtrato (`#/pubblicazioni?tab=registro&status=da_valutare`); grafico ad area delle visualizzazioni nel tempo; barre dei commenti per post; barre degli orari migliori; ciambella dei post per tipo con legenda (numeri e percentuali). I grafici sono SVG scritti a mano, inseriti con `DOMParser` (non `innerHTML`).
+
+**Scelte e scostamenti di T15** (motivo; costo se sbagliata):
+1. **Commenti per post: ultimi 12** (`COMMENTS_LAST_N`), tra i post con i commenti annotati, in ordine di pubblicazione; la nota sotto il titolo dice quanti sono mostrati. 12 è una scelta mia: 12 barre con il valore sopra stanno in 384 px. Con 200-260 post l'anno tutti insieme non si leggerebbero. Costo se sbagliata: una costante.
+2. **Sull'asse del grafico dei commenti non ci sono etichette** (i titoli dei post, troncati a 6 caratteri, non direbbero niente): il titolo e il valore stanno nel suggerimento di ogni barra (tenendo premuto). Costo: per riconoscere un post bisogna toccare la barra.
+3. **Zero pubblicazioni:** messaggio che invita a inserire il primo post con il tasto per andare a Pubblicazioni; niente numeri né grafici vuoti (restano i tre pulsanti grandi). **Post senza visualizzazioni o commenti:** i grafici mostrano un segnaposto tratteggiato e una frase che spiega che contano solo i post che hanno quei dati.
+4. **Orari migliori: barre in ordine di ora** (`computeStats` restituisce `bestHours` dalla fascia con più visualizzazioni; per l'asse serve l'ordine delle ore) con la media di visualizzazioni arrotondata.
+5. **Le date sull'asse delle visualizzazioni sono scritte nella lingua dell'app** («12 mar»): la prima versione usava «03-12», che uno spagnolo o un italiano legge come 3 dicembre (trovato rileggendo, corretto e provato). Giorno e ora delle statistiche seguono il fuso del telefono: in Chromium qui è UTC, quindi **[Da provare sul Samsung]** con il fuso di Madrid.
+6. **I punti del grafico ad area si disegnano fino a 60 giorni di dati**; oltre, resta solo l'area con la linea (con 200-260 post all'anno i punti sarebbero centinaia). Costo: sopra i 60 giorni non si vedono i punti singoli.
+7. **Colori solo da `css/tokens.css`:** provato in Chromium che `stop-color`, fetta e linea risolvono a `--cyan` (`#26a4c5`). Le fette usano sei classi a rotazione (ciano, viola, magenta, blu-viola, azzurro, magenta chiaro) dalla palette del poster.
+8. **Trovato guardando gli screenshot e corretto con test:** nel grafico degli orari il valore sopra la barra più alta si sovrapponeva all'etichetta del massimo (ora sono distanziate: `the max-value label never overlaps…`); le etichette troncate dei commenti (punto 2).
+9. 25 chiavi nuove in `es.js` e `it.js` (testi non rivisti, T19).
+
+**«Verifica a mano» del piano per T15** (il piano non ne elenca; eseguita come per gli altri task, in Chromium con script, 35 controlli passati; dati inventati: 31 post su 12 giorni, 3 voci del registro, un post con un titolo che cerca di infilare codice nei grafici):
+
+| Punto | Esito |
+|---|---|
+| Dashboard vuota | **fatto in Chromium:** tre pulsanti, messaggio per il primo post, nessun grafico; ogni pulsante porta alla sua pagina, il logo riporta qui |
+| Numeri chiave | **fatto in Chromium:** post, visualizzazioni e commenti coincidono con i totali calcolati a parte nello script (i post senza dato non contano) |
+| Grafici | **fatto in Chromium:** punti = giorni con dati; 12 barre dei commenti e sono proprio gli ultimi 12 per data (stesso ordine); una barra per ogni ora con dati; fette = tipi presenti; legenda e totale al centro giusti |
+| Scheda delle ripetizioni | **fatto in Chromium:** 2 da valutare (la confermata non conta); il tasto apre il registro già sulla scheda e sullo stato giusti, con 2 voci |
+| Cambio lingua | **fatto in Chromium:** pulsanti, titoli, legenda, etichette delle ore e delle date passano all'italiano |
+| Titolo con markup, colori dai token, nessuno scorrimento orizzontale, record illeggibile, nessuna richiesta esterna | **fatti in Chromium** |
+
+Rilanciati anche gli script di T11-T14 dopo le modifiche condivise (T11 73/73, T13 73/73, T14 56/56; **T12 51/51 ripetuto 6 volte**: aveva un'intermittenza dello script, non dell'app — la bozza «texto a medias» ripresa mentre Playwright scriveva —, ora lo script aspetta la ripresa).
+
+**Non provato [Da provare sul Samsung]:** resa e nitidezza degli SVG sul telefono vero (qui sono a 2,8125 pixel per pixel), grafici con 200-260 post.
 
 ## Da verificare
 

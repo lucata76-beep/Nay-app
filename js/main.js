@@ -12,6 +12,7 @@ import { renderLock } from './ui/screens/lock.js';
 import { renderIdeas } from './ui/screens/ideas.js';
 import { renderDevelop } from './ui/screens/develop.js';
 import { renderPublications } from './ui/screens/publications.js';
+import { renderDashboard } from './ui/screens/dashboard.js';
 import { closeDialogs } from './ui/dialog.js';
 import { applyI18n, h } from './ui/dom.js';
 
@@ -26,7 +27,7 @@ function renderPlaceholder(view, ctx) {
   view.append(h('section', { class: 'card page-card' }, h('h2', { i18n: `title.${ctx.route}` })));
 }
 const SCREENS = {
-  dashboard: renderPlaceholder,
+  dashboard: renderDashboard,
   ideare: renderIdeas,
   sviluppare: renderDevelop,
   pubblicazioni: renderPublications,
