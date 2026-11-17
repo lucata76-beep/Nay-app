@@ -26,7 +26,7 @@ Legenda: **[Luca]** = deciso da Luca · **[Verificato]** = controllato su fonte 
 - **Come lavora oggi:** tutto a mano, in due direzioni: parte da una foto o un video e crea la frase (motivazionale o di stile di vita), oppure ha già la frase e le abbina una foto o un video.
 - **App di IA:** ChatGPT (suggerita da Luca) e Gemini. Oggi lei usa ChatGPT gratuito e vuole passare a un piano a pagamento base: secondo Luca costa «il minimo 22 euro al mese» (cifra detta da Luca, non verificata da me).
 - **Dove perde tempo oggi:** a modificare le foto e a scrivere la caption o l'hook. Per questo Sviluppare è il pulsante da curare di più; la modifica delle foto non è coperta dalla v1 (sezione 12).
-- **Telefono:** Samsung «26 Plus» con Android; modello esatto e versione di Android da verificare prima del test.
+- **Telefono:** Samsung SM-S936B (Galaxy S25+, codice Europa/Internazionale) con Android 17, letto da Chrome 157 nel test del 16 novembre 2026 **[Verificato]**.
 - **Repo pubblico.** Si usa una licenza open source: anche i dati del vocabolario devono averne una. Quale licenza per il repo è ancora da scegliere (sezione 11).
 - **Logo:** il file «cuffia_03_oro.png» va in alto a sinistra nell'app, con accanto il numero di versione dell'app **[Luca]**, e come icona dell'app (sezione 8). Le bandierine delle lingue vanno in alto a destra **[Luca]**.
 - **Le 26 scelte di Claude della sezione 10: confermate da Luca** («vanno bene»).
@@ -37,7 +37,7 @@ Legenda: **[Luca]** = deciso da Luca · **[Verificato]** = controllato su fonte 
 
 **Scelte di Claude:** sezione 10 (tutte approvate). **Da provare sul Samsung:** sezione 9.
 
-**Ancora aperto (sezione 11):** quale licenza open source per il repo (si decide dopo il test); modello e versione di Android del Samsung e chi esegue il test; limiti del piano a pagamento di ChatGPT (non verificati). Nessuno blocca il piano.
+**Ancora aperto (sezione 11):** quale licenza open source per il repo (si decide dopo il test); limiti del piano a pagamento di ChatGPT (non verificati). Nessuno blocca il piano.
 
 **Da sapere sulla sicurezza:** la cifratura protegge i dati dentro l'app. Le foto e i video originali restano in chiaro nella galleria, e tutto ciò che lei condivide o esporta (prompt, file, ZIP) esce in chiaro.
 
@@ -249,7 +249,7 @@ Colori **misurati** sull'immagine (medie dei pixel, da affinare):
 
 Stile: schede di vetro scuro con bordo neon sottile e angoli arrotondati; titoli grandi in bianco con parola in sfumatura viola; titoli di sezione in ciano; grafici ad area e a barre con sfumature ciano→viola→rosa; ciambelle e indicatori circolari.
 
-**Logo [Luca: file «cuffia_03_oro.png»; in alto a sinistra e come icona dell'app].** Misurato sul file: PNG 2048×2048, senza trasparenza, sfondo crema `#fdf6ef`; oro `#e9c16a`-`#f0c770`; nero `#141313`; pallino rosa `#ea9cad`; pallino verde `#1f6447`. Margini del disegno: sinistra 23,7%, alto 7,8%, destra 23,8%, basso 15,5%.
+**Logo [Luca: file «cuffia_03_oro.png»; in alto a sinistra e come icona dell'app].** Misurato sul file: PNG 2048×2048, senza trasparenza, sfondo crema non uniforme (pixel in 20,20 `#fbf6ef`, angolo in 0,0 `#fef8ef`; la tela delle icone usa `#fdf6ef`); oro `#e9c16a`-`#f0c770`; nero `#141313`; pallino rosa `#ea9cad`; pallino verde `#1f6447`. Margini del disegno: sinistra 23,7%, alto 7,8%, destra 23,8%, basso 15,5%.
 - **Sul fondo scuro del poster.** Il nero del logo ha un rapporto di contrasto di 1,06-1,13 con i quattro fondi del poster (calcolo WCAG su valori misurati): sparisce. L'oro (10-12) e il crema (16-19) si leggono. Proposta **[Mia scelta]**: il logo sta su una tessera crema con angoli arrotondati nella barra in alto, senza toccare il disegno; la variante per fondo scuro la decide Luca, perché il logo è suo.
 - **Icona dell'app [Verificato in parte].** web.dev (Google) indica 512×512 come dimensione da scegliere se se ne sceglie una sola e consiglia anche 192×192; che Chrome richieda 192×192 e 512×512 per l'installazione è riportato da siti terzi, da confermare nel test. Per l'icona «maskable» (`"purpose": "any maskable"`) web.dev indica il disegno dentro un cerchio centrale di raggio pari al 40% della larghezza.
 - **Il file com'è non entra nel cerchio [misurato].** Il punto più lontano dal centro è al 42,3% della larghezza (in alto il disegno è troppo vicino al bordo). Se il disegno è centrato sul proprio riquadro scende al 39,7%, cioè appena dentro: proposta **[Mia scelta]** di spostarlo verso il basso e ridurlo a circa il 90% per avere margine. Lo sfondo crema pieno riempie tutto il quadrato. Le tre icone (192, 512, maskable 512) si ricavano dal file nel piano; per ora non è stato creato nessun file.
@@ -317,8 +317,7 @@ Le prime 26 sono **confermate da Luca** («vanno bene»). Le 27-32 sono approvat
 
 **Aperto (serve Luca)**
 1. **Licenza del repo:** si sceglie dopo il test **[Luca: «4- ok»]**. Dipende dai dati del vocabolario inclusi: GPL e AGPL pongono condizioni a chi ridistribuisce; per i dati da Wiktionary (indicati CC BY-SA 4.0) va riverificato. Claude non è un avvocato **[Da verificare]**.
-2. **Telefono per il test:** Samsung «26 Plus»; modello esatto e versione di Android da leggere in Info telefono, e chi esegue il test della sezione 9.
-3. **Piano ChatGPT a pagamento:** i limiti di caricamento dei file di quel piano non sono verificati; da controllare quando lei sceglie il piano. La cifra di 22 euro al mese è detta da Luca e non verificata.
+2. **Piano ChatGPT a pagamento:** i limiti di caricamento dei file di quel piano non sono verificati; da controllare quando lei sceglie il piano. La cifra di 22 euro al mese è detta da Luca e non verificata.
 
 **Risolto (risposte di Luca):**
 - Lo storico conta circa 50 post e cresce di 4-5 a settimana; per questo il prompt prende gli ultimi più i più simili e il numero è un parametro.
@@ -328,7 +327,7 @@ Le prime 26 sono **confermate da Luca** («vanno bene»). Le 27-32 sono approvat
 - Si usa una licenza open source: i dati del vocabolario devono averne una («usiamo una licenza open source»).
 - ChatGPT oggi è gratuito; lei vuole un upgrade base (22 euro al mese, cifra di Luca).
 - Perde tempo a modificare le foto e a inserire caption o hook.
-- Telefono per il test: Samsung «26 Plus», Android da verificare.
+- Telefono per il test: Samsung SM-S936B (Galaxy S25+, codice Europa/Internazionale), Android 17, letto da Chrome 157 e prova eseguita da Luca il 16 novembre 2026.
 - Repo pubblico.
 - NAY è un logo, file «cuffia_03_oro.png»: in alto a sinistra e come icona dell'app.
 - Le 26 scelte della sezione 10: confermate («vanno bene»).
