@@ -120,9 +120,9 @@ Ultimo aggiornamento: 16 novembre 2026
 
 ## Dove siamo
 
-- **Fase:** 1 — Icone e test sul Samsung (completa lato codice; resta il gate G2)
-- **Ultimo task chiuso:** T2 (prototipo di prova sul Samsung)
-- **Prossimo task:** T3 (lingue) — non iniziato: l'esecuzione si è fermata dopo T2 per istruzione di Luca.
+- **Fase:** 2 — Logica (T3-T10), in corso. La fase 1 è completa lato codice; il gate G2 (prova sul Samsung) è stato eseguito da Luca (vedi «Fatti comunicati da Luca» più sotto).
+- **Ultimo task chiuso:** T3 (lingue)
+- **Prossimo task:** T4 (cifratura e vault)
 
 ## Gate aperti
 
@@ -145,6 +145,21 @@ Ultimo aggiornamento: 16 novembre 2026
 - **T2, script di verifica in Chromium:** non è nel repo (Playwright non è una dipendenza del progetto); è stato eseguito dallo scratchpad della sessione.
 - **Dopo T2:** un commit in più (`docs: resoconto per Claude dopo T2`) solo per il blocco «Resoconto per Claude», perché l'hash del commit di T2 non può stare dentro il commit stesso.
 - **T2, `.nojekyll`:** su GitHub Pages la spike non partiva perché Jekyll non pubblica i file che iniziano con `_` (`spike/snowball/_stemmer.js`, importato da `spanish_stemmer.js`), quindi `spike.js` non girava. Il test locale con `python3 -m http.server` non vede il Jekyll di Pages (serve tutti i file), per questo il problema non è emerso. Aggiunto `.nojekyll` vuoto nella radice, con il test `nojekyll exists` (rosso poi verde). Che con `.nojekyll` la spike parta davvero su Pages è **[Da provare]**: non verificabile dal mio ambiente.
+
+## Fase 2 (T3-T10): fatti, scelte e scostamenti
+
+**Fatti comunicati da Luca dal test sul Samsung del 16 novembre 2026** (riportati come da lui, **non verificati da me**; Samsung SM-S936B, Android 17, Chrome 157):
+- Lo ZIP non si condivide: `canShare` dice sì ma `share` lancia `NotAllowedError` («Permission denied»).
+- ZIP di 3 video (159,4 MB) fatto in 0,59 s con tutto l'output in memoria (heap circa come lo ZIP).
+- PBKDF2 a 600.000 ripetizioni: 78 ms. AES-GCM su un video da 42 MB: cifra 60 ms, legge 48 ms. Si tengono 600.000 ripetizioni.
+- GitHub Pages usa Jekyll: `.nojekyll` resta nella radice; nei file nuovi si evita il trattino basso iniziale.
+- Non si importa da `snowball-stem/esm/…` (`ERR_PACKAGE_PATH_NOT_EXPORTED`).
+
+**T3 — lingue**
+- `setLang` con una lingua non supportata lancia `RangeError` e non scrive nulla (il piano non lo dice); un valore sconosciuto già salvato in `nay.lang` vale `es`.
+- I dizionari sono oggetti piatti con chiavi a punti (`export const es`, `export const it`). Oltre alle chiavi che il piano nomina ci sono quelle di navigazione, titoli, schermata di sblocco e `error.passwordTooShort`/`error.passwordMismatch`: le altre chiavi arrivano con i task che le usano.
+- Test in più rispetto al piano: stessi segnaposto in es e it, nessun messaggio vuoto, chiavi obbligatorie presenti, ripiego su `es`, lingua non supportata, evento `langchange`, funzionamento senza `dispatchEvent`, `t` segue la lingua corrente.
+- I testi in spagnolo e in italiano sono scritti da Claude e **non ancora rivisti** (spagnolo: da lei; italiano: da Luca) — revisione in T19.
 
 ## Da verificare
 
