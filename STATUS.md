@@ -121,8 +121,8 @@ Ultimo aggiornamento: 16 novembre 2026
 ## Dove siamo
 
 - **Fase:** 2 — Logica (T3-T10), in corso. La fase 1 è completa lato codice; il gate G2 (prova sul Samsung) è stato eseguito da Luca (vedi «Fatti comunicati da Luca» più sotto).
-- **Ultimo task chiuso:** T6 (idee, template, prompt, bozze)
-- **Prossimo task:** T7 (somiglianza e registro)
+- **Ultimo task chiuso:** T7 (somiglianza e registro)
+- **Prossimo task:** T8 (esportazione)
 
 ## Gate aperti
 
@@ -184,6 +184,17 @@ Ultimo aggiornamento: 16 novembre 2026
 - `buildPrompt`: `idea`, `storico` e `lingua` vengono sempre dall'idea e dallo storico (il testo del modulo vale solo se l'idea non ha testo, per le idee con soli media); `{tipo_media}` parte dal tipo di template; la lingua del post è scritta nella lingua del template (template italiano + post in spagnolo → «spagnolo»); senza storico c'è una riga neutra al posto di `{storico}`; i segnaposto del modulo rimasti vuoti restano visibili. `formatHistory` non filtra per lingua: chi chiama passa i post già filtrati.
 - **Testi dei template (8 corpi, 4 tipi × 2 lingue):** scritti da Claude e **non rivisti**; richiedono HOOK e CAPTION come due risposte separate; 5 varianti di hook e 3 di caption sono una scelta provvisoria da tarare con lei **[Da provare]** (la spec lascia il numero al test).
 - **Per T13:** se non c'è una guida di stile salvata, `{stile}` resta vuoto e quindi visibile e segnalato da `findUnfilled`: l'interfaccia deve decidere se avvisare o riempirlo.
+
+**T7 — somiglianza e registro delle ripetizioni**
+- **Esempio del piano e misura di somiglianza.** Il piano dice che «Ánimo valiente» trova «animo y valentía», ma con lo stemmer vero «valiente» → `valient` e «valentía» → `valent` sono radici diverse (provato). Il piano non fissa la formula di `similarity`: ho scelto il **coefficiente di Dice** sulle radici (2·in comune / somma degli insiemi). Con Dice quell'esempio vale esattamente 0,5 e passa a soglia 0,5 (con la Jaccard varrebbe 0,33 e non passerebbe); è un caso al limite, quindi la soglia 0,5 va davvero calibrata sui 50 post veri **[Da provare]**. Un test nomina i limiti noti: «amar»/«amando» (come in spec) e «valiente»/«valentía» restano parole diverse.
+- **Accenti e NFC/NFD (Review Focus 1).** Il testo passa da NFC, si divide in parole (lettere Unicode), e le parole si confrontano **senza accenti** (anche «ñ» vale «n») prima di calcolare la radice. Motivo: senza questo passaggio «valentía» → `valent` ma «valentia» → `valenti` (provato) e l'italiano dà radici con accento (`ànim`). Test: `accented and unaccented words match` (nome del piano), `the same text typed as NFC or NFD matches`, più i casi «corazón/corazones», «sueños/suenos», «perché/perche», «felicità/felicita». Costo: «año» e «ano» si confondono.
+- `sharedWords` sono le parole del testo controllato, minuscole e con gli accenti come scritte (non le radici), così si possono evidenziare; `findSimilar` confronta titolo + descrizione, esclude i post di un'altra lingua e i punteggi 0, ordina per punteggio e, a parità, per post più recente; senza `limit` non ha tetto.
+- Elenchi di parole vuote (spagnolo e italiano) scritti a mano da me, non da una fonte: da affinare sui testi veri **[Da provare]**.
+- **`vendor/snowball-es.js` e `vendor/snowball-it.js`:** un solo file ciascuno (classe base + stemmer), senza trattino basso iniziale per Jekyll, licenza BSD-3-Clause in testa, algoritmo non modificato (tolto solo `export` alla classe base e la riga di import). Costruiti con uno script di unione eseguito dallo scratchpad (non nel repo); un test confronta le radici con `snowball-stem` 1.1.1 su 27 parole. La spike usa ancora la sua copia in `spike/snowball/` (non toccata).
+- **File in più rispetto al piano:** `js/features/text.js` (`foldText`, usato da `ideas.js`, `similarity.js`, `repetitions.js`; `ideas.js` è stato aggiornato per usarlo, test di T6 ancora verdi).
+- Registro: `pairKey` è un array JSON (nessuna ambiguità tra i pezzi) e per due pubblicazioni l'ordine non conta; gli `id` delle voci sono casuali (non derivati dalla coppia, perché gli id restano in chiaro nel database); `registerMatches` legge e decifra tutte le voci a ogni chiamata (va bene per centinaia di voci, non misurato oltre) **[Da provare]**; `setStatus` rifiuta stati non validi e id mancanti.
+- **`searchRepetitions` filtra le date sul controllo (`checkedAt`), non sulla pubblicazione trovata.** La spec chiede anche la data della pubblicazione trovata, ma il tipo `Repetition` del piano non la contiene e la firma `searchRepetitions(reps, q)` non riceve le pubblicazioni: **per T14** serve unire le pubblicazioni (o estendere il tipo). Una data «solo giorno» in `to` vale per tutto il giorno in UTC.
+- Test in più rispetto al piano: ordine e parità dei risultati, tetto `limit`, input non modificato, stato dei post senza titolo, voci cifrate, `checkNewPublication` (stessa lingua, non contro sé stesso, coppia vista dall'altro lato), `setStatus`, date come `Date` o con orario. Sei mutazioni temporanee (accenti, Jaccard, lingua, radice con accenti, coppie note, ordine della coppia) sono state intercettate.
 
 ## Da verificare
 

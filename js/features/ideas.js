@@ -1,4 +1,6 @@
 // Idee: funzioni pure. Restituiscono sempre un nuovo oggetto, non modificano quello ricevuto.
+import { foldText } from './text.js';
+
 const LANGS = ['es', 'it'];
 
 export class EmptyIdeaError extends Error {
@@ -6,15 +8,6 @@ export class EmptyIdeaError extends Error {
     super('Un’idea deve avere almeno un testo o un media');
     this.name = 'EmptyIdeaError';
   }
-}
-
-// Per la ricerca: minuscole, senza accenti né tilde («Ánimo» e «animo» sono la stessa parola),
-// con NFD così «á» scritta in modi diversi si confronta uguale.
-function fold(text) {
-  return String(text ?? '')
-    .normalize('NFD')
-    .replace(/\p{M}/gu, '')
-    .toLowerCase();
 }
 
 export function createIdea({ text, mediaIds, lang } = {}) {
@@ -50,10 +43,10 @@ export function linkToPublication(idea, publicationId) {
 
 // Ricerca per parola: ogni parola cercata deve comparire nel testo, senza badare a maiuscole e accenti.
 export function searchIdeas(ideas, query) {
-  const words = fold(query).split(/\s+/).filter(Boolean);
+  const words = foldText(query).split(/\s+/).filter(Boolean);
   if (words.length === 0) return [...ideas];
   return ideas.filter((idea) => {
-    const text = fold(idea.text);
+    const text = foldText(idea.text);
     return words.every((word) => text.includes(word));
   });
 }
