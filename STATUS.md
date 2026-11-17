@@ -121,8 +121,8 @@ Ultimo aggiornamento: 16 novembre 2026
 ## Dove siamo
 
 - **Fase:** 2 — Logica (T3-T10), in corso. La fase 1 è completa lato codice; il gate G2 (prova sul Samsung) è stato eseguito da Luca (vedi «Fatti comunicati da Luca» più sotto).
-- **Ultimo task chiuso:** T7 (somiglianza e registro)
-- **Prossimo task:** T8 (esportazione)
+- **Ultimo task chiuso:** T8 (esportazione)
+- **Prossimo task:** T9 (backup cifrato)
 
 ## Gate aperti
 
@@ -195,6 +195,13 @@ Ultimo aggiornamento: 16 novembre 2026
 - Registro: `pairKey` è un array JSON (nessuna ambiguità tra i pezzi) e per due pubblicazioni l'ordine non conta; gli `id` delle voci sono casuali (non derivati dalla coppia, perché gli id restano in chiaro nel database); `registerMatches` legge e decifra tutte le voci a ogni chiamata (va bene per centinaia di voci, non misurato oltre) **[Da provare]**; `setStatus` rifiuta stati non validi e id mancanti.
 - **`searchRepetitions` filtra le date sul controllo (`checkedAt`), non sulla pubblicazione trovata.** La spec chiede anche la data della pubblicazione trovata, ma il tipo `Repetition` del piano non la contiene e la firma `searchRepetitions(reps, q)` non riceve le pubblicazioni: **per T14** serve unire le pubblicazioni (o estendere il tipo). Una data «solo giorno» in `to` vale per tutto il giorno in UTC.
 - Test in più rispetto al piano: ordine e parità dei risultati, tetto `limit`, input non modificato, stato dei post senza titolo, voci cifrate, `checkNewPublication` (stessa lingua, non contro sé stesso, coppia vista dall'altro lato), `setStatus`, date come `Date` o con orario. Sei mutazioni temporanee (accenti, Jaccard, lingua, radice con accenti, coppie note, ordine della coppia) sono state intercettate.
+
+**T8 — esportazione**
+- **Fatto del Samsung applicato** (comunicato da Luca, non verificato da me): lo ZIP non si condivide. `shareContent` restituisce `'unsupported'` anche su `NotAllowedError` (test `shareContent returns unsupported on NotAllowedError`, simulato con un finto `navigator`); `canShareFiles` e `shareContent` rifiutano **qualsiasi ZIP** (tipo MIME dello ZIP o nome `.zip`, anche mescolato ad altri file) **senza nemmeno chiamare `canShare`**: lo ZIP si salva solo con `saveToDevice`. Test: `shareContent never shares a ZIP, even when canShare says yes`.
+- Scelte (il piano non le fissa): `shareContent` con `canShare` assente dà `'unsupported'` (anche per solo testo, che usa `canShare({text})`); senza testo né file lancia `TypeError`; altri errori di `share` (per esempio `TypeError`) vengono rilanciati; `copyText` lancia `ClipboardUnavailableError` se gli appunti non ci sono e non ha il ripiego con `execCommand` della spike; `saveToDevice(blob, filename, env)` ha un terzo parametro facoltativo `env` (documento, `URL`, `setTimeout`) solo per poterlo provare senza browser, e libera l'indirizzo temporaneo dopo 30 s **[Da provare]** sul telefono.
+- `makeZip`: `prompt.txt` compresso (`ZipDeflate`), i file passati senza compressione (`ZipPassThrough`); nomi ripuliti (separatori di percorso e caratteri vietati diventano `_`, nome vuoto → `file`); nomi doppi con suffisso `-2`, `-3` prima dell'estensione, senza scontri con altri nomi, con `prompt.txt` (un file chiamato `prompt.txt` diventa `prompt-2.txt`) né a meno delle maiuscole; nomi con accenti e ñ conservati.
+- **Limite di memoria di `makeZip` con file grandi [Da provare sul telefono].** `makeZip` restituisce `Promise<Blob>` come da piano e tiene tutti i pezzi dello ZIP in memoria finché non crea il Blob. Dalla prova di Luca sul Samsung (comunicata, non verificata da me): 3 video, 159,4 MB, 0,59 s, heap circa pari allo ZIP. **Misurato in Node qui** (indicativo, non vale per il telefono): 3 file da 53 MB (159 MB) → 0,7 s e +322 MB di memoria del processo a fine lavoro; 3 file da 200 MB (600 MB) → 2,8 s e +1,2 GB. Con file più grandi sul telefono il limite sarà la memoria e non so a che dimensione l'app si blocca: se serve, T13 potrà avvisare sopra una soglia o si dovrà passare a una scrittura a flusso su file.
+- Test in più rispetto al piano: nomi sicuri e senza scontri, nomi unicode, ZIP vuoto/prompt vuoto/file grande in molti pezzi, compressione di prompt e media, `shareContent` (senza `share`, condiviso con testo e file, solo testo, errori rilanciati, niente da condividere), `canShareFiles`, `copyText` che fallisce, `saveToDevice` (link, pulizia del nome). Sei mutazioni temporanee (ZIP ammesso, `NotAllowedError`, soglia dei file, maiuscole, nomi non ripuliti, prompt non compresso) sono state intercettate.
 
 ## Da verificare
 
