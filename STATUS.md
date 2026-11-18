@@ -1,5 +1,85 @@
 # STATUS
 
+## Resoconto per Claude (dopo i documenti per la guida, 18 novembre 2026)
+
+*Questo task è **solo documentazione** e **non è T20**: nessun file di codice è stato toccato. T20 parte solo dopo T18 e dopo le correzioni di lei. Le risposte di Luca (18 novembre 2026, ore 15:11 «2-via libera» e ore 15:14 «A. Poi procedi», in risposta all'elenco di consigli di Claude) sono citate come me le ha date l'istruzione del task: da qui non posso leggerle nella conversazione originale.*
+
+**Riassunto.**
+1. **Fatto (un commit, ramo `claude/docs-guida-conferme-sg3g0l`):** nella spec e nel piano sono registrate le decisioni di Luca. Scelte 33-36: confermate. Voce aperta 3 (guida in spagnolo): risolta, (a) nessuna versione italiana, (b) solo testo, (c) nessun rimando alla guida dalla schermata di accesso. Base: `cc20a88a5de14ef930b8a3a310e31e43c04aa1ab`, uguale a `origin/main` (verificato con `git rev-parse` prima di iniziare). **Nessuna pull request aperta.**
+2. **Non toccati:** `js/`, `css/`, `sw.js`, `precache.json`, `spike/`, `tests/`, `tools/`, `vendor/`, `package.json`, `docs/i18n-review-es.md`, `docs/test-*`. `APP_VERSION` resta **0.7.0**. Non fatti: T18, T20, T19 passi 3-4, `LICENSE`.
+3. **Controllato nel codice di `cc20a88` prima di scrivere le frasi della spec** (nessuna affermazione sul codice è stata scritta senza controllo): `js/main.js` riga 266 è `async function renderRoute() {` e riga **267** è `if (locked) return;`; `lock.useRecovery` è usato in `js/ui/screens/lock.js` riga 119 e in `js/i18n/es.js` riga 9 vale «Usar el código de recuperación» (in `it.js`: «Usa il codice di recupero»). Per «la guida si apre dopo lo sblocco»: `boot()` (`js/main.js` righe 328-333) fa `await renderLock(…)` e solo dopo `await runApp(…)`, e `menuItems()` (riga 222) e `renderChrome()` (riga 240) stanno dentro `runApp` (inizia a riga 90). Il numero **267** è quello di `cc20a88`: T20 modifica `js/main.js` e può spostarlo.
+4. **Due punti in cui ho dovuto scegliere come leggere l'istruzione** (tutti e due si cambiano con una riga):
+   - a. **Riga 303 (sezione 10).** L'istruzione dice «dopo la frase «Le prime 26 sono **confermate da Luca** («vanno bene»). …»» con un «…» dopo la prima frase. La riga è un solo paragrafo di due frasi: «Le prime 26… Le 27-32…». Ho letto il «…» come «il resto della riga» e ho messo la frase nuova **in fondo alla riga**, dopo la frase delle 27-32, così l'ordine resta 26, 27-32, 33-36. Se Luca la voleva subito dopo la prima frase, si sposta.
+   - b. **Riga nuova in «Risolto».** L'istruzione la cita senza il trattino iniziale; le altre righe di «Risolto» sono un elenco puntato (`- …`). Senza il trattino, il Markdown la unirebbe alla riga precedente. Ho messo **`- `** davanti; il testo è quello dell'istruzione, parola per parola.
+
+**Righe cambiate (prima → dopo).** Numeri di riga di `cc20a88`. Dove la riga è lunga mostro solo la parte che cambia; `git diff --word-diff` conferma che non è cambiato altro.
+
+*Spec* (11 righe modificate, 1 tolta, 1 aggiunta; da dopo la 349 i numeri scalano di −1).
+- **3:** «Stato: **APPROVATO da Luca il 16 novembre 2026** · Autori…» → «Stato: **APPROVATO da Luca il 16 novembre 2026** (le scelte 33-36 sono state aggiunte e confermate il 18 novembre 2026) · Autori…».
+- **36:** in fondo, dopo «comprese le scelte 27-32 della sezione 10.», aggiunto « Le scelte 33-36 sono state aggiunte e confermate il 18 novembre 2026.».
+- **206:** «posizione Mia scelta, da confermare]» → «posizione Mia scelta, confermata da Luca il 18 novembre 2026]».
+- **207:** in fondo, dopo «…il codice di recupero.», aggiunto « Nessun rimando nella schermata di accesso **[Luca, 18 novembre 2026]**: lì c'è già «Usar el código de recuperación» (`lock.useRecovery`) e la guida si apre dopo lo sblocco.».
+- **209:** «**[Da decidere con Luca]**» → «**[Luca, 18 novembre 2026: nessuna versione italiana]**».
+- **303:** in fondo aggiunto « Le 33-36 sono confermate da Luca il 18 novembre 2026.» (vedi 4a).
+- **337, 338, 339, 340:** «**[Mia scelta, da confermare]**» → «**[Mia scelta, confermata da Luca il 18 novembre 2026]**» (le quattro identiche).
+- **342:** «Le 33-36 sono nuove (18 novembre 2026) e da confermare da Luca.» → «Le 33-36 sono nuove (18 novembre 2026) e confermate da Luca lo stesso giorno.».
+- **349 (voce aperta 3): tolta** da «Aperto (serve Luca)». Restano la 1 (licenza) e la 2 (piano ChatGPT). Testo tolto, per intero (resta anche in `git show cc20a88:docs/superpowers/specs/2026-11-16-nay-app-design-v1.md`): «3. **Guida in spagnolo:** (a) serve anche una versione italiana? (b) solo testo o anche schermate? (c) la guida si apre dal menu ⋮, che si vede solo dopo lo sblocco (le voci del menu e il montaggio della barra in alto stanno in `js/main.js`, in `menuItems()` e `renderChrome()`; `renderTopbar` e `openMenu` sono definiti in `js/ui/topbar.js` e `js/ui/menu.js`; la schermata di accesso, `js/ui/screens/lock.js`, usa solo le bandierine, `renderLangFlags` di `js/ui/topbar.js`): chi ha dimenticato la password non può aprirla dalla schermata di accesso, ma solo dopo lo sblocco (per esempio con il codice di recupero). Serve un rimando anche nella schermata di accesso? **[Da decidere con Luca]**».
+- **Nuova riga 368** in «Risolto (risposte di Luca)», dopo «- Guida: in spagnolo, dentro l'app, alla fine…» (ora riga 367): «- Guida, 18 novembre 2026 («A. Poi procedi», dopo i consigli di Claude): scelte 33-36 confermate; nessuna versione italiana; solo testo; nessun rimando nella schermata di accesso (c'è già «Usar el código de recuperación»; `renderRoute` non mostra pagine con l'app bloccata, `js/main.js` riga 267). T20 comincia dopo T18 e dopo le correzioni di lei.» (vedi 4b).
+
+*Piano* (1 riga modificata, 2 aggiunte; da dopo la 362 i numeri scalano di +2).
+- **360:** «…prima dei passi 3-4 di T19. Serve il via libera di Luca per iniziare.» → «…prima dei passi 3-4 di T19. Via libera di Luca dato il 18 novembre 2026; il task parte solo quando T18 è deciso e le correzioni di lei sono applicate.».
+- **Nuove 363-364** (riga vuota e paragrafo, tra «**Files:**» e «**Interfaces**»): «**Non si tocca:** `js/ui/screens/lock.js` e la logica `locked` di `renderRoute` (nessun rimando alla guida dalla schermata di accesso, scelta di Luca del 18 novembre 2026). Nessuna versione italiana della guida; solo testo.».
+
+*Non toccate, come da istruzione:* spec righe 5 (legenda), 39 e 41 (md5 delle righe 39 e 41 uguale prima e dopo).
+
+**git diff --stat** (atteso e ottenuto: solo i 3 file consentiti; `git diff --stat` e `--numstat` sull'albero finale, prima del commit).
+```
+ STATUS.md                                          | 80 ++++++++++++++++++++++
+ docs/superpowers/plans/2026-11-16-nay-app-v1.md    |  4 +-
+ .../specs/2026-11-16-nay-app-design-v1.md          | 24 +++----
+ 3 files changed, 95 insertions(+), 13 deletions(-)
+```
+```
+80	0	STATUS.md
+3	1	docs/superpowers/plans/2026-11-16-nay-app-v1.md
+12	12	docs/superpowers/specs/2026-11-16-nay-app-design-v1.md
+```
+
+**Nuovi sha256.** Spec `4a40e0054b1aa9487f7532e2389f066ee29836294c8ef2d630f7906e217d89df` (prima: `846b46c2bd9d0c36d8ecb5571c31fec9cb68badfe83c74e99126bfd3870770e9`). Piano `faa3c51c4f669eb4a9093cef938dd1a901df7720898570adbf3c504b7509f3cd` (prima: `03a379260c6817cd06186a358c173d120abfaeb2cbb5a7bd22cfc1b497d683a7`). I due «prima» coincidono con quelli dell'istruzione (verificato con `sha256sum` su `cc20a88` prima di iniziare).
+
+**Elenco del grep** (fatto **prima** di cambiare, su `cc20a88`, senza distinzione di maiuscole; numeri di riga di `cc20a88`).
+- **«da confermare»: spec 8 righe, piano 0.**
+  - 5 **lasciata:** è la legenda («**[Mia scelta]** = scelta di Claude, da confermare»): definisce l'etichetta, che resta valida per le altre scelte; per istruzione non si tocca.
+  - 206, 337, 338, 339, 340, 342 **cambiate** (sopra).
+  - 265 **lasciata:** riguarda l'icona dell'app («da confermare nel test»), non la guida.
+- **«Da decidere»: spec 3 righe, piano 0.**
+  - 155 **lasciata:** controllo di somiglianza per significato con un modello nel browser, «da decidere dopo il test»: altro tema.
+  - 209 **cambiata**; 349 **tolta** (sopra).
+- **«Guida»: spec 21 righe (30 occorrenze), piano 10 righe (14 occorrenze).**
+  - Spec **cambiate:** 207, 209, 337, 338, 339, 340. **Tolta:** 349.
+  - Spec **lasciate perché già coerenti** con le decisioni (nessun «da confermare» o «Da decidere» dentro): 25, 73, 182, 204, 205, 208 (testo «solo testo, senza immagini»: è la scelta 35; la riga cita anche «guida di stile», altro tema), 210, 211, 368 (la riga nuova è aggiunta dopo).
+  - Spec **lasciate perché non riguardano la guida all'uso dell'app:** 146 e 320 («guida di stile» dei prompt), 171 e 406 («linee guida» Material), 399 (titolo di un link, «Guida OCR offline»).
+  - Piano, **tutte lasciate:** 19, 35, 48, 50, 351, 355, 358, 362, 366, 369. Dicono già «solo in spagnolo» e «solo testo»; la 355 dice che la Guida si apre dal menu ⋮; nessuna chiede una versione italiana o un rimando dalla schermata di accesso. Dopo la 362 («Files») è stato aggiunto il paragrafo «Non si tocca».
+- Dopo le modifiche, `grep -i "da confermare\|Da decidere"` dà in spec solo le righe 5, 155 e 265 (le tre «lasciate» sopra) e nel piano nessuna riga.
+
+**Visto e NON toccato** (nuovo numero di riga della spec, salvo diverso avviso).
+- **Intestazioni «[Mia scelta]» rimaste semplici** nelle righe 207 («Come si apre»), 208 («Com'è fatta») e 210 («Testo sempre vero»): corrispondono, per contenuto, alle scelte 33, 35 e 36, ora confermate. La riga 207 ha ora anche la frase nuova con **[Luca, 18 novembre 2026]**. La riga 211 («Revisione», `docs/guia-review-es.md`) non corrisponde a nessuna scelta 33-36 e resta [Mia scelta].
+- **Righe 39 e 41** (non toccate per istruzione) ora tornano coerenti con la sezione 11: la 39 dice «sezione 10 (tutte approvate)», e le 33-36 sono confermate; la 41 («Ancora aperto (sezione 11)») elenca licenza e piano ChatGPT, che sono le due voci rimaste in «Aperto». Lo dico perché il blocco «dopo T19-ter» qui sotto segnalava il contrario: **le sue frasi «ora le voci 33-36 non sono approvate» e «nessuna è decisa» sono superate da questo blocco** (quel blocco è storia e non è stato modificato).
+- **Riga 3 («Data: 16 novembre 2026 (aggiornato con accesso, cifratura, storico dei post, lingue, logo e menu)»):** l'elenco di ciò che è stato aggiornato non nomina la guida, aggiunta il 18 novembre.
+- **Sezione 11, intestazione «Risolto (risposte di Luca):»** accoglie ora due righe sulla guida: la vecchia («Guida: in spagnolo, dentro l'app, alla fine…») e la nuova. Le ho lasciate separate, come da istruzione.
+- **Il `main` locale è ancora indietro:** `main` = `e2ba1ff`, `origin/main` = `cc20a88` (HEAD = `cc20a88`, verificato con `git rev-parse`). Non l'ho toccato.
+
+**Verifiche** (eseguite sull'albero con spec e piano già modificati, prima di scrivere questo blocco; `STATUS.md` non è servito all'app e non entra in `precache.json`).
+- Node v22.23.5. `npm ci`: exit 0, «added 3 packages … found 0 vulnerabilities» (lanciato due volte; la seconda con l'exit code letto direttamente).
+- `npm test`: **343 test, 343 pass, 0 fail, 0 cancelled, 0 skipped**, exit 0 (atteso 343/343).
+- `node tools/build_precache.mjs`: «versione 0.7.0, 56 voci», exit 0. **`precache.json` invariato:** sha256 `d9aba5605c5c141197ff271c5415d41b5e0ce407ed17e0c12b1b9c668fc0f296` prima e dopo; `git status` non lo elenca come modificato.
+- `git status --short` prima di scrivere questo blocco: solo spec e piano modificati. `APP_VERSION` = `'0.7.0'` (`js/version.js` riga 1).
+- Controllo del diff: `git diff -U0 --word-diff=plain` sui due documenti: cambiate solo le righe elencate sopra (dopo la modifica, spec 407 → 407 righe: 1 tolta e 1 aggiunta; piano 369 → 371 righe).
+
+**Non verificabile da qui.** Che le citazioni delle risposte di Luca («2-via libera», «A. Poi procedi») siano esatte: le ho prese dall'istruzione del task. Che la lettura del «…» alla riga 303 (4a) sia quella voluta. Il resto di questo task è testo e si è potuto controllare riga per riga.
+
+**Stato.** Ramo `claude/docs-guida-conferme-sg3g0l`, un commit (il suo hash è in `git log -1`, non può stare dentro il commit) con messaggio «docs: scelte 33-36 e voce aperta 3 sulla guida confermate da Luca». **Non unito in `main`; nessuna pull request aperta.** Prossimo task: T18 (decisione), poi le correzioni di lei, poi T20.
+
 ## Resoconto per Claude (dopo T19-ter, 18 novembre 2026)
 
 *T19-ter è **solo documentazione**, per istruzione di Luca (via libera del 18 novembre 2026, ore 13:48). Questo blocco non chiude T19: restano i passi 3-4 (G4 e `release: 1.0.0`), che ora vengono dopo T20 (la guida, non ancora scritta).*
