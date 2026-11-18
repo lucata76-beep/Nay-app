@@ -1,6 +1,6 @@
 # NAY-App — Documento di progetto (v1 Android)
 
-Data: 16 novembre 2026 (aggiornato con accesso, cifratura, storico dei post, lingue, logo e menu) · Stato: **APPROVATO da Luca il 16 novembre 2026** · Autori: Luca e Claude
+Data: 16 novembre 2026 (aggiornato con accesso, cifratura, storico dei post, lingue, logo e menu) · Stato: **APPROVATO da Luca il 16 novembre 2026** (le scelte 33-36 sono state aggiunte e confermate il 18 novembre 2026) · Autori: Luca e Claude
 
 Legenda: **[Luca]** = deciso da Luca · **[Verificato]** = controllato su fonte (elenco in fondo) · **[Mia scelta]** = scelta di Claude, da confermare · **[Da provare]** = si decide col test sul Samsung.
 
@@ -33,7 +33,7 @@ Legenda: **[Luca]** = deciso da Luca · **[Verificato]** = controllato su fonte 
 - **Le 26 scelte di Claude della sezione 10: confermate da Luca** («vanno bene»).
 - **Barra di navigazione in basso con 4 icone: sì [Luca: «3- si»].** Licenza open source del repo: si sceglie dopo il test sul Samsung **[Luca: «4- ok»]**.
 - **Foto:** lei mette hook o caption sopra la foto, modificandola con un editor di foto o con un'IA **[Luca]**. La v1 non modifica le foto (sezione 12).
-- **Documento approvato da Luca il 16 novembre 2026** («APPROVATO»), comprese le scelte 27-32 della sezione 10.
+- **Documento approvato da Luca il 16 novembre 2026** («APPROVATO»), comprese le scelte 27-32 della sezione 10. Le scelte 33-36 sono state aggiunte e confermate il 18 novembre 2026.
 - **Piano esecutivo:** `docs/superpowers/plans/2026-11-16-nay-app-v1.md` (nel Project: `docs/2026-11-16-nay-app-plan-v1.md`).
 
 **Scelte di Claude:** sezione 10 (tutte approvate). **Da provare sul Samsung:** sezione 9.
@@ -203,10 +203,10 @@ Flusso: scegli un'idea → scegli il tipo (foto, video, solo testo) → scegli u
 
 ### Guida in spagnolo, dentro l'app [Luca: guida completa, in spagnolo, dentro l'app, alla fine; dettagli Mia scelta]
 - **Che cos'è [Luca].** Una pagina dell'app con la guida completa su come usarla, in spagnolo. Si legge senza rete. Non è un PDF.
-- **Quando [Luca: «alla fine»; posizione Mia scelta, da confermare].** Si scrive quando le funzioni sono definitive: dopo T18 e dopo le correzioni dalle note di lei, e prima della prova finale sul Samsung (G4) e della 1.0.0, così la 1.0.0 la contiene.
-- **Come si apre [Mia scelta].** Voce «Guida» nel menu ⋮, tra Impostazioni e Informazioni (sempre un solo livello); porta a una pagina `guida`. La barra in basso resta a 4 icone. Non compare nel primo avvio, per non interrompere la creazione della password e il codice di recupero.
+- **Quando [Luca: «alla fine»; posizione Mia scelta, confermata da Luca il 18 novembre 2026].** Si scrive quando le funzioni sono definitive: dopo T18 e dopo le correzioni dalle note di lei, e prima della prova finale sul Samsung (G4) e della 1.0.0, così la 1.0.0 la contiene.
+- **Come si apre [Mia scelta].** Voce «Guida» nel menu ⋮, tra Impostazioni e Informazioni (sempre un solo livello); porta a una pagina `guida`. La barra in basso resta a 4 icone. Non compare nel primo avvio, per non interrompere la creazione della password e il codice di recupero. Nessun rimando nella schermata di accesso **[Luca, 18 novembre 2026]**: lì c'è già «Usar el código de recuperación» (`lock.useRecovery`) e la guida si apre dopo lo sblocco.
 - **Com'è fatta [Mia scelta].** Sommario e sezioni che si aprono e si chiudono, solo testo, senza immagini nella prima versione (le schermate si possono aggiungere dopo, se Luca le vuole). Sezioni proposte: installare l'app; primo avvio (password e codice di recupero); blocco e sblocco; lingua; Dashboard; Ideare; Sviluppare (template, storico e guida di stile, hook e caption, copiare, condividere e ZIP); Pubblicazioni salvate (salvataggio veloce, storico, avviso di somiglianza, registro delle ripetizioni); backup; Impostazioni; sicurezza e privacy (che cosa è cifrato e che cosa no, sezione 7); problemi frequenti. L'elenco definitivo segue le funzioni finali.
-- **Lingua [Luca: spagnolo].** Il testo della guida è solo in spagnolo; una versione italiana non è richiesta **[Da decidere con Luca]**. Con l'interfaccia in italiano la guida resta in spagnolo. Il testo sta in un file a parte di `js/i18n/`, fuori da `es.js` e `it.js`, perché il test «es and it have the same keys» (`tests/i18n.test.js`) chiede le stesse chiavi nei due elenchi. Il titolo della pagina e la voce di menu stanno invece in `es.js` e `it.js`, come tutti i testi dell'interfaccia.
+- **Lingua [Luca: spagnolo].** Il testo della guida è solo in spagnolo; una versione italiana non è richiesta **[Luca, 18 novembre 2026: nessuna versione italiana]**. Con l'interfaccia in italiano la guida resta in spagnolo. Il testo sta in un file a parte di `js/i18n/`, fuori da `es.js` e `it.js`, perché il test «es and it have the same keys» (`tests/i18n.test.js`) chiede le stesse chiavi nei due elenchi. Il titolo della pagina e la voce di menu stanno invece in `es.js` e `it.js`, come tutti i testi dell'interfaccia.
 - **Testo sempre vero [Mia scelta].** Ogni frase descrive l'app com'è, non come sarà. Le etichette dell'app che la guida cita (bottoni, voci di menu) non si riscrivono a mano: si prendono da `es.js` e un test controlla che esistano. Per ciò che sta fuori dall'app (le voci di Chrome per installarla, il selettore della galleria, la condivisione di sistema) si scrive solo ciò che la sezione 9 ha provato; le frasi da controllare sul telefono si elencano in `STATUS.md` per la prova finale (G4) **[Da provare]**.
 - **Revisione [Mia scelta].** La scrive Claude, come gli altri testi in spagnolo; la rivede lei, madrelingua, con un elenco dei testi della guida come `docs/i18n-review-es.md` (file `docs/guia-review-es.md`). Luca controlla le istruzioni sul telefono in G4.
 
@@ -300,7 +300,7 @@ Se i punti 3 e 4 non danno un flusso accettabile, si valuta B (Capacitor). Se il
 
 ## 10. Scelte mie (riepilogo)
 
-Le prime 26 sono **confermate da Luca** («vanno bene»). Le 27-32 sono approvate con il documento («APPROVATO»); la 30 (barra in basso) è confermata anche da «3- si».
+Le prime 26 sono **confermate da Luca** («vanno bene»). Le 27-32 sono approvate con il documento («APPROVATO»); la 30 (barra in basso) è confermata anche da «3- si». Le 33-36 sono confermate da Luca il 18 novembre 2026.
 
 1. Idea → prompt → post collegati, con stato dell'idea.
 2. Campi della pubblicazione: screenshot, titolo, descrizione, tipo, lingua, data/ora, visualizzazioni e commenti (facoltativi), nota, idea collegata.
@@ -334,19 +334,18 @@ Le prime 26 sono **confermate da Luca** («vanno bene»). Le 27-32 sono approvat
 30. Barra di navigazione in basso con 4 icone (Dashboard, Ideare, Sviluppare, Pubblicazioni): confermata da Luca.
 31. Template pronti con hook e caption come due risposte separate, ciascuna con più varianti (è dove lei perde tempo).
 32. Logo su tessera crema nella barra in alto; icone 192, 512 e maskable ricavate dal file, con il disegno centrato e ridotto a circa il 90%.
-33. Voce «Guida» nel menu ⋮, tra Impostazioni e Informazioni; la pagina non compare nel primo avvio; barra in basso invariata. **[Mia scelta, da confermare]**
-34. Guida solo in spagnolo, in un file a parte di `js/i18n/`; con l'interfaccia in italiano resta in spagnolo. **[Mia scelta, da confermare]**
-35. Guida solo testo, a sezioni che si aprono e si chiudono, senza immagini nella prima versione. **[Mia scelta, da confermare]**
-36. Guida scritta dopo che le funzioni sono definitive e prima di G4 e della 1.0.0; etichette citate prese da `es.js`. **[Mia scelta, da confermare]**
+33. Voce «Guida» nel menu ⋮, tra Impostazioni e Informazioni; la pagina non compare nel primo avvio; barra in basso invariata. **[Mia scelta, confermata da Luca il 18 novembre 2026]**
+34. Guida solo in spagnolo, in un file a parte di `js/i18n/`; con l'interfaccia in italiano resta in spagnolo. **[Mia scelta, confermata da Luca il 18 novembre 2026]**
+35. Guida solo testo, a sezioni che si aprono e si chiudono, senza immagini nella prima versione. **[Mia scelta, confermata da Luca il 18 novembre 2026]**
+36. Guida scritta dopo che le funzioni sono definitive e prima di G4 e della 1.0.0; etichette citate prese da `es.js`. **[Mia scelta, confermata da Luca il 18 novembre 2026]**
 
-Le 33-36 sono nuove (18 novembre 2026) e da confermare da Luca.
+Le 33-36 sono nuove (18 novembre 2026) e confermate da Luca lo stesso giorno.
 
 ## 11. Aperto e lasciato al costruttore
 
 **Aperto (serve Luca)**
 1. **Licenza del repo:** si sceglie dopo il test **[Luca: «4- ok»]**. Dipende dai dati del vocabolario inclusi: GPL e AGPL pongono condizioni a chi ridistribuisce; per i dati da Wiktionary (indicati CC BY-SA 4.0) va riverificato. Claude non è un avvocato **[Da verificare]**.
 2. **Piano ChatGPT a pagamento:** i limiti di caricamento dei file di quel piano non sono verificati; da controllare quando lei sceglie il piano. La cifra di 22 euro al mese è detta da Luca e non verificata.
-3. **Guida in spagnolo:** (a) serve anche una versione italiana? (b) solo testo o anche schermate? (c) la guida si apre dal menu ⋮, che si vede solo dopo lo sblocco (le voci del menu e il montaggio della barra in alto stanno in `js/main.js`, in `menuItems()` e `renderChrome()`; `renderTopbar` e `openMenu` sono definiti in `js/ui/topbar.js` e `js/ui/menu.js`; la schermata di accesso, `js/ui/screens/lock.js`, usa solo le bandierine, `renderLangFlags` di `js/ui/topbar.js`): chi ha dimenticato la password non può aprirla dalla schermata di accesso, ma solo dopo lo sblocco (per esempio con il codice di recupero). Serve un rimando anche nella schermata di accesso? **[Da decidere con Luca]**
 
 **Risolto (risposte di Luca):**
 - Lo storico conta circa 50 post e cresce di 4-5 a settimana; per questo il prompt prende gli ultimi più i più simili e il numero è un parametro.
@@ -366,6 +365,7 @@ Le 33-36 sono nuove (18 novembre 2026) e da confermare da Luca.
 - Licenza del repo: dopo il test («4- ok»).
 - Documento approvato («APPROVATO», 16 novembre 2026).
 - Guida: in spagnolo, dentro l'app, alla fine («Completa»; «preferisco una guida all'interno dell'app»).
+- Guida, 18 novembre 2026 («A. Poi procedi», dopo i consigli di Claude): scelte 33-36 confermate; nessuna versione italiana; solo testo; nessun rimando nella schermata di accesso (c'è già «Usar el código de recuperación»; `renderRoute` non mostra pagine con l'app bloccata, `js/main.js` riga 267). T20 comincia dopo T18 e dopo le correzioni di lei.
 
 **Lasciato al costruttore:** testo iniziale dei 3 template (da far approvare nel test), icone, scelta delle librerie (grafici, ZIP, cifratura, radice delle parole), formato dei dati del vocabolario, nomi dei file, formato del file di backup, lunghezza minima della password e indicatore di robustezza, attesa del blocco automatico, testi delle schermate di accesso, animazioni, affinamento della palette.
 
