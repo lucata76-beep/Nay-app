@@ -1,46 +1,48 @@
-# Revisione dei testi in spagnolo
+# Revisión de los textos en español
 
-*Task T19, passo 1. Copia fedele di `js/i18n/es.js` e di `js/features/templates.js` come stanno su `main` al commit `790b6cf`. Nessun testo è stato corretto, tradotto o «migliorato»: la revisione è di lei. Le correzioni arriveranno in un task a parte, a partire dalle sue note.*
+*Tarea T19, paso 1. Copia fiel de `js/i18n/es.js` y de `js/features/templates.js` tal como están en `main` en el commit `790b6cf`. Ningún texto se ha corregido, traducido ni «mejorado»: la revisión es tuya. Las correcciones llegarán en una tarea aparte, a partir de tus notas.*
 
-## Come leggere questo elenco
+## Cómo leer esta lista
 
-Questo file elenca ogni testo in spagnolo che l'app mostra sullo schermo o prepara per l'IA, così che lei, madrelingua, possa rivederlo. Non serve conoscere il codice.
+Este archivo enumera cada texto en español que la app muestra en la pantalla o prepara para la IA, para que tú, con el español como lengua materna, puedas revisarlo. No hace falta conocer el código.
 
-- **Chiave:** il nome interno del testo (per esempio `lock.title`). Serve solo a ritrovarlo: non va cambiata né tradotta.
-- **Testo in spagnolo:** il testo com'è oggi.
-- **Nota di lei:** lo spazio per le sue note. È vuoto.
-- **Le parti tra graffe**, come `{n}` o `{lang}`, sono dati che l'app inserisce da sola (un numero, un nome, una data...). Si lasciano come sono; si può correggere il testo intorno.
-- Lo stesso testo compare a volte in più voci (per esempio «Foto»): sono voci diverse perché stanno in posti diversi dell'app. L'appendice in fondo le elenca, per correggerle in modo coerente.
-- Alcune etichette non si vedono sullo schermo: servono ai lettori di schermo (per esempio per il bottone ⋮). Sono indicate nella riga «Dove compaiono» del loro gruppo.
+- **Clave:** el nombre interno del texto (por ejemplo, `lock.title`). Solo sirve para encontrarlo: no hay que cambiarla ni traducirla.
+- **Texto en español:** el texto tal como está hoy.
+- **Tu nota:** el espacio para tus notas. Está vacío.
+- **Las partes entre llaves**, como `{n}` o `{lang}`, son datos que la app inserta por sí sola (un número, un nombre, una fecha...). Se dejan como están; se puede corregir el texto que las rodea.
+- A veces el mismo texto aparece en varias entradas (por ejemplo, «Foto»): son entradas distintas porque están en lugares distintos de la app. El apéndice del final las enumera, para corregirlas de forma coherente.
+- Algunas etiquetas no se ven en la pantalla: sirven para los lectores de pantalla (por ejemplo, para el botón ⋮). Están indicadas en la línea «Dónde aparece» de su grupo.
 
-Il file ha tre parti e un'appendice:
+**Cómo enviar tus notas.** Envía un mensaje a Luca con la clave y tu corrección. Por ejemplo: `lock.title` → «tu texto corregido». Si tienes varias correcciones, escribe una por línea. Para los textos de la Parte 2, que no tienen clave, indica el nombre de la plantilla y la frase que cambias. La columna «Tu nota» es opcional: no hace falta escribir nada en ella.
 
-1. **Testi dell'interfaccia:** 330 voci, raggruppate per la prima parte della chiave (`lock`, `menu`, `ideas`...). Ogni gruppo ha una riga su dove compare.
-2. **Template pronti (prompt per l'IA):** 15 testi. Non sono testi dell'interfaccia: sono i prompt che l'app prepara e che poi si incollano o si condividono in un'app di IA. Stanno in un altro file del codice (`js/features/templates.js`, non in `js/i18n/`) e per questo sono in una parte a sé.
-3. **Altro che lei vede sullo schermo** e che non sta in nessuno dei due elenchi: date, numeri, etichette dei grafici, sigle.
-4. **Appendice:** testi uguali in più voci.
+El archivo tiene tres partes y un apéndice:
 
-## Parte 1 — Testi dell'interfaccia (330 voci)
+1. **Textos de la interfaz:** 330 entradas, agrupadas por la primera parte de la clave (`lock`, `menu`, `ideas`...). Cada grupo tiene una línea que dice dónde aparece.
+2. **Plantillas listas (prompts para la IA):** 15 textos. No son textos de la interfaz: son los prompts que la app prepara y que luego se pegan o se comparten en una app de IA. Están en otro archivo del código (`js/features/templates.js`, no en `js/i18n/`) y por eso van en una parte aparte.
+3. **Otras cosas que ves en la pantalla** y que no están en ninguna de las dos listas: fechas, números, etiquetas de los gráficos, siglas.
+4. **Apéndice:** textos iguales en varias entradas.
 
-Fonte: `js/i18n/es.js`. I gruppi seguono la prima parte della chiave; dentro ogni gruppo le voci sono nell'ordine del file.
+## Parte 1 — Textos de la interfaz (330 entradas)
 
-### `app` (1 voce)
+Fuente: `js/i18n/es.js`. Los grupos siguen la primera parte de la clave; dentro de cada grupo, las entradas están en el orden del archivo.
 
-**Dove compaiono.** Il nome dell'app: titolo grande nella schermata di accesso (`js/ui/screens/lock.js`) e riga nella finestra delle informazioni (`js/ui/screens/settings.js`).
+### `app` (1 entrada)
 
-| Chiave | Testo in spagnolo | Nota di lei |
+**Dónde aparece.** El nombre de la app: título grande en la pantalla de acceso (`js/ui/screens/lock.js`) y línea en la ventana de información (`js/ui/screens/settings.js`).
+
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `app.name` | NAY-App |  |
 
-### `lock` (26 voci)
+### `lock` (26 entradas)
 
-**Dove compaiono.** Schermata di accesso (`js/ui/screens/lock.js`): sblocco con la password o con il codice di recupero, creazione della prima password, schermata che mostra il codice di recupero.
+**Dónde aparece.** Pantalla de acceso (`js/ui/screens/lock.js`): desbloqueo con la contraseña o con el código de recuperación, creación de la primera contraseña, pantalla que muestra el código de recuperación.
 
-- `lock.strength.*` sono le tre parole (debole, media, buona) sotto il campo password, nell'accesso e nella pagina delle impostazioni quando si cambia la password (`js/ui/fields.js`). Nella pagina delle impostazioni compare anche `lock.passwordHint`.
-- `lock.loading` si vede anche in `js/main.js`, come schermata d'attesa quando il blocco arriva mentre un'importazione è ancora in corso.
-- `lock.showPassword` e `lock.hidePassword` sono etichette del bottone con l'occhio, per i lettori di schermo: non si vedono.
+- `lock.strength.*` son las tres palabras (débil, media, buena) debajo del campo de la contraseña, en el acceso y en la página de ajustes cuando se cambia la contraseña (`js/ui/fields.js`). En la página de ajustes también aparece `lock.passwordHint`.
+- `lock.loading` también se ve en `js/main.js`, como pantalla de espera cuando el bloqueo llega mientras una importación sigue en curso.
+- `lock.showPassword` y `lock.hidePassword` son etiquetas del botón del ojo, para los lectores de pantalla: no se ven.
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `lock.title` | Introduce tu contraseña |  |
 | `lock.passwordLabel` | Contraseña |  |
@@ -69,37 +71,37 @@ Fonte: `js/i18n/es.js`. I gruppi seguono la prima parte della chiave; dentro ogn
 | `lock.orphanData` | Hay datos cifrados en este teléfono pero falta la configuración de acceso. No se crea una contraseña nueva para no perder esos datos. |  |
 | `lock.loading` | Cargando… |  |
 
-### `topbar` (4 voci)
+### `topbar` (4 entradas)
 
-**Dove compaiono.** Barra in alto (`js/ui/topbar.js`).
+**Dónde aparece.** Barra superior (`js/ui/topbar.js`).
 
-- `topbar.home`, `topbar.menu` e `topbar.language` sono etichette per i lettori di schermo (logo, bottone ⋮, bandierine): non si vedono.
-- `topbar.version` compare solo nella finestra delle informazioni (`js/ui/screens/settings.js`).
+- `topbar.home`, `topbar.menu` y `topbar.language` son etiquetas para los lectores de pantalla (logo, botón ⋮, banderitas): no se ven.
+- `topbar.version` solo aparece en la ventana de información (`js/ui/screens/settings.js`).
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `topbar.home` | Ir al inicio |  |
 | `topbar.menu` | Menú |  |
 | `topbar.version` | Versión {v} |  |
 | `topbar.language` | Idioma |  |
 
-### `lang` (2 voci)
+### `lang` (2 entradas)
 
-**Dove compaiono.** Nomi delle due lingue: nelle tendine della lingua dell'idea, della pubblicazione e del template (`js/ui/screens/ideas.js`, `publications.js`, `develop.js`), nella frase di `develop.template.langHint` (`develop.js`) e come etichetta per i lettori di schermo delle due bandierine in alto (`js/ui/topbar.js`).
+**Dónde aparece.** Nombres de los dos idiomas: en los desplegables del idioma de la idea, de la publicación y de la plantilla (`js/ui/screens/ideas.js`, `publications.js`, `develop.js`), en la frase de `develop.template.langHint` (`develop.js`) y como etiqueta, para los lectores de pantalla, de las dos banderitas de arriba (`js/ui/topbar.js`).
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `lang.es` | Español |  |
 | `lang.it` | Italiano |  |
 
-### `menu` (5 voci)
+### `menu` (5 entradas)
 
-**Dove compaiono.** Menu ⋮ in alto a destra (`js/main.js`), con cinque voci: blocca ora, esporta copia, importa copia, impostazioni, informazioni.
+**Dónde aparece.** Menú ⋮ de arriba a la derecha (`js/main.js`), con cinco opciones: bloquear ahora, exportar copia, importar copia, ajustes, información.
 
-- `menu.exportBackup`, `menu.importBackup` e `menu.about` compaiono anche come bottoni nella pagina delle impostazioni (`js/ui/screens/settings.js`).
-- `menu.about` è anche il titolo della finestra delle informazioni.
+- `menu.exportBackup`, `menu.importBackup` y `menu.about` también aparecen como botones en la página de ajustes (`js/ui/screens/settings.js`).
+- `menu.about` es también el título de la ventana de información.
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `menu.lockNow` | Bloquear ahora |  |
 | `menu.exportBackup` | Exportar copia de seguridad |  |
@@ -107,11 +109,11 @@ Fonte: `js/i18n/es.js`. I gruppi seguono la prima parte della chiave; dentro ogn
 | `menu.settings` | Ajustes |  |
 | `menu.about` | Información |  |
 
-### `nav` (5 voci)
+### `nav` (5 entradas)
 
-**Dove compaiono.** Barra in basso (`js/ui/bottombar.js`): quattro voci, una per pagina (la pagina delle impostazioni non c'è: si apre dal menu ⋮). `nav.label` è l'etichetta della barra per i lettori di schermo: non si vede.
+**Dónde aparece.** Barra inferior (`js/ui/bottombar.js`): cuatro opciones, una por página (la página de ajustes no está: se abre desde el menú ⋮). `nav.label` es la etiqueta de la barra para los lectores de pantalla: no se ve.
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `nav.dashboard` | Inicio |  |
 | `nav.ideare` | Idear |  |
@@ -119,11 +121,11 @@ Fonte: `js/i18n/es.js`. I gruppi seguono la prima parte della chiave; dentro ogn
 | `nav.pubblicazioni` | Publicaciones |  |
 | `nav.label` | Navegación principal |  |
 
-### `title` (5 voci)
+### `title` (5 entradas)
 
-**Dove compaiono.** Titolo della pagina, scritto nella barra in alto (`js/main.js`): uno per ciascuna delle cinque pagine, compresa quella delle impostazioni.
+**Dónde aparece.** Título de la página, escrito en la barra superior (`js/main.js`): uno para cada una de las cinco páginas, incluida la de ajustes.
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `title.dashboard` | Dashboard |  |
 | `title.ideare` | Idear |  |
@@ -131,14 +133,14 @@ Fonte: `js/i18n/es.js`. I gruppi seguono la prima parte della chiave; dentro ogn
 | `title.pubblicazioni` | Publicaciones guardadas |  |
 | `title.impostazioni` | Ajustes |  |
 
-### `common` (14 voci)
+### `common` (14 entradas)
 
-**Dove compaiono.** Bottoni e parole comuni a più schermate: finestre di conferma e avvisi (`js/ui/dialog.js`), liste ed editor di Idear, Desarrollar e Publicaciones (`js/ui/screens/ideas.js`, `develop.js`, `publications.js`), pulsante per riprovare all'avvio e nell'accesso (`js/main.js`, `js/ui/screens/lock.js`).
+**Dónde aparece.** Botones y palabras comunes a varias pantallas: ventanas de confirmación y avisos (`js/ui/dialog.js`), listas y editores de Idear, Desarrollar y Publicaciones (`js/ui/screens/ideas.js`, `develop.js`, `publications.js`), botón para reintentar al arrancar la app y en el acceso (`js/main.js`, `js/ui/screens/lock.js`).
 
-- `common.close` è anche l'etichetta, per i lettori di schermo, del bottone che chiude gli avvisi.
-- **Quattro voci non risultano usate in nessun punto del codice attuale:** `common.copy`, `common.share`, `common.add`, `common.search`. Le ho cercate sia come testo esatto sia come chiavi costruite al volo. Finché il codice non le usa, lei non le vede sullo schermo.
+- `common.close` es también la etiqueta, para los lectores de pantalla, del botón que cierra los avisos.
+- **Cuatro entradas no figuran como usadas en ningún punto del código actual:** `common.copy`, `common.share`, `common.add`, `common.search`. Las he buscado como texto exacto y también como claves construidas sobre la marcha. Mientras el código no las use, tú no las ves en la pantalla.
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `common.save` | Guardar |  |
 | `common.cancel` | Cancelar |  |
@@ -155,17 +157,17 @@ Fonte: `js/i18n/es.js`. I gruppi seguono la prima parte della chiave; dentro ogn
 | `common.retry` | Reintentar |  |
 | `common.saving` | Guardando… |  |
 
-### `error` (10 voci)
+### `error` (10 entradas)
 
-**Dove compaiono.** Avvisi di errore, nella schermata in cui succede il problema.
+**Dónde aparece.** Avisos de error, en la pantalla donde ocurre el problema.
 
-- `error.storageFull`: manca spazio nel telefono (salvataggi in Idear, Desarrollar e Publicaciones, creazione della password, copie di sicurezza, o una pagina che non riesce a leggere i dati).
-- `error.wrongSecret`: password o codice di recupero sbagliati (accesso e copie di sicurezza).
-- `error.backupCorrupt`, `error.backupVersion`, `error.backupMemory`: problemi con il file della copia di sicurezza (pagina delle impostazioni e importazione dal menu ⋮).
-- `error.passwordTooShort`, `error.passwordMismatch`: creazione e cambio della password.
-- `error.unexpected`: errore generico, in varie schermate. `error.dataUnreadable`: dati salvati non leggibili (Idear, Desarrollar, Publicaciones, o una pagina che non riesce a leggere i dati). `error.dbUnavailable`: archivio del telefono non apribile (all'avvio e nell'accesso).
+- `error.storageFull`: falta espacio en el teléfono (guardados en Idear, Desarrollar y Publicaciones, creación de la contraseña, copias de seguridad, o una página que no logra leer los datos).
+- `error.wrongSecret`: contraseña o código de recuperación incorrectos (acceso y copias de seguridad).
+- `error.backupCorrupt`, `error.backupVersion`, `error.backupMemory`: problemas con el archivo de la copia de seguridad (página de ajustes e importación desde el menú ⋮).
+- `error.passwordTooShort`, `error.passwordMismatch`: creación y cambio de la contraseña.
+- `error.unexpected`: error genérico, en varias pantallas. `error.dataUnreadable`: datos guardados que no se pueden leer (Idear, Desarrollar, Publicaciones, o una página que no logra leer los datos). `error.dbUnavailable`: almacenamiento del teléfono que no se puede abrir (al arrancar la app y en el acceso).
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `error.storageFull` | No hay espacio suficiente en el teléfono. No se ha guardado nada. |  |
 | `error.wrongSecret` | La contraseña o el código no son correctos. |  |
@@ -178,35 +180,35 @@ Fonte: `js/i18n/es.js`. I gruppi seguono la prima parte della chiave; dentro ogn
 | `error.dbUnavailable` | No se puede abrir el almacenamiento del teléfono. Cierra las demás pestañas de la app o reinicia el navegador. |  |
 | `error.backupMemory` | El archivo es demasiado grande para la memoria del teléfono. Tus datos actuales no se han modificado. |  |
 
-### `card` (1 voce)
+### `card` (1 entrada)
 
-**Dove compaiono.** Etichetta, per i lettori di schermo, del bottone ⋮ di ogni scheda delle liste (`js/ui/cards.js`): non si vede.
+**Dónde aparece.** Etiqueta, para los lectores de pantalla, del botón ⋮ de cada tarjeta de las listas (`js/ui/cards.js`): no se ve.
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `card.menu` | Acciones |  |
 
-### `unit` (3 voci)
+### `unit` (3 entradas)
 
-**Dove compaiono.** Unità di misura accanto alle dimensioni dei file (`formatBytes` in `js/ui/screens/ideas.js`). La stessa funzione è usata in Desarrollar (elenco dei file) e nella pagina delle impostazioni (dimensione della copia di sicurezza, spazio usato).
+**Dónde aparece.** Unidades de medida junto al tamaño de los archivos (`formatBytes` en `js/ui/screens/ideas.js`). La misma función se usa en Desarrollar (lista de archivos) y en la página de ajustes (tamaño de la copia de seguridad, espacio usado).
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `unit.kb` | KB |  |
 | `unit.mb` | MB |  |
 | `unit.gb` | GB |  |
 
-### `ideas` (38 voci)
+### `ideas` (38 entradas)
 
-**Dove compaiono.** Pagina Idear (`js/ui/screens/ideas.js`): elenco e ricerca delle idee, bottone + con le scelte nota, foto e vídeo, editor di un'idea nuova o esistente (testo, lingua, stato, file allegati), finestra di eliminazione, avvisi di somiglianza.
+**Dónde aparece.** Página Idear (`js/ui/screens/ideas.js`): lista y búsqueda de las ideas, botón + con las opciones nota, foto y vídeo, editor de una idea nueva o existente (texto, idioma, estado, archivos adjuntos), ventana de eliminación, avisos de parecido.
 
-- `ideas.add` (il bottone +) e `ideas.removeMedia` (il bottone che toglie un file) sono etichette per i lettori di schermo: non si vedono.
-- `ideas.develop` è la voce che manda l'idea a Desarrollar, nel menu ⋮ della scheda.
-- `ideas.status.*` e `ideas.photos` / `ideas.videos` compaiono anche in Desarrollar.
-- `ideas.draftRestored`, `ideas.discardDraft`, `ideas.noText`, `ideas.similarTitle`, `ideas.similarItem`, `ideas.similarHint` e `ideas.checkFailed` compaiono anche in Desarrollar e in Publicaciones.
-- **Una voce non risulta usata in nessun punto del codice attuale:** `ideas.mediaUnavailable` (cercata come testo esatto e come chiave costruita al volo).
+- `ideas.add` (el botón +) y `ideas.removeMedia` (el botón que quita un archivo) son etiquetas para los lectores de pantalla: no se ven.
+- `ideas.develop` es la opción que manda la idea a Desarrollar, en el menú ⋮ de la tarjeta.
+- `ideas.status.*` y `ideas.photos` / `ideas.videos` también aparecen en Desarrollar.
+- `ideas.draftRestored`, `ideas.discardDraft`, `ideas.noText`, `ideas.similarTitle`, `ideas.similarItem`, `ideas.similarHint` y `ideas.checkFailed` también aparecen en Desarrollar y en Publicaciones.
+- **Una entrada no figura como usada en ningún punto del código actual:** `ideas.mediaUnavailable` (buscada como texto exacto y como clave construida sobre la marcha).
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `ideas.searchLabel` | Buscar en las ideas |  |
 | `ideas.searchPlaceholder` | Buscar por palabra… |  |
@@ -247,20 +249,20 @@ Fonte: `js/i18n/es.js`. I gruppi seguono la prima parte della chiave; dentro ogn
 | `ideas.mediaUnavailable` | No se puede mostrar este archivo. |  |
 | `ideas.develop` | Desarrollar |  |
 
-### `develop` (83 voci)
+### `develop` (83 entradas)
 
-**Dove compaiono.** Pagina Desarrollar (`js/ui/screens/develop.js`), che porta dall'idea al prompt in cinque passi.
+**Dónde aparece.** Página Desarrollar (`js/ui/screens/develop.js`), que lleva de la idea al prompt en cinco pasos.
 
-- `develop.step.*`: i cinque passi in cima alla pagina. `develop.step.label` è l'etichetta della fila dei passi per i lettori di schermo.
-- `develop.pick.title`, `develop.noIdeas`, `develop.goIdeas` e `develop.saved.*`: scelta dell'idea e lista dei prompt già generati.
-- `develop.kind.*`: scelta del tipo di pubblicazione, con la riga di spiegazione (`.hint`) e l'indicazione del tipo suggerito.
-- `develop.template.*`: scelta del template (lista, predefinito o proprio, finestra di eliminazione).
-- `develop.editor.*`: editor di un template (nuovo, modifica, copia). `develop.editor.insertOne` è l'etichetta, per i lettori di schermo, dei bottoni che inseriscono un dato.
-- `develop.form.*`: modulo con i dati del prompt e la guida di stile.
-- `develop.preview.*`, `develop.actions.*`, `develop.copied`, `develop.copyFailed`, `develop.shared`, `develop.shareUnsupported`, `develop.zip*`: prompt pronto, file dell'idea e bottoni per copiare, condividere e creare lo ZIP. `develop.actions.label` è l'etichetta di quella fila di bottoni per i lettori di schermo.
-- `develop.template.copySuffix` comincia con uno spazio, che qui non si vede: l'app lo attacca al nome del template quando si fa una copia. Lo spazio iniziale deve restare.
+- `develop.step.*`: los cinco pasos de arriba de la página. `develop.step.label` es la etiqueta de la fila de pasos para los lectores de pantalla.
+- `develop.pick.title`, `develop.noIdeas`, `develop.goIdeas` y `develop.saved.*`: elección de la idea y lista de los prompts ya generados.
+- `develop.kind.*`: elección del tipo de publicación, con la línea de explicación (`.hint`) y la indicación del tipo sugerido.
+- `develop.template.*`: elección de la plantilla (lista, predefinida o propia, ventana de eliminación).
+- `develop.editor.*`: editor de una plantilla (nueva, edición, copia). `develop.editor.insertOne` es la etiqueta, para los lectores de pantalla, de los botones que insertan un dato.
+- `develop.form.*`: formulario con los datos del prompt y la guía de estilo.
+- `develop.preview.*`, `develop.actions.*`, `develop.copied`, `develop.copyFailed`, `develop.shared`, `develop.shareUnsupported`, `develop.zip*`: prompt listo, archivos de la idea y botones para copiar, compartir y crear el ZIP. `develop.actions.label` es la etiqueta de esa fila de botones para los lectores de pantalla.
+- `develop.template.copySuffix` empieza con un espacio, que aquí no se ve: la app lo pega al nombre de la plantilla cuando se hace una copia. El espacio inicial debe quedarse.
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `develop.step.label` | Pasos |  |
 | `develop.step.idea` | Idea |  |
@@ -346,19 +348,19 @@ Fonte: `js/i18n/es.js`. I gruppi seguono la prima parte della chiave; dentro ogn
 | `develop.saved.deleteTitle` | ¿Eliminar el prompt? |  |
 | `develop.saved.deleteMessage` | Se elimina solo este prompt guardado. La idea no cambia. |  |
 
-### `pubs` (46 voci)
+### `pubs` (46 entradas)
 
-**Dove compaiono.** Pagina Publicaciones guardadas (`js/ui/screens/publications.js`).
+**Dónde aparece.** Página Publicaciones guardadas (`js/ui/screens/publications.js`).
 
-- `pubs.tab.*` e `pubs.tabs.label`: le due schede (l'elenco e il registro). `pubs.tabs.label` è l'etichetta per i lettori di schermo.
-- `pubs.filters*` e `pubs.filter.*`: filtri dell'elenco.
-- `pubs.empty`, `pubs.noResults`, `pubs.card.*`: elenco e schede.
-- `pubs.add` (il bottone +): etichetta per i lettori di schermo, non si vede. `pubs.newTitle`, `pubs.editTitle`, `pubs.screenshot*`, `pubs.field.*`, `pubs.idea.none`, `pubs.saveAndAdd`, `pubs.savedAddMore`: modulo di una pubblicazione nuova o da modificare.
-- `pubs.error.*`: avvisi sotto il modulo quando un campo non è valido.
-- `pubs.deleteTitle`, `pubs.deleteMessage`: finestra di eliminazione.
-- `pubs.type.*` compaiono anche nella legenda del grafico per tipo della Dashboard (`js/ui/screens/dashboard.js`).
+- `pubs.tab.*` y `pubs.tabs.label`: las dos pestañas (la lista y el registro). `pubs.tabs.label` es la etiqueta para los lectores de pantalla.
+- `pubs.filters*` y `pubs.filter.*`: filtros de la lista.
+- `pubs.empty`, `pubs.noResults`, `pubs.card.*`: lista y tarjetas.
+- `pubs.add` (el botón +): etiqueta para los lectores de pantalla, no se ve. `pubs.newTitle`, `pubs.editTitle`, `pubs.screenshot*`, `pubs.field.*`, `pubs.idea.none`, `pubs.saveAndAdd`, `pubs.savedAddMore`: formulario de una publicación nueva o para modificar.
+- `pubs.error.*`: avisos debajo del formulario cuando un campo no es válido.
+- `pubs.deleteTitle`, `pubs.deleteMessage`: ventana de eliminación.
+- `pubs.type.*` también aparecen en la leyenda del gráfico por tipo del Dashboard (`js/ui/screens/dashboard.js`).
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `pubs.tabs.label` | Secciones |  |
 | `pubs.tab.list` | Publicaciones |  |
@@ -407,13 +409,13 @@ Fonte: `js/i18n/es.js`. I gruppi seguono la prima parte della chiave; dentro ogn
 | `pubs.card.views` | Visualizaciones: {n} |  |
 | `pubs.card.comments` | Comentarios: {n} |  |
 
-### `reg` (24 voci)
+### `reg` (24 entradas)
 
-**Dove compaiono.** Scheda del registro delle ripetizioni dentro Publicaciones guardadas (`js/ui/screens/publications.js`): elenco, filtri (`reg.filter.*`, `reg.status*`, ricerca), stato di ogni voce (`reg.status.*`), provenienza del testo (`reg.source.*`), pubblicazione trovata (`reg.found*`, `reg.shared`, `reg.score`, `reg.checked`) e riepilogo (`reg.summary`).
+**Dónde aparece.** Pestaña del registro de repeticiones dentro de Publicaciones guardadas (`js/ui/screens/publications.js`): lista, filtros (`reg.filter.*`, `reg.status*`, búsqueda), estado de cada entrada (`reg.status.*`), procedencia del texto (`reg.source.*`), publicación encontrada (`reg.found*`, `reg.shared`, `reg.score`, `reg.checked`) y resumen (`reg.summary`).
 
-- `reg.openShot` è l'etichetta, per i lettori di schermo, del bottone con la miniatura della cattura: non si vede.
+- `reg.openShot` es la etiqueta, para los lectores de pantalla, del botón con la miniatura de la captura: no se ve.
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `reg.empty` | El registro está vacío. Las repeticiones entran solas cuando guardas una idea o una publicación parecida a otra ya publicada. |  |
 | `reg.noResults` | Ninguna entrada coincide con los filtros. |  |
@@ -440,11 +442,11 @@ Fonte: `js/i18n/es.js`. I gruppi seguono la prima parte della chiave; dentro ogn
 | `reg.openShot` | Abrir la captura |  |
 | `reg.summary` | {n} entradas, {review} por valorar |  |
 
-### `dashboard` (24 voci)
+### `dashboard` (24 entradas)
 
-**Dove compaiono.** Pagina Dashboard (`js/ui/screens/dashboard.js`): i tre bottoni grandi con la riga di spiegazione (`dashboard.btn.*`), il messaggio a pagina vuota (`dashboard.empty*`), le tre cifre (`dashboard.stat.*`), il riquadro delle ripetizioni da valutare (`dashboard.review.*`), i titoli e le note dei quattro grafici (`dashboard.chart.*`, `dashboard.noViews`, `dashboard.noComments`), l'ora nelle etichette del grafico delle ore (`dashboard.hour`) e la legenda del grafico per tipo (`dashboard.legend`).
+**Dónde aparece.** Página Dashboard (`js/ui/screens/dashboard.js`): los tres botones grandes con la línea de explicación (`dashboard.btn.*`), el mensaje de página vacía (`dashboard.empty*`), las tres cifras (`dashboard.stat.*`), el recuadro de las repeticiones por valorar (`dashboard.review.*`), los títulos y las notas de los cuatro gráficos (`dashboard.chart.*`, `dashboard.noViews`, `dashboard.noComments`), la hora en las etiquetas del gráfico de las horas (`dashboard.hour`) y la leyenda del gráfico por tipo (`dashboard.legend`).
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `dashboard.btn.ideare` | IDEAR |  |
 | `dashboard.btn.ideare.hint` | Notas, fotos y vídeos |  |
@@ -471,11 +473,11 @@ Fonte: `js/i18n/es.js`. I gruppi seguono la prima parte della chiave; dentro ogn
 | `dashboard.hour` | {h} h |  |
 | `dashboard.legend` | {type}: {n} ({pct} %) |  |
 
-### `settings` (21 voci)
+### `settings` (21 entradas)
 
-**Dove compaiono.** Pagina delle impostazioni (`js/ui/screens/settings.js`): cambio della password (`settings.password.*`), ripristino con il codice di recupero (`settings.recovery.*`), copia di sicurezza (`settings.backup.*`), spazio usato (`settings.storage.*`) e riquadro con il bottone delle informazioni (`settings.about.title`).
+**Dónde aparece.** Página de ajustes (`js/ui/screens/settings.js`): cambio de la contraseña (`settings.password.*`), restablecimiento con el código de recuperación (`settings.recovery.*`), copia de seguridad (`settings.backup.*`), espacio usado (`settings.storage.*`) y recuadro con el botón de información (`settings.about.title`).
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `settings.password.title` | Cambiar la contraseña |  |
 | `settings.password.current` | Contraseña actual |  |
@@ -499,11 +501,11 @@ Fonte: `js/i18n/es.js`. I gruppi seguono la prima parte della chiave; dentro ogn
 | `settings.storage.persist` | Pedir almacenamiento persistente |  |
 | `settings.about.title` | Información |  |
 
-### `backup` (12 voci)
+### `backup` (12 entradas)
 
-**Dove compaiono.** Finestre e messaggi per esportare e importare la copia di sicurezza (`js/ui/screens/settings.js`), aperti dal menu ⋮ o dalla pagina delle impostazioni. `backup.import.done` si vede anche nella schermata di accesso dopo un'importazione (`js/main.js`).
+**Dónde aparece.** Ventanas y mensajes para exportar e importar la copia de seguridad (`js/ui/screens/settings.js`), que se abren desde el menú ⋮ o desde la página de ajustes. `backup.import.done` también se ve en la pantalla de acceso después de una importación (`js/main.js`).
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `backup.export.title` | Exportar copia de seguridad |  |
 | `backup.export.confirm` | La copia ocupará unos {size} (fotos y vídeos incluidos, cifrados). Se descargará como archivo en el teléfono; no se comparte. ¿Continuar? |  |
@@ -518,11 +520,11 @@ Fonte: `js/i18n/es.js`. I gruppi seguono la prima parte della chiave; dentro ogn
 | `backup.import.secretLabel` | Contraseña o código de recuperación de la copia |  |
 | `backup.import.done` | Copia importada. Desbloquea con la contraseña de esa copia (o con su código de recuperación). |  |
 
-### `about` (6 voci)
+### `about` (6 entradas)
 
-**Dove compaiono.** Finestra delle informazioni (`showAbout` in `js/ui/screens/settings.js`), aperta dal menu ⋮ o dalla pagina delle impostazioni: descrizione dell'app, librerie incluse, licenze.
+**Dónde aparece.** Ventana de información (`showAbout` en `js/ui/screens/settings.js`), que se abre desde el menú ⋮ o desde la página de ajustes: descripción de la app, librerías incluidas, licencias.
 
-| Chiave | Testo in spagnolo | Nota di lei |
+| Clave | Texto en español | Tu nota |
 |---|---|---|
 | `about.text` | App sin conexión para ideas, prompts y publicaciones. Los datos se guardan cifrados en este teléfono y no se envían a internet. |  |
 | `about.libs` | Librerías incluidas |  |
@@ -531,24 +533,24 @@ Fonte: `js/i18n/es.js`. I gruppi seguono la prima parte della chiave; dentro ogn
 | `about.licensesNote` | Los textos de las licencias están en la carpeta vendor del repositorio. |  |
 | `about.noLicense` | La licencia del proyecto todavía no se ha elegido. |  |
 
-## Parte 2 — Template pronti (15 testi)
+## Parte 2 — Plantillas listas (15 textos)
 
-**Questi non sono testi dell'interfaccia: sono prompt per l'IA.** Fonte: `js/features/templates.js` (`COMMON_ES`, `ROLE_ES`, `BODIES`, `NAMES`, `MEDIA_LABELS`, `LANGUAGE_NAMES`, `EMPTY_HISTORY`). Non stanno in `js/i18n/`, ma sono in spagnolo e vanno rivisti come gli altri.
+**Estos no son textos de la interfaz: son prompts para la IA.** Fuente: `js/features/templates.js` (`COMMON_ES`, `ROLE_ES`, `BODIES`, `NAMES`, `MEDIA_LABELS`, `LANGUAGE_NAMES`, `EMPTY_HISTORY`). No están en `js/i18n/`, pero están en español y hay que revisarlos como los demás.
 
-Come funzionano: l'app prende il testo del template, sostituisce i segnaposto tra graffe con i dati dell'idea e del modulo, e ne ricava il prompt che lei incolla o condivide in un'app di IA. Qui sotto ogni testo è dato completo, come lo riceve l'IA, con i segnaposto lasciati com'erano.
+Cómo funcionan: la app toma el texto de la plantilla, sustituye los marcadores entre llaves por los datos de la idea y del formulario, y con eso obtiene el prompt que tú pegas o compartes en una app de IA. Aquí abajo cada texto se da completo, tal como lo recibe la IA, con los marcadores dejados como estaban.
 
-- **I nomi tra graffe** (`{idea}`, `{tipo_media}`, `{descrizione_media}`, `{durata_video}`, `{tono}`, `{obiettivo}`, `{lunghezza}`, `{hashtag}`, `{storico}`, `{stile}`, `{lingua}`) sono i nomi dei dati che l'app riempie. Non si traducono e non si cambiano: se un nome cambia, l'app non lo riempie e lo lascia visibile nel prompt, segnalato come dato non riempito.
-- **Il blocco del ruolo** (la prima riga) **e il blocco comune** (da «Tono:» fino a `{storico}`) sono uguali nei quattro template. Nel codice sono scritti una sola volta e valgono per tutti e quattro; in questo elenco compaiono quattro volte.
-- Il nome di ogni template (prima riga della tabella) è quello che si vede nell'elenco dei template in Desarrollar.
+- **Los nombres entre llaves** (`{idea}`, `{tipo_media}`, `{descrizione_media}`, `{durata_video}`, `{tono}`, `{obiettivo}`, `{lunghezza}`, `{hashtag}`, `{storico}`, `{stile}`, `{lingua}`) son los nombres de los datos que la app rellena. No se traducen ni se cambian: si un nombre cambia, la app no lo rellena y lo deja visible en el prompt, señalado como dato sin rellenar.
+- **El bloque del rol** (la primera línea) **y el bloque común** (desde «Tono:» hasta `{storico}`) son iguales en las cuatro plantillas. En el código están escritos una sola vez y valen para las cuatro; en esta lista aparecen cuatro veces.
+- El nombre de cada plantilla (primera fila de la tabla) es el que se ve en la lista de plantillas de Desarrollar.
 
-### Template «foto»
+### Plantilla «foto»
 
-| Voce | Testo in spagnolo | Nota di lei |
+| Entrada | Texto en español | Tu nota |
 |---|---|---|
-| Nome nell'elenco dei template (`NAMES`) | Foto → frase |  |
-| Valore con cui l'app riempie `{tipo_media}` (`MEDIA_LABELS`) | foto |  |
+| Nombre en la lista de plantillas (`NAMES`) | Foto → frase |  |
+| Valor con el que la app rellena `{tipo_media}` (`MEDIA_LABELS`) | foto |  |
 
-Testo completo del prompt, come lo riceve l'IA (`BODIES`, con `ROLE_ES` e `COMMON_ES` già inseriti):
+Texto completo del prompt, tal como lo recibe la IA (`BODIES`, con `ROLE_ES` y `COMMON_ES` ya insertados):
 
 ```text
 Actúa como especialista en redacción de contenido motivacional y de estilo de vida para una página de Facebook.
@@ -573,16 +575,16 @@ Dame dos respuestas separadas, cada una con varias variantes para que yo elija:
 2) CAPTION: 3 variantes de caption para acompañar la publicación.
 ```
 
-**Nota di lei:**
+**Tu nota:**
 
-### Template «video»
+### Plantilla «video»
 
-| Voce | Testo in spagnolo | Nota di lei |
+| Entrada | Texto en español | Tu nota |
 |---|---|---|
-| Nome nell'elenco dei template (`NAMES`) | Vídeo → frase |  |
-| Valore con cui l'app riempie `{tipo_media}` (`MEDIA_LABELS`) | vídeo |  |
+| Nombre en la lista de plantillas (`NAMES`) | Vídeo → frase |  |
+| Valor con el que la app rellena `{tipo_media}` (`MEDIA_LABELS`) | vídeo |  |
 
-Testo completo del prompt, come lo riceve l'IA (`BODIES`, con `ROLE_ES` e `COMMON_ES` già inseriti):
+Texto completo del prompt, tal como lo recibe la IA (`BODIES`, con `ROLE_ES` y `COMMON_ES` ya insertados):
 
 ```text
 Actúa como especialista en redacción de contenido motivacional y de estilo de vida para una página de Facebook.
@@ -607,16 +609,16 @@ Dame dos respuestas separadas, cada una con varias variantes para que yo elija:
 2) CAPTION: 3 variantes de caption para acompañar la publicación.
 ```
 
-**Nota di lei:**
+**Tu nota:**
 
-### Template «testo»
+### Plantilla «testo»
 
-| Voce | Testo in spagnolo | Nota di lei |
+| Entrada | Texto en español | Tu nota |
 |---|---|---|
-| Nome nell'elenco dei template (`NAMES`) | Solo texto |  |
-| Valore con cui l'app riempie `{tipo_media}` (`MEDIA_LABELS`) | solo texto |  |
+| Nombre en la lista de plantillas (`NAMES`) | Solo texto |  |
+| Valor con el que la app rellena `{tipo_media}` (`MEDIA_LABELS`) | solo texto |  |
 
-Testo completo del prompt, come lo riceve l'IA (`BODIES`, con `ROLE_ES` e `COMMON_ES` già inseriti):
+Texto completo del prompt, tal como lo recibe la IA (`BODIES`, con `ROLE_ES` y `COMMON_ES` ya insertados):
 
 ```text
 Actúa como especialista en redacción de contenido motivacional y de estilo de vida para una página de Facebook.
@@ -641,16 +643,16 @@ Dame dos respuestas separadas, cada una con varias variantes para que yo elija:
 2) CAPTION: 3 variantes del texto completo de la publicación.
 ```
 
-**Nota di lei:**
+**Tu nota:**
 
-### Template «frase»
+### Plantilla «frase»
 
-| Voce | Testo in spagnolo | Nota di lei |
+| Entrada | Texto en español | Tu nota |
 |---|---|---|
-| Nome nell'elenco dei template (`NAMES`) | Frase → ideas para foto o vídeo |  |
-| Valore con cui l'app riempie `{tipo_media}` (`MEDIA_LABELS`) | foto o vídeo |  |
+| Nombre en la lista de plantillas (`NAMES`) | Frase → ideas para foto o vídeo |  |
+| Valor con el que la app rellena `{tipo_media}` (`MEDIA_LABELS`) | foto o vídeo |  |
 
-Testo completo del prompt, come lo riceve l'IA (`BODIES`, con `ROLE_ES` e `COMMON_ES` già inseriti):
+Texto completo del prompt, tal como lo recibe la IA (`BODIES`, con `ROLE_ES` y `COMMON_ES` ya insertados):
 
 ```text
 Actúa como especialista en redacción de contenido motivacional y de estilo de vida para una página de Facebook.
@@ -676,33 +678,33 @@ Dame tres respuestas separadas, cada una con varias variantes para que yo elija:
 3) CAPTION: 3 variantes de caption para acompañar la publicación.
 ```
 
-**Nota di lei:**
+**Tu nota:**
 
-### Valori che l'app inserisce nei template
+### Valores que la app inserta en las plantillas
 
-Sono testi spagnoli che finiscono dentro il prompt al posto di un segnaposto.
+Son textos en español que acaban dentro del prompt en lugar de un marcador.
 
-| Voce | Testo in spagnolo | Nota di lei |
+| Entrada | Texto en español | Tu nota |
 |---|---|---|
-| Valore di `{lingua}` quando il post è in spagnolo (`LANGUAGE_NAMES`) | español |  |
-| Valore di `{lingua}` quando il post è in italiano (`LANGUAGE_NAMES`) | italiano |  |
-| Riga che sostituisce `{storico}` quando non ci sono ancora pubblicazioni salvate (`EMPTY_HISTORY`) | (Todavía no hay publicaciones guardadas.) |  |
+| Valor de `{lingua}` cuando la publicación está en español (`LANGUAGE_NAMES`) | español |  |
+| Valor de `{lingua}` cuando la publicación está en italiano (`LANGUAGE_NAMES`) | italiano |  |
+| Línea que sustituye a `{storico}` cuando todavía no hay publicaciones guardadas (`EMPTY_HISTORY`) | (Todavía no hay publicaciones guardadas.) |  |
 
-## Parte 3 — Altro che lei vede sullo schermo
+## Parte 3 — Otras cosas que ves en la pantalla
 
-Non sono testi scritti nei due elenchi qui sopra, quindi non c'è nulla da copiare. Sono qui perché si sappia che esistono.
+No son textos escritos en las dos listas de arriba, así que no hay nada que copiar. Están aquí para que se sepa que existen.
 
-- **Date.** Le date delle schede (idee, prompt, pubblicazioni) e quelle dei grafici le scrive il browser del telefono, nel formato della lingua dell'interfaccia: l'app chiede solo giorno, mese abbreviato e (nelle schede) anno (`toLocaleDateString` in `js/ui/screens/ideas.js`, `develop.js`, `publications.js`, `dashboard.js`). Come appaiono sul Samsung in spagnolo: **[Da provare]**.
-- **Numeri.** Le cifre grandi (visualizzazioni, commenti, Dashboard) e i decimali delle dimensioni dei file seguono le regole del browser per la lingua dell'interfaccia (`toLocaleString`). Come appaiono sul Samsung in spagnolo: **[Da provare]**.
-- **Etichette dei grafici.** Nei grafici i numeri grandi sono abbreviati con «k» e «M» e con il punto decimale (per esempio «2.61k»). Le scrive il codice (`compact()` in `js/ui/charts.js`), non passano da `es.js` e sono uguali in spagnolo e in italiano. Se in spagnolo vadano scritte così: da decidere.
-- **Sigle delle lingue.** «ES» e «IT», accanto alle bandierine in alto e nelle schede, sono i codici delle lingue: non sono testi da rivedere.
-- **Nome dell'app e versione.** Il nome «NAY-App» (anche nel titolo della pagina web, `index.html`) e il numero di versione accanto al logo sono fissi e non si traducono.
+- **Fechas.** Las fechas de las tarjetas (ideas, prompts, publicaciones) y las de los gráficos las escribe el navegador del teléfono, en el formato del idioma de la interfaz: la app solo pide día, mes abreviado y (en las tarjetas) año (`toLocaleDateString` en `js/ui/screens/ideas.js`, `develop.js`, `publications.js`, `dashboard.js`). Cómo aparecen en el Samsung en español: **[Por probar]**.
+- **Números.** Las cifras grandes (visualizaciones, comentarios, Dashboard) y los decimales de los tamaños de archivo siguen las reglas del navegador para el idioma de la interfaz (`toLocaleString`). Cómo aparecen en el Samsung en español: **[Por probar]**.
+- **Etiquetas de los gráficos.** En los gráficos, los números grandes se abrevian con «k» y «M» y con punto decimal (por ejemplo, «2.61k»). Las escribe el código (`compact()` en `js/ui/charts.js`), no pasan por `es.js` y son iguales en español y en italiano. Si en español deben escribirse así: por decidir.
+- **Siglas de los idiomas.** «ES» e «IT», junto a las banderitas de arriba y en las tarjetas, son los códigos de los idiomas: no son textos que revisar.
+- **Nombre de la app y versión.** El nombre «NAY-App» (también en el título de la página web, `index.html`) y el número de versión junto al logo son fijos y no se traducen.
 
-## Appendice — Testi uguali in più voci
+## Apéndice — Textos iguales en varias entradas
 
-Questi testi in spagnolo sono scritti allo stesso modo in più voci. Se li si corregge in una, conviene correggerli anche nelle altre. Le voci della Parte 2 sono indicate con il nome del template.
+Estos textos en español están escritos igual en varias entradas. Si se corrigen en una, conviene corregirlos también en las demás. Las entradas de la Parte 2 se indican con el nombre de la plantilla.
 
-| Testo in spagnolo | Voci in cui compare |
+| Texto en español | Entradas en las que aparece |
 |---|---|
 | Código de recuperación | `lock.recoveryLabel`, `settings.recovery.code` |
 | Exportar copia de seguridad | `menu.exportBackup`, `backup.export.title` |
@@ -721,6 +723,6 @@ Questi testi in spagnolo sono scritti allo stesso modo in più voci. Se li si co
 | Vídeo | `ideas.addVideo`, `ideas.kind.video`, `develop.kind.video`, `pubs.type.video` |
 | Estado | `ideas.statusLabel`, `reg.status` |
 | Tipo | `develop.step.kind`, `develop.editor.kind`, `pubs.filter.type`, `pubs.field.type` |
-| Solo texto | `develop.kind.testo`, `pubs.type.testo`, template «testo» (nome) |
+| Solo texto | `develop.kind.testo`, `pubs.type.testo`, plantilla «testo» (nombre) |
 | Nueva plantilla | `develop.template.new`, `develop.editor.newTitle` |
 | Todos | `pubs.filter.allTypes`, `reg.status.all` |

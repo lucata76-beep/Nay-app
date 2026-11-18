@@ -22,6 +22,7 @@ Legenda: **[Luca]** = deciso da Luca · **[Verificato]** = controllato su fonte 
 - **Storico dei post già pubblicati:** lei lo vuole caricare, per evitare contenuti simili, costruire uno stile e aiutare i prompt a non ripetersi. Metodo veloce: screenshot, titolo e descrizione scritti a mano. Oggi sono circa 50 post, e crescono di 4-5 a settimana.
 - **Registro delle ripetizioni:** una casella che elenca le ripetizioni trovate e in quale pubblicazione si trovano, con ricerca per data. Si riempie in automatico (Luca: «in automatico è meglio»). Piace a Luca anche l'avviso sui post con parole simili.
 - **Lingue:** lei è spagnola, di lingua madre spagnola: pubblica in spagnolo e anche in italiano, e continua con lo spagnolo. Ogni post è in una sola lingua: non pubblica lo stesso contenuto tradotto. L'app è bilingue (spagnolo e italiano) come struttura: interfaccia, menu, template. Parte in spagnolo e ha due pulsanti a bandierina, spagnolo e italiano, per cambiare lingua.
+- **Guida in spagnolo dentro l'app [Luca, 18 novembre 2026]:** una guida completa su come usare l'app, scritta in spagnolo, che si apre dall'app e si legge senza rete. Luca la preferisce dentro l'app perché è più veloce che aprire un lettore PDF. Si scrive alla fine, quando le funzioni sono definitive (sezione 5, «Guida in spagnolo, dentro l'app»).
 - **Idea di Luca, non ancora decisa:** un vocabolario di sinonimi e contrari, perché ogni parola si possa confrontare con le altre (sezione 5, pagina 3).
 - **Come lavora oggi:** tutto a mano, in due direzioni: parte da una foto o un video e crea la frase (motivazionale o di stile di vita), oppure ha già la frase e le abbina una foto o un video.
 - **App di IA:** ChatGPT (suggerita da Luca) e Gemini. Oggi lei usa ChatGPT gratuito e vuole passare a un piano a pagamento base: secondo Luca costa «il minimo 22 euro al mese» (cifra detta da Luca, non verificata da me).
@@ -69,6 +70,7 @@ Legenda: **[Luca]** = deciso da Luca · **[Verificato]** = controllato su fonte 
 - Look dell'immagine di riferimento (sezione 8).
 - Logo NAY in alto a sinistra e come icona dell'app (sezione 8).
 - Barra in alto, menu e barra in basso come da «Menu e navigazione» (sezione 5) **[approvati da Luca]**.
+- Guida completa in spagnolo dentro l'app, scritta alla fine (sezione 5).
 
 **Non-obiettivi v1 [Luca]**
 - Versioni iPhone e desktop (verranno dopo).
@@ -177,7 +179,7 @@ Flusso: scegli un'idea → scegli il tipo (foto, video, solo testo) → scegli u
 | Chiudere | Freccia indietro nelle schermate di dettaglio; «Blocca ora» nel menu ⋮, che richiede di nuovo la password. Un «Chiudi app» non lo propongo: non ho verificato che una web app installata possa chiudersi da sola. |
 
 - **Barra in alto, in ogni pagina [Luca: numero di versione accanto al logo; bandierine in alto a destra]:** a sinistra il logo NAY (tocco = Dashboard) con accanto il numero di versione dell'app; al centro il titolo della pagina; a destra le bandierine ES e IT e il menu ⋮.
-- **Menu ⋮ della barra (una tendina, un solo livello):** Blocca ora · Esporta backup · Importa backup · Impostazioni (password, codice di recupero, spazio usato, impronta se possibile) · Informazioni (versione, licenze).
+- **Menu ⋮ della barra (una tendina, un solo livello):** Blocca ora · Esporta backup · Importa backup · Impostazioni (password, codice di recupero, spazio usato, impronta se possibile) · Guida (aggiunta il 18 novembre 2026, vedi «Guida in spagnolo, dentro l'app») · Informazioni (versione, licenze).
 - **Menu ⋮ su ogni scheda:** Modifica, Duplica, Elimina; sui prompt anche Copia e Condividi.
 - **Pulsante [+]:** azione principale in Ideare e in Pubblicazioni salvate. In Sviluppare le azioni stanno in una riga fissa in fondo: Copia, Condividi, Crea ZIP.
 - **Barra di navigazione in basso con 4 icone (Dashboard, Ideare, Sviluppare, Pubblicazioni) [Luca: «3- si»].** Pro: 4 sono dentro il limite 3-5 e le pagine hanno peso simile; si passa da una pagina all'altra con un tocco, senza tornare alla Dashboard. Contro: Material la vuole su ogni schermata, quindi anche sulla Dashboard, dove ripete i tre grandi pulsanti; occupa spazio in basso, dove in Sviluppare servono Copia, Condividi e ZIP. Deciso: sì, con le azioni di Sviluppare sopra la barra. Il tocco sul logo porta comunque alla Dashboard.
@@ -198,6 +200,15 @@ Flusso: scegli un'idea → scegli il tipo (foto, video, solo testo) → scegli u
 - **Avvii successivi.** Schermata di sblocco con la password. L'app si blocca da sola quando va in secondo piano **[Mia scelta]**.
 - **Impostazioni** (dal menu ⋮ della barra in alto, vedi «Menu e navigazione») **[Mia scelta]**: cambia password; ripristina l'accesso con il codice di recupero; esporta e importa il backup cifrato; spazio usato; sblocco con impronta, se il test sul Samsung lo permette **[Da provare]**.
 - **Testo accanto al codice [Mia scelta]:** invitare a scriverlo su carta e non a farne uno screenshot, che finirebbe in chiaro nella galleria.
+
+### Guida in spagnolo, dentro l'app [Luca: guida completa, in spagnolo, dentro l'app, alla fine; dettagli Mia scelta]
+- **Che cos'è [Luca].** Una pagina dell'app con la guida completa su come usarla, in spagnolo. Si legge senza rete. Non è un PDF.
+- **Quando [Luca: «alla fine»; posizione Mia scelta, da confermare].** Si scrive quando le funzioni sono definitive: dopo T18 e dopo le correzioni dalle note di lei, e prima della prova finale sul Samsung (G4) e della 1.0.0, così la 1.0.0 la contiene.
+- **Come si apre [Mia scelta].** Voce «Guida» nel menu ⋮, tra Impostazioni e Informazioni (sempre un solo livello); porta a una pagina `guida`. La barra in basso resta a 4 icone. Non compare nel primo avvio, per non interrompere la creazione della password e il codice di recupero.
+- **Com'è fatta [Mia scelta].** Sommario e sezioni che si aprono e si chiudono, solo testo, senza immagini nella prima versione (le schermate si possono aggiungere dopo, se Luca le vuole). Sezioni proposte: installare l'app; primo avvio (password e codice di recupero); blocco e sblocco; lingua; Dashboard; Ideare; Sviluppare (template, storico e guida di stile, hook e caption, copiare, condividere e ZIP); Pubblicazioni salvate (salvataggio veloce, storico, avviso di somiglianza, registro delle ripetizioni); backup; Impostazioni; sicurezza e privacy (che cosa è cifrato e che cosa no, sezione 7); problemi frequenti. L'elenco definitivo segue le funzioni finali.
+- **Lingua [Luca: spagnolo].** Il testo della guida è solo in spagnolo; una versione italiana non è richiesta **[Da decidere con Luca]**. Con l'interfaccia in italiano la guida resta in spagnolo. Il testo sta in un file a parte di `js/i18n/`, fuori da `es.js` e `it.js`, perché il test «es and it have the same keys» (`tests/i18n.test.js`) chiede le stesse chiavi nei due elenchi. Il titolo della pagina e la voce di menu stanno invece in `es.js` e `it.js`, come tutti i testi dell'interfaccia.
+- **Testo sempre vero [Mia scelta].** Ogni frase descrive l'app com'è, non come sarà. Le etichette dell'app che la guida cita (bottoni, voci di menu) non si riscrivono a mano: si prendono da `es.js` e un test controlla che esistano. Per ciò che sta fuori dall'app (le voci di Chrome per installarla, il selettore della galleria, la condivisione di sistema) si scrive solo ciò che la sezione 9 ha provato; le frasi da controllare sul telefono si elencano in `STATUS.md` per la prova finale (G4) **[Da provare]**.
+- **Revisione [Mia scelta].** La scrive Claude, come gli altri testi in spagnolo; la rivede lei, madrelingua, con un elenco dei testi della guida come `docs/i18n-review-es.md` (file `docs/guia-review-es.md`). Luca controlla le istruzioni sul telefono in G4.
 
 ## 6. Esportazione e condivisione [Luca: singola e raggruppata]
 
@@ -323,12 +334,19 @@ Le prime 26 sono **confermate da Luca** («vanno bene»). Le 27-32 sono approvat
 30. Barra di navigazione in basso con 4 icone (Dashboard, Ideare, Sviluppare, Pubblicazioni): confermata da Luca.
 31. Template pronti con hook e caption come due risposte separate, ciascuna con più varianti (è dove lei perde tempo).
 32. Logo su tessera crema nella barra in alto; icone 192, 512 e maskable ricavate dal file, con il disegno centrato e ridotto a circa il 90%.
+33. Voce «Guida» nel menu ⋮, tra Impostazioni e Informazioni; la pagina non compare nel primo avvio; barra in basso invariata. **[Mia scelta, da confermare]**
+34. Guida solo in spagnolo, in un file a parte di `js/i18n/`; con l'interfaccia in italiano resta in spagnolo. **[Mia scelta, da confermare]**
+35. Guida solo testo, a sezioni che si aprono e si chiudono, senza immagini nella prima versione. **[Mia scelta, da confermare]**
+36. Guida scritta dopo che le funzioni sono definitive e prima di G4 e della 1.0.0; etichette citate prese da `es.js`. **[Mia scelta, da confermare]**
+
+Le 33-36 sono nuove (18 novembre 2026) e da confermare da Luca.
 
 ## 11. Aperto e lasciato al costruttore
 
 **Aperto (serve Luca)**
 1. **Licenza del repo:** si sceglie dopo il test **[Luca: «4- ok»]**. Dipende dai dati del vocabolario inclusi: GPL e AGPL pongono condizioni a chi ridistribuisce; per i dati da Wiktionary (indicati CC BY-SA 4.0) va riverificato. Claude non è un avvocato **[Da verificare]**.
 2. **Piano ChatGPT a pagamento:** i limiti di caricamento dei file di quel piano non sono verificati; da controllare quando lei sceglie il piano. La cifra di 22 euro al mese è detta da Luca e non verificata.
+3. **Guida in spagnolo:** (a) serve anche una versione italiana? (b) solo testo o anche schermate? (c) la guida si apre dal menu ⋮, che si vede solo dopo lo sblocco (le voci del menu e il montaggio della barra in alto stanno in `js/main.js`, in `menuItems()` e `renderChrome()`; `renderTopbar` e `openMenu` sono definiti in `js/ui/topbar.js` e `js/ui/menu.js`; la schermata di accesso, `js/ui/screens/lock.js`, usa solo le bandierine, `renderLangFlags` di `js/ui/topbar.js`): chi ha dimenticato la password non può aprirla dalla schermata di accesso, ma solo dopo lo sblocco (per esempio con il codice di recupero). Serve un rimando anche nella schermata di accesso? **[Da decidere con Luca]**
 
 **Risolto (risposte di Luca):**
 - Lo storico conta circa 50 post e cresce di 4-5 a settimana; per questo il prompt prende gli ultimi più i più simili e il numero è un parametro.
@@ -347,6 +365,7 @@ Le prime 26 sono **confermate da Luca** («vanno bene»). Le 27-32 sono approvat
 - Barra di navigazione in basso: sì («3- si»).
 - Licenza del repo: dopo il test («4- ok»).
 - Documento approvato («APPROVATO», 16 novembre 2026).
+- Guida: in spagnolo, dentro l'app, alla fine («Completa»; «preferisco una guida all'interno dell'app»).
 
 **Lasciato al costruttore:** testo iniziale dei 3 template (da far approvare nel test), icone, scelta delle librerie (grafici, ZIP, cifratura, radice delle parole), formato dei dati del vocabolario, nomi dei file, formato del file di backup, lunghezza minima della password e indicatore di robustezza, attesa del blocco automatico, testi delle schermate di accesso, animazioni, affinamento della palette.
 
